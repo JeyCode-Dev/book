@@ -1,0 +1,639 @@
+CREATE TABLE gestionstock_TempoPrix(
+    id INT PRIMARY KEY IDENTITY(1,1),
+	user_id INT,
+	article_id INT,
+    emb1_id INT,
+    emb2_id INT,
+	prix1 DECIMAL(20, 2) DEFAULT 0,
+    prix2 DECIMAL(20, 2) DEFAULT 0,
+    etat BOOLEAN DEFAULT FALSE,
+    devise VARCHAR(10),
+    dateop DATE,
+	FOREIGN KEY (user_id) REFERENCES parametrage_CustomUser(id),
+	FOREIGN KEY (article_id) REFERENCES FARTICLE(id),
+	FOREIGN KEY (emb1_id) REFERENCES Femballage(id) ON DELETE SET NULL,
+    FOREIGN KEY (emb2_id) REFERENCES Femballage(id) ON DELETE SET NULL
+    
+);
+
+$.ajax({
+    url: '{% url 'gestionstock:getproduit' %}',
+    type: 'GET',
+     data:{
+         "id":$('#idpro').val(),
+         "r":1
+     },
+    async: false,
+    success: function (data) {
+        $.each(data.data,function(key,value){
+
+
+                     $('#classe').val(value.classe__classe);
+                     $('#classe').change();
+                     $('#famille').val(value.famille_id);
+                     $('#famille').change();
+
+                     $('#emballage1').val(value.emballagee_id);
+                     $('#emballage1').change();
+                     $('#emballage2').val(value.emballageu_id);
+                     $('#emballage2').change();
+                     {#$('#emballage3').val(value.emballagea);#}
+                     {#$('#emballage3').change();#}
+
+
+                     {#$('#categorie').val(value.categorie);#}
+                     {#$('#categorie').change();#}
+
+                     {#$('#qte3').val(value.quantitea);#}
+                     {#$('#qte2').val(value.quantiteu);#}
+                     $('#qte1').val(value.quantitee);
+
+                     $('#pa1').val(value.prix_achat);
+                     {#$('#pa2').val(value.pa);#}
+                     {#$('#pa3').val(value.old_prix_achat);#}
+
+                     {#$('#pv1').val(value.prix_vente);#}
+                     {#$('#pv2').val(value.prix_vente_cdf);#}
+                     {#$('#pv3').val(value.old_prix_vente);#}
+
+                     // $('#numcpt').val(value.numcompte);
+                     $('#seuil').val(value.qte_stock_minimal);
+
+                      {#$('#pv1cdf').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv1').val()))));#}
+                      {#$('#pv1cdf_').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv1').val()))));#}
+                      {#$('#pv2cdf').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv2').val()))));#}
+                      {#$('#pv2cdf_').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv2').val()))));#}
+                      {#$('#pv3cdf').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv3').val()))));#}
+                      {#$('#pv3cdf_').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv3').val()))));#}
+                      {#if($.isNumeric(value.prix_vente)) {#}
+                      {#    var valeurv1 = parseFloat(value.prix_vente) - parseFloat(value.prix_achat)#}
+                      {#    if(valeurv1){#}
+                      {#    $('#pourc1').val(Math.ceil((parseFloat(valeurv1) * 100) / parseFloat(value.prix_achat)));}#}
+                      {#}else{#}
+                      {#    $('#pourc1').val(0)#}
+                      {#}#}
+                      {#if($.isNumeric(value.prix_vente_cdf)) {#}
+                      {#    var valeurv1 = parseFloat(value.prix_vente_cdf) - parseFloat(value.pa)#}
+                      {#    if(valeurv1){#}
+                      {#    $('#pourc2').val(Math.ceil((parseFloat(valeurv1) * 100) / parseFloat(value.pa)));}#}
+                      {#}else{#}
+                      {#    $('#pourc2').val(0)#}
+                      {#}#}
+
+                      {# if($.isNumeric(value.old_prix_vente)) {#}
+                      {#    var valeurv1 = parseFloat(value.old_prix_vente) - parseFloat(value.old_prix_achat)#}
+                      {#     if(valeurv1){#}
+                      {#         $('#pourc3').val(Math.ceil((parseFloat(valeurv1) * 100) / parseFloat(value.old_prix_achat)));#}
+                      {#     }#}
+                      {##}
+                      {#}else{#}
+                      {#    $('#pourc3').val(0)#}
+                      {#}#}
+
+
+
+
+
+
+
+
+         });
+        $('#st1').val(data.st1);
+        $('#st2').val(data.st2);
+        $('#st3').val(data.st3);
+
+        $('#stn1').html(data.stn1);
+        $('#stn2').html(data.stn2);
+        $('#stn3').html(data.stn3);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+
+
+    },error:function (data) {
+
+        }
+    });
+
+
+----------------------------------PYTHON--------------------------------
+
+== > >= <= !=
+
+if(condition){
+
+}
+
+if condition:
+   les instructions
+else:
+  les instructions
+
+
+  
+lien deploiement django:
+https://medium.com/@availtechinfo/how-to-deploy-django-project-on-lan-xampp-windows-wsgi-92e60cfa4cae
+
+
+
+
+<table id="example1" class="table table-bordered table-striped">
+    <thead style="background:#9f6c44;font-weight: bold">
+        <tr>
+<th>Date</th>
+            <th>Nom Patient</th>
+            <th>Température</th>
+            <th>Poinds</th>
+            <th>Tention</th>
+            <th>Action</th>
+            {% comment %} <th>Pcs</th> {% endcomment %}
+            
+{#									<th>PV</th>#}
+
+            {% comment %} <th>Emb.2</th> {% endcomment %}
+{#									<th>Pcs(Emb3)</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+{##}
+{#                                    <th>Emb.3</th>#}
+{#									<th>Pcs</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+            
+        </tr>
+    </thead>
+    <tbody>
+       {% for i in tab  %}
+    
+       <tr>
+        <td>{{ i.created_at}} </td>
+        <td>{{ i.patient.nom }}</td>
+        <td>{{ i.temperature }}</td>
+        <td>{{ i.poids }}</td>
+        <td>{{ i.tention}}</td>
+        
+        <td>
+            <button type="button" class="btn btn-primary consult" id="{{i.id}}" data-toggle="modal" data-target="#myModal">
+            Consulter
+        </button></td>
+     </tr>
+  
+       {% endfor %} 
+    </tbody>
+    <tfoot style="background:gray">
+        <tr>
+<th>Date</th>
+            <th>Nom Patient</th>
+            <th>Température</th>
+            <th>Poinds</th>
+            <th>Tention</th>
+            <th>Action</th>
+{#									<th>PV</th>#}
+
+           {% comment %}  <th>Emb.2</th> {% endcomment %}
+{#									<th>Pcs(Emb3)</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+{#                                    <th>Emb.3</th>#}
+{#									<th>Pcs</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+            {% comment %} <th>Seuil</th> {% endcomment %}
+        </tr>
+    </tfoot>
+  </table>
+
+--------------------------------------------------------ORDONANCE----------------------------
+
+  {% extends 'main.html' %}
+  {% load static %}
+  
+  
+  {% block style %}
+      <link href="{% static 'src/validationEngine.jquery.min.css' %}" rel="stylesheet"/>
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />  
+     {% comment %} <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">  {% endcomment %}
+      <link href="{%  static 'src/jquery.manage.form.resposive-tables.css' %}" rel="stylesheet"/>
+  <style>
+    
+  </style>
+          {% endblock %}
+   {% block title %}
+  
+  
+  
+       <div class="row text-primary" id="msx" style="display: none">
+              <div class="col-lg-12">
+             <div role="alert" id="stl">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Message : </strong> <label id="lbl"></label>
+              </div>
+              </div>
+          </div>
+  
+              <h3>
+          Ordonance
+          </h3>
+          <ol class="breadcrumb" style="background: transparent">
+          <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+          <li class="breadcrumb-item" aria-current="page">Centre Medical</li>
+              <li class="breadcrumb-item active">Ordonance</li>
+          </ol>
+          <div class="col-sm-" style="float: right;">
+              <label> Numéro Ordonance</label>
+              <span class="bg-primary p-1 rounded-2">{{numtrans}}</span>
+          </div>
+            {% endblock %}
+  
+  {% block content %}
+  
+  <div class="container-fluid">
+      <h3>
+          Ordonance
+          </h3>
+          {% comment %} <ol class="breadcrumb" style="background: transparent">
+          <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+          <li class="breadcrumb-item" aria-current="page">Centre Medical</li>
+              <li class="breadcrumb-item active">Ordonance</li>
+          </ol> {% endcomment %}
+          <div class="col-sm-" style="float: right;">
+              <label> Numéro Ordonance</label>
+              <span class="bg-primary p-1 rounded-2 text-white">{{numtrans}}</span>
+          </div>
+  </div>
+  
+  <div class="container py-5">
+      
+    <form id="formID" method="post" class="bg-primary rounded p-2 " action="#" style="position:relative;" >
+       <div class="row">
+          
+                                                      <div class="col-sm-12">
+                                                          
+                                                          <div class="panel panel-primary">
+                                                              
+                                                           <div class="panel-body">
+  
+                                                              <div class="form-group row">
+  
+                                                                  <div class="col-sm-12">
+                                                                             
+                                                                                       
+                                                                              <label class=" form-control-label text-white" style="color:wheat;font-size: 20px;">Etablissement ordonance &nbsp;</label>
+                                                                              
+                                                                              <select required id="location" name="location" class="form-control select2" >
+                                                                                      <option value="" ></option>
+                                                                                      {% for i in locations  %}
+                                                                                      <option value={{i.location}} tyle="text-transform:uppercase">{{ i.designation|upper}}--{{request.user|upper}}--{{i.datejour|upper}}</option>
+                                                                                      {% endfor %}
+  
+                                                                              </select>
+                                                                      </div>
+                                                                      
+                                                                </div>
+                                                                      
+                                                                      </div>
+  
+                                                                  </div>
+                                                                  
+                                                               </div>
+                                                               
+                                                          </div>
+  
+                                                     
+  
+  
+          {% csrf_token %}
+          <input hidden name="code" id="code" value="{{numtrans}}">
+          
+          <table class="table table-striped table-hover table-clone-row" >
+              <thead>
+              <tr>
+  
+                  <th scope="col"></th>
+                  <th scope="col">Article</th>
+                  <th scope="col">Emb.</th>
+                  <th scope="col">Qte</th>
+                 {% comment %}  <th scope="col">Qte Stock</th> {% endcomment %}
+                  <th scope="col" style="display: none">ACTIONS</th>
+              </tr>
+              </thead>
+              <tbody id="tabbody">
+  
+  
+  
+              </tbody>
+              <tfoot>
+              <tr>
+                   <td scope="col">
+                      <button class="btn btn-success add-row"><i class="fa fa-plus"></i></button>
+                  </td>
+              </tr><tr>
+                  <td colspan="5" class="text-center">
+                      <button class="btn btn-success sender">VALIDER</button>
+                  </td>
+              </tr>
+              </tfoot>
+          </table>
+  
+  
+      </form>
+      <table id="fantome" style="display:none">
+            <tbody>
+               <tr role="row" class="ligne">
+                          <td role="cell" data-label="#i" >
+                              <a href="javascript:void(0);" class="btn btn-danger btn-sm remove">
+                                  <i class="fa fa-times"></i>
+                              </a>
+                          </td>
+                         <td role="cell" data-label="Produit" class="modall-content">
+  
+                          <select style=";" name="produit[]" id="produit[]" class="form-control produit select22">
+                                      <option value="" ></option>
+                                      {% for i in article  %}
+                                      <option value={{i.article}} >{{ i.designation}}</option>
+                                      {% endfor %}
+                              </select>
+                         </td>
+                         <td role="cell" data-label="Emb" class="modall-content">
+  
+                              <select style="" name="emb[]" id="emb[]" class="form-control emb">
+  
+                              </select>
+                         </td>
+                         <td role="cell" data-label="Qte">
+                              <input type="text" style="" name="qte[]" id="qte[]"  class="form-control qte"
+                                      data-validation-engine="validate[required,custom[number]]"
+                              />
+                         </td>
+                         {% comment %} <td role="cell" data-label="Qted">
+                          <input type="text"  readonly style="background-color:black" name="qted[]" id="qted[]"  class="form-control qted"
+                                  data-validation-engine="validate[required,custom[number]]"
+                          />
+                     </td> {% endcomment %}
+                     </tr>
+            </tbody>
+          </table>
+  
+  </div>
+  
+  
+    {% endblock %}
+  
+   {% block script %}
+  
+  {% comment %} <script src="{%  static 'src/bootstrap.bundle.min.js' %}" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script> {% endcomment %}
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="{% static "bootstrap-alert/jquery.bootstrap.alert.js" %}" ></script>
+  <script src="{% static "src/jquery.validationEngine-en.min.js'" %}"></script>
+  <script src="{% static "src/jquery.validationEngine.min.js" %}"></script>
+  <script src="{% static "src/jquery.manage.form.tables.js" %}"></script>
+  <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+  {% block cdnfoot %}
+  <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+  {% endblock%}
+  <script type="application/javascript">
+  
+  var TR_Base;
+  var template;
+      $(document).ready(function () {
+    $('.select2').select2();
+  
+          TR_Base = document.querySelector('#fantome tbody tr');
+          template = TR_Base.outerHTML;
+  
+  
+          // $(document).on('change', '.billetage', function () {
+          //     var number = parseFloat($(this).val()) + parseFloat($(this).parent().parent().find('.nombre').val());
+          //     $(this).parent().parent().find('.totalite').val(number);
+          //     tot=(parseFloat(tot) + parseFloat(number));
+          //     $('#totalgen').html(tot);
+          // });
+          // $(document).on('change', '.nombre', function () {
+          //     var number = parseFloat($(this).val()) + parseFloat($(this).parent().parent().find('.billetage').val());
+          //     $(this).parent().parent().find('.totalite').val(number);
+          //     tot=(parseFloat(tot) + parseFloat(number));
+          //
+          //     $('#totalgen').html(tot);
+          //
+          // });
+  
+  
+              $('.add-row').hide();
+              $('.table-clone-row').manageFormTables( {
+              templateRow: template,
+              removeRowTarget: '.remove',
+              addRowTarget: '.add-row',
+              minRowsVisible: 1,
+              debug: 1,
+              senderTarget: '.sender',
+              tableFormTitle: 'Sortie',
+              onErrorRowsVisible: function (element, form) {
+                  $(element).parent().bootstrapAlert({
+                      heading: 'Erreur lors de la suppression de la ligne',
+                      content: 'Impossible de supprimer cet enregistrement car au moins une ligne doit exister !',
+                      type: 'danger'
+                  });
+              },
+              onSubmit: function (form) {
+                  console.log(form);
+              },
+              events:[
+                  {
+                      targetName: '.lock',
+                      eventName: 'click',
+                      onEvent: function () {
+                          const _this = $(this);
+                          const tr = _this.closest("tr");
+                          if(_this.hasClass('in-lock')){
+                              tr.find('input').removeAttr('readonly').removeClass('disabled');
+                              tr.find('.remove').removeClass('disabled');
+                              _this.removeClass('in-lock btn-info').addClass('btn-warning');
+                              _this.html('<i class="fa fa-unlock"></i>');
+                          }else {
+                              tr.find('input').attr('readonly', true).addClass('disabled');
+                              _this.addClass('in-lock btn-info').removeClass('btn-warning');
+                              tr.find('.remove').addClass('disabled');
+                              _this.html('<i class="fa fa-lock"></i>');
+                          }
+                      }
+                  }
+              ]
+  
+          });
+  
+               $('#formID').submit(function (e) {
+                           e.preventDefault();
+                            var postData = $(this).serializeArray();
+  
+  
+                             swal({
+                                      title: "Confirmation ?",
+                                      text: "Voulez-vous vraiment Valider ?",
+                                      type: "warning",
+                                      showCancelButton: true,
+                                      confirmButtonColor: "#DD6B55",
+                                      confirmButtonText: "Valider",
+                                      cancelButtonText: "Annuler",
+                                      closeOnConfirm: false
+                                  }, function(isConfirm){
+                                              if(isConfirm==true){
+  
+                             $('.emb').each(function(i, obj) {
+                                   postData.push({name:'emb',value:$(this).val() });
+                               });
+                              //postData.push({name:'csrfmiddlewaretoken',value:'{{ csrf_token }}' });
+  
+  
+  
+                           $.ajax({
+                          url: '{% url 'centremedical:ordonance' %}',
+                          type: 'POST',
+                           data:postData,
+                          async: false,
+                          success: function (data) {
+                               $('#msx').show();
+                              if(data.id=="0"){
+  
+  
+                              }else{
+  
+  
+                              $('#tabbody').empty();
+                              $('#code').val(data.code);
+                              swal("Valider !", "L'opération effectuée", "success");
+  
+  
+                              }
+  
+                          },error:function (data) {
+  
+                              }
+                          });
+  
+                           }
+  
+  
+                                  });
+  
+  
+  
+                          });
+  
+  
+               $(document).on("change", ".produit", function () {
+          //$('.produit').change(function (e) {
+         // alert('hhhhhh')
+                  var emb=$(this).closest('tr').find('.emb')
+                  var id=$(this).closest('tr').find('.produit option:selected').val()
+                  emb.children().remove();
+  
+                      charger(0,id,emb,$(this).closest('tr').find('.qte'));
+  
+  
+                  });
+  
+              $('.add-row').click(function() {
+  
+                  $('.select22').select2();
+  
+                });
+  
+              $('#location').change(function() {
+                  //TR_Base = document.querySelector('#fantome tbody tr');
+                  //template = TR_Base.outerHTML;
+                  $('.add-row').show();
+  
+                  // var dp = $('.table-clone-row').data('manageFormTables');
+                  // console.log(dp)
+                  // $('.table-clone-row').manageFormTables( );
+  
+  
+          });
+  
+  
+      });
+  
+       function charger(ctrl,id,emb,qte) {
+  
+                  if (ctrl==0){
+                       $('#emballage').children().remove();
+                  }
+  
+                  $.ajax({
+                      url:  "{% url 'gestionstock:getqteproduitfacture' %}",
+                      data: {
+                          "produit":id,
+                          "ctrl":ctrl,
+                           'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                },
+                      type: 'POST',
+                      success: function (data) {
+  
+  
+                       $.each(data.emb,function(key,value){
+                           console.log(value)
+                           $('.qted').val(value.quantitee)
+                           if (value.emballagee_id!=null){
+                              emb.append($('<option>',{
+                                               value:value.emballagee_id,
+                                               text:value.emballagee_id
+                                           }));
+                          }
+                          /*
+                          if (value.emballageu_id!=null){
+                               emb.append($('<option>',{
+                                                value:value.emballageu_id,
+                                                text:value.emballageu_id
+                                            }));
+                           }
+  
+                          */
+  
+                               });
+                       qte.select();
+  
+  
+  
+  
+  
+                       },
+                           error: function (data) {
+  
+                           }
+                      });
+              }
+       function chargerproduit() {
+  
+                  $('#produit').children().remove();
+                  $.ajax({
+                      url:  "{% url 'gestionstock:getproduit' %}",
+                      data: {
+                          "location":$('#location').val()
+                                },
+                      type: 'GET',
+                      success: function (data) {
+  
+                      alert(data.qt1)
+                       $.each(data.data,function(key,value){
+  
+                               $('#produit').append($('<option>',{
+                                    value:value.article,
+                                    text:value.designation
+                                }));
+  
+  
+                               });
+  
+                       },
+                           error: function (data) {
+  
+                           }
+                      });
+              }
+  </script>
+  
+    {% endblock %}
+  
+  
+  

@@ -1,0 +1,204 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Inventaire Stock CMP
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Rapport</li>
+            <li class="breadcrumb-item active">Inventaire Stock CMP</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				<div class="box-header with-border">
+				  <h3 class="box-title">Inventaire Stock Coût Moyen Pondéré</h3>
+				</div>
+				<div class="box-body">
+                     <div id="my-box"> </div>
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+				  	<div class="col-sm-6">
+								<label>Location</label>
+								<select name="location" id="location" class="form-control select2" >
+									{% for i in location  %}
+										<option value={{i.location}} >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+								 
+					</div>
+                    <div class="col-sm-6">
+                                <label>Taux</label>
+                                <input type="text" id="taux" name="taux" class="form-control">
+                    </div>
+					
+                    
+					
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+					<div class="col-sm-4">
+								<label>Date Début</label>
+								<input type="date" id="dtd" value="{% now 'Y-m-d' %}" name="dtd" class="form-control">
+					</div>
+              
+ 
+					<div class="col-sm-4" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Imprimer</button>
+					</div>
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					 
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+
+              $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+                         if(confirm("Cette opération peut durée plusieurs minutes,voulez-vous continuer?")){
+                          creation();
+                         }
+
+                         
+
+
+
+                        });
+
+
+
+
+
+
+
+
+
+
+              });
+
+          function creation(){ 
+
+     $('#my-box').html('');
+                           $('#my-box').show();
+    var cmp=0;
+
+    $.ajax({
+     url: '{% url 'gestionstock:inventairecmp' %}',
+    type: 'POST',
+     data:{
+         'csrfmiddlewaretoken': '{{ csrf_token }}',
+         'location':  $('#location').val(),
+         'dtd': $('#dtd').val(),
+         'taux': $('#taux').val(),
+         'liblocation': $('#location option:selected').html()
+         
+     },
+    beforeSend: function(){
+        $('#my-box').html('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+        $('.progress-bar').animate({width: "30%"}, 100);
+
+        setTimeout(function(argument) {
+          $('.progress-bar').animate({width: "55%"}, 100);
+        }, 10000);
+ 
+    },
+
+       xhr: function(){
+       var xhr = new window.XMLHttpRequest();
+       //Upload progress
+       xhr.upload.addEventListener("progress", function(evt){
+       if (evt.lengthComputable) {
+         //var percentComplete = evt.loaded / evt.total;
+          var percent = Math.round((evt.loaded / evt.total) * 100);
+         //  if (percent == 100)
+         //     {
+         //        console.log("complet");
+
+         //     }
+         // //Do something with upload progress
+         // console.log(percent);
+         }
+       }, false);
+     //Download progress
+       xhr.addEventListener("progress", function(evt){
+         if (evt.lengthComputable) {
+           //var percent = Math.round((evt.loaded / evt.total) * 100);
+          // var percentComplete = parseInt( (evt.loaded / evt.total * 100), 10);
+          //     console.log(percentComplete);
+         //Do something with upload progress
+         //console.log(percent);
+         }
+       }, false);
+       return xhr;
+     },
+    success: function(d){  
+       if(d=="true"){ 
+         $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-box').hide();
+                }, 100);
+            }, 500);
+         window.open('{{ MEDIA_URL }}rapportinventairestock.pdf');
+         } 
+         
+    },
+    error: function(request, status, err) {
+        alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+    }
+});
+
+      
+}
+ </script>
+
+ {% endblock %}

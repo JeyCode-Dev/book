@@ -1,0 +1,482 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+
+            {% comment %} <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+ {% endcomment %}
+ <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+ 
+    <style>
+
+     .do-scroll{
+        width: 100%;
+        height: 300px;
+        display:-moz-grid;
+        overflow-y: scroll;
+    }
+</style>
+        {% endblock %}
+ {% block title %}
+
+<button style="display:none;" id="btnmodal" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-right">
+
+				  </button>
+      <!-- Modal -->
+  <div class="modal modal-left fade" id="modal-right" tabindex="-1">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="titre">Nouveau Client</h5>
+			<button type="button" class="close" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+            <p>Noms <input type="text" name="nom" id="nom" class="form-control" ></p>
+            <p>Adresse<input type="text" name="adresse" id="adresse" class="form-control" ></p>
+            <p>Catégorie<select style="background: black" name="categorie"  id="categorie" class="form-control">
+                                    <option value="1" >Client</option>
+{#                                    <option value="2" >Client non Aérien</option>#}
+            </select></p>
+
+            <p><button id="ajoutfournisseur" type="button" class="btn btn-outline btn-info mb-5">Ajouter</button></p>
+		  </div>
+
+		</div>
+	  </div>
+	</div>
+  <!-- /.modal -->
+
+         
+          
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Centre Medical</li>
+            <li class="breadcrumb-item active">Pharmacie</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12 container-fluid">
+
+    <h3>
+      Pharmacie
+      </h3>
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+<!--                  <div class="col-sm-2">-->
+<!--                <label>Date Opération</label>-->
+<!--                <input type="date"  id="dateop" required name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >-->
+<!--                  </div>-->
+
+
+                   <div class="col-sm-12">
+								
+								<select name="besoins" id="besoins" required class="form-control select2" >
+                                    <option value="" ></option>
+									{% for i in besoins  %}
+										<option value={{i.code}} >{{ i.location__designation }} - {{ i.user__username}} - {{ i.dateop }}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+<!--                  <div class="col-sm-4">-->
+<!--								<label>Client</label><a href="#" id="addclient"> <span style="Color:red">(Ajouter)</span></a>-->
+<!--								<select name="client" id="client" required class="form-control select2" >-->
+<!--{% for i in fournisseur  %}-->
+<!--										<option value="{{i.tiers}}" >{{ i.nompostnom}}</option>-->
+<!--									{% endfor %}-->
+<!--								</select>-->
+<!--					</div>-->
+
+
+					
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+
+                  <div class="col-sm-3" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5"><span id="btnv" role="status"></span> Valider</button>
+<!--								<button id="supprimerarticle" onclick="supprimerretour()" type="button" class="btn btn-outline btn-danger mb-5">Supprimer</button>-->
+					</div>
+<!--                   <div class="col-sm-2" style="margin-top:22px">-->
+<!--								<button id="newajoutarticle"  type="button" class="btn btn-outline btn-primary mb-5">Nouveau</button>-->
+<!--					</div>-->
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+          <div class="card shadow  mt-5">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Liste Produits</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Produit Id</th>
+                              <th>Produit</th>
+                              <th>Emb</th>
+                              <th>Qte Stock</th>
+                              <th>Qte cmd</th>
+                              <th width="100">Qte Liv</th>
+                              <th>Date</th>
+                                                <th>Patient</th>
+                                                <th>Location fournis.</th>
+        
+
+                                {% comment %} <th>Emb.2</th> {% endcomment %}
+{#									<th>Pcs(Emb3)</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+{##}
+{#                                    #{<th>Emb.3</th>#}
+{#									<th>Pcs</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+                                
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                              <th>#</th>
+                              <th>Produit Id</th>
+                              <th>Produit</th>
+                              <th>Emb</th>
+                              <th>Qte Stock</th>
+                              <th>Qte cmd</th>
+                              <th width="100">Qte Liv</th>
+                              <th>Date</th>
+                                                <th>Patient</th>
+                                                <th>Location fournis.</th>
+
+                                {% comment %} <th>Emb.2</th> {% endcomment %}
+{#									<th>Pcs(Emb3)</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+{##}
+{#                                    #{<th>Emb.3</th>#}
+{#									<th>Pcs</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+                                
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                           
+                            
+                          </tr>
+                           
+                         </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+					<div class="box-body">
+<!--						<span style="color:red;font-size: 20px;" >Total :</span>-->
+<!--                        <span style="color:red;font-size: 20px;" id="txtotal">0</span>-->
+						{% comment %} <div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit Id</th>
+									<th>Produit</th>
+									<th>Emb</th>
+									<th>Qte Stock</th>
+									<th>Qte cmd</th>
+									<th width="100">Qte Liv</th>
+									<th>Date</th>
+                                    <th>Patient</th>
+                                    <th>Location fournis.</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit Id</th>
+									<th>Produit</th>
+									<th>Emb</th>
+									<th>Qte Stock</th>
+									<th>Qte Cmd</th>
+									<th width="100">Qte Liv</th>
+									<th>Date</th>
+									<th>Patient</th>
+									<th>Location fournis.</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div> {% endcomment %}
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            {% comment %} <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script> {% endcomment %}
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+            	 <script>
+                 var idpro=0;
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+               $('#besoins').change(function (e) {
+                
+                   affiche()
+                });
+
+
+                $('#example1').DataTable();
+
+              $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+                          var postData = $(this).serializeArray();
+                          // $('.idcode').each(function(i, obj) {
+                          //        postData.push({name:'idcode',value:$(this).text() });
+                          //    });
+						  //
+                          // $('.qte').each(function(i, obj) {
+                          //        postData.push({name:'qte',value:$(this).val() });
+                          //    });
+
+								$.ajax({
+                        url: '{% url 'centremedical:pharmatie' %}',
+                        type: 'POST',
+                         data:postData,
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Centre Medical',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Centre Medical',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                  impresson($('#besoins').val())
+                                  //location.reload();
+
+
+
+
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+
+
+                        });
+
+            /*
+              $(document).on("change", ".qte", function () {
+
+                    var idcode=$(this).closest('tr').find('.idcode').text()
+                    var qte=$(this).closest('tr').find('.qte').val()
+				    $.ajax({
+                        url: '{% url 'gestionstock:etatbesoin2' %}',
+                        type: 'POST',
+                         data:{
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'idcode': idcode,
+                        'qte': qte
+                    },
+                        async: false,
+                        success: function (data) {
+
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+				});
+            */
+    });
+
+
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#dataTable').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'centremedical:getfacture' %}?besoins="+$('#besoins').val(),
+	"drawCallback": function(settings) {
+		   //do whatever
+		},
+		"initComplete":function( settings, json){
+            //alert(58)
+            // call your function here
+			//oTABLE.column(3).data().cell;
+        },
+    "columns":[
+
+    {"data":'id','render':function (data) {
+
+                    return '<span class="idcode">'+data+'</span>'
+                }},
+    {"data":'article_id'},
+    {"data":'article__designation'},
+    {"data":'emb1'},
+    {"data":'stock'},
+    {"data":'qte'},
+    {"data":'qteliv','render':function (data) {
+
+                    return '<input class="form-control qte" style="background-color: white;color: red" type="text" name="qteliv" id="qteliv" value="'+data+'">'
+                }},
+    {"data":'dateop'},
+    {"data":'location__designation'},
+    {"data":'locationfour__designation'}
+
+    ],
+
+    "bDestroy":true
+    });
+
+    }catch(e){}
+    }
+
+     function impresson(bon){
+
+		   $('#besoins').find('[value="' + bon + '"]').remove();
+		   $('#besoins').val("").change();
+
+                            $('#btnv').attr('class','spinner-border spinner-border-sm mr-2');
+                            var cmp=0;
+
+    $.ajax({
+    url: '{% url 'gestionstock:fac' %}',
+    type: 'POST',
+     data:{
+         'csrfmiddlewaretoken': '{{ csrf_token }}',
+         'bon': bon
+     },
+    success: function(d){
+
+       if(d=="true"){
+        $('#btnv').attr('class','');
+         //window.open('{{ MEDIA_URL }}fac.pdf');
+          {#//pdf#}
+                                    var iframe = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframe.className='pdfIframe'
+                                    document.body.appendChild(iframe);
+                                    iframe.style.display = 'none';
+                                    iframe.onload = function () {
+                                        setTimeout(function () {
+                                            iframe.focus();
+                                            iframe.contentWindow.print(0);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    //add --kiosk-printing icone chrome
+                                    iframe.src = "{{ MEDIA_URL }}facx.pdf";
+
+                                //pdf
+         }
+         //location.reload();
+
+    },
+    error: function(request, status, err) {
+        $('#btnv').attr('class','');
+        alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+    }
+     });
+
+
+}
+
+	/*
+  function qtestock(article,emb){
+    	 $.ajax({
+                        url: '{% url 'gestionstock:getstock' %}',
+                        type: 'GET',
+			 			data:{
+                        'emb': emb,
+                        'article': article
+                    		},
+                        async: true,
+                        success: function (data) {
+                        	return data.qte
+
+                        },error:function (data) {
+							return 'Error'
+                            }
+                        });
+	}
+  */
+ </script>
+
+ {% endblock %}

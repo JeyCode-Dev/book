@@ -1,0 +1,307 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Modifier Stock
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Stock</li>
+            <li class="breadcrumb-item active">Modifier Stock</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+
+
+          
+
+				  	<div class="col-sm-10">
+								<label>N° Entree/Sortie</label>
+                        <select name="mvt" id="mvt" class="form-control select2" >
+                        
+									{% for i in sortielist  %}
+										<option value="{{i.requisition}}" data-ctrl="0" >Sortie :: {{ i.requisition}} - {{ i.destination }} - {{ i.datemvt }}</option>
+									{% endfor %}
+
+									{% for i in entrelist  %}
+										<option value="{{i.requisition}}" data-ctrl="1">Entree :: {{ i.requisition}} - {{ i.location__designation }} - {{ i.datemvt }}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+
+
+
+
+				  </div>
+
+
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table editable-table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+									<th width="70px" >Emb</th>
+                                    <th width="70px">PU</th>
+									<th>Qte</th>
+									<th>Date</th>
+									<th>Location</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+                                    <th width="70px">Emb</th>
+                                    <th width="70px">PU</th>
+
+                                    <th>Qte</th>
+									<th>Date</th>
+									<th>Location</th>
+									<th>Action</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+                     var qte=0;
+                     var idpro=0;
+                     var controleur=0;
+            $(document).ready(function() {
+
+            	var idass=0;
+
+
+
+                 $('.select2').select2();
+ 				 affiche($('#mvt option:selected').data("ctrl"));
+
+
+
+                 $('#mvt').change(function (e) {
+                     affiche($('#mvt option:selected').data("ctrl"));
+
+           });
+
+
+
+                $('#example1').DataTable();
+
+
+
+
+                $(document).on("click", ".btnsave", function () {
+
+                    var idcode=$(this).closest('tr').find('.idcode').text()
+                    var qte=$(this).closest('tr').find('.qte')
+                    var pa=$(this).closest('tr').find('.pa').val()
+
+                     livree(idcode,qte,pa);
+                });
+
+
+              });
+
+            function livree(idass,qte,pa) {
+
+                 if (qte.val()==""){
+                                     $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier la quantitée",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+                 if (pa==""){
+
+                         $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier le prix d'achat",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:modistock' %}",
+                    data: {
+                        "mvt":idass,
+                        "qte":qte.val(),
+                        "prix":pa,
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+            function affiche(id)
+    {
+
+    try{
+
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:modistock' %}?mvt="+$('#mvt').val()+"&ctrl="+id,
+    "columns":[
+
+    {"data":'mvt','render':function (data) {
+
+                    return '<span class="idcode">'+data+'</span>'
+                }},
+    {"data":'article__designation'},
+    {"data":'emballage_id'},
+    {"data":'prix_achat','render':function (data, type, row, meta) {
+                    return '<input class="form-control pa" style="background-color: white;color: black" type="text" name="paliv" id="paliv" value="'+row.prix_achat+'">'
+                }},
+    {"data":'mvt','render':function (data, type, row, meta) {
+						if (id=="0")
+							return '<input class="form-control qte" style="background-color: white;color: red" type="text" name="qteliv" id="qteliv" value="'+row.qte_sortie+'">'
+						else
+							return '<input class="form-control qte" style="background-color: white;color: red" type="text" name="qteliv" id="qteliv" value="'+row.qte_entree+'">'
+
+                }},
+
+    {"data":'datemvt'},
+    {"data":'mvt','render':function (data, type, row, meta) {
+					if (id=="0")
+						return row.destination
+					else
+						return row.location__designation
+                }},
+         {"data":'mvt','render':function (data, type, row, meta) {
+						return '<button class="form-control btnsave" style="color:yellow">Modifier</button>'
+
+                }}
+
+
+    ],
+
+    "bDestroy":true
+    });
+    }catch(e){
+
+    }
+    }
+
+ </script>
+
+ {% endblock %}

@@ -1,0 +1,995 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rapportentreestock" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="59d2d467-ac6a-48bb-a124-3ef7faa4290f">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="adaptersqlserver"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="240"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="749"/>
+	<style name="Table_TH" mode="Opaque" backcolor="rgba(240, 248, 255, 0.0)">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#9DA2A6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset1" uuid="ea3f233c-1e24-42d2-9073-e08a3687b3de">
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="adaptersqlserver"/>
+		<parameter name="stockfood" class="java.lang.Double"/>
+		<parameter name="stocklessi" class="java.lang.Double"/>
+		<parameter name="iddate1" class="java.lang.Integer"/>
+		<parameter name="iddate2" class="java.lang.Integer"/>
+		<queryString language="SQL">
+			<![CDATA[select ISNULL( Sum( valeur-valeur2),0) AS stock,NOMPOSTNOM from(
+
+select sum(valeur)as valeur,sum(valeur2)as valeur2,NOMPOSTNOM from( 
+	 select sum(valeur) as valeur,sum(valeur2) valeur2,NOMPOSTNOM from(
+select (QTEUNIT_ENTREE*dbo."FARTICLE".PRIX_VENTE) as valeur,0 valeur2,NOMPOSTNOM
+FROM dbo."FMVTS"
+	inner join "FTIERS" ON 
+	 "FTIERS"."TIERS" = dbo."FMVTS"."TIERS_ID" 
+	  inner join dbo."FARTICLE" on dbo."FARTICLE".ARTICLE=FMVTS.ARTICLE_ID 
+WHERE dbo."FMVTS"."AJUSTEMENT_ID" IN ('TRFR','DECL')   
+AND dbo."FTIERS"."TYPETIERS" = 2 
+AND dbo."FMVTS"."NDATEMVT" >=   $P{iddate1}  
+	 AND dbo."FMVTS"."NDATEMVT" <=   $P{iddate2})as strf group by NOMPOSTNOM
+
+	 UNION 
+
+	  select sum(valeur) as valeur,sum(valeur2) valeur2,NOMPOSTNOM from(
+	 select 0 valeur,(QTEUNIT_SORTIE*dbo."FARTICLE".PRIX_VENTE) as valeur2,NOMPOSTNOM
+FROM dbo."FMVTS"
+	inner join "FTIERS" ON 
+	 "FTIERS"."TIERS" = dbo."FMVTS"."TIERS_ID" 
+	  inner join dbo."FARTICLE" on dbo."FARTICLE".ARTICLE=FMVTS.ARTICLE_ID 
+WHERE dbo."FMVTS"."AJUSTEMENT_ID" IN ('TRTO')  and   dbo."FMVTS"."LOCATION_ID" not in ('1FIM','2FBM')
+AND dbo."FTIERS"."TYPETIERS" = 2 
+	AND dbo."FMVTS"."NDATEMVT" >=   $P{iddate1}  
+	 AND dbo."FMVTS"."NDATEMVT" <=   $P{iddate2} )as strf group by NOMPOSTNOM
+	 ) as stock group by NOMPOSTNOM
+
+	 
+	 
+	 
+	 ) as stock
+GROUP BY NOMPOSTNOM]]>
+		</queryString>
+		<field name="stock" class="java.lang.Double">
+			<property name="com.jaspersoft.studio.field.label" value="stock"/>
+		</field>
+		<field name="NOMPOSTNOM" class="java.lang.String">
+			<property name="com.jaspersoft.studio.field.label" value="NOMPOSTNOM"/>
+		</field>
+		<variable name="tot" class="java.lang.Double" calculation="Sum">
+			<variableExpression><![CDATA[$F{stock}]]></variableExpression>
+		</variable>
+	</subDataset>
+	<parameter name="libdate1" class="java.lang.String"/>
+	<parameter name="iddate1" class="java.lang.Integer"/>
+	<parameter name="iddate2" class="java.lang.Integer"/>
+	<parameter name="libdate2" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select sum(stock) as stock, sum(achat) as achat,sum(sortie) as sortie,sum(stock2) as stock2,sum(achat2) as achat2,sum(sortie2) as sortie2 from(
+
+
+--somme achat et somme sortie
+select ((select ISNULL(sum(QTEUNIT_ENTREE*Farticle.PRIX_VENTE),0) from FMVTS inner join Farticle on Farticle.ARTICLE=FMVTS.ARTICLE_ID  where Farticle.FAMILLE_ID=1 and FMVTS.LOCATION_ID in('1FIM','2FBM') and NDATEMVT<$P{iddate1}  and FMVTS.ajustement_id in('ACH', 'PAT', 'TRFR', 'INV'))-(select ISNULL(sum(QTEUNIT_SORTIE*Farticle.PRIX_VENTE),0) from FMVTS inner join Farticle on Farticle.ARTICLE=FMVTS.ARTICLE_ID where Farticle.FAMILLE_ID=1  and FMVTS.LOCATION_ID in('1FIM','2FBM') and NDATEMVT<$P{iddate1}  and ajustement_id in('VTE', 'TRTO', 'FACT', 'DECL', 'INV'))) as stock, sum(achat) as achat,sum(sortie) as sortie,0 as stock2,0 as achat2,0 as sortie2 from(
+--sortie
+select sum(achat) as achat,sum(sortie) as sortie from(
+ SELECT 0 as achat,
+	(((select ISNULL(SUM(QTEUNIT_SORTIE),0) from FMVTS inner join FTIERS on FTIERS.TIERS=FMVTS.TIERS_ID where nature='CLIENT' and TYPETIERS in ('1','2') and FMVTS.ARTICLE_ID=FARTICLE.ARTICLE  and  AJUSTEMENT_ID in ( 'TRTO','DECL') and FMVTS.LOCATION_ID  IN ('1FIM','2FBM')  and NDATEMVT  >= $P{iddate1} and NDATEMVT <= $P{iddate2})-(select ISNULL(SUM(QTEUNIT_SORTIE),0) from FMVTS inner join FTIERS on FTIERS.TIERS=FMVTS.TIERS_ID where nature='CLIENT' and TYPETIERS in ('1','2') and FMVTS.ARTICLE_ID=FARTICLE.ARTICLE  and  AJUSTEMENT_ID in ( 'TRTO') and FMVTS.LOCATION_ID  NOT IN ('1FIM','2FBM')  and NDATEMVT  >= $P{iddate1} and NDATEMVT <= $P{iddate2}) ) * FARTICLE.PRIX_VENTE)as sortie
+	 
+FROM FARTICLE
+where FAMILLE_ID=1) as art
+--where sortie>0
+--fin sortie
+union
+--achat
+select sum((ISNULL(FMVTS.qteunit_entree,0)-ISNULL(FMVTS.qteunit_sortie,0))*FARTICLE.PRIX_VENTE) as achat,0 as sortie
+FROM "FARTICLE"
+inner join dbo."FMVTS" on dbo."FARTICLE".ARTICLE="FMVTS".ARTICLE_ID 
+where FAMILLE_ID=1 
+and   "FMVTS".LOCATION_ID in ('1FIM','2FBM')
+and dbo."FMVTS"."AJUSTEMENT_ID" IN ('ACH','PAT','DECL')
+
+AND dbo."FMVTS"."NDATEMVT" >= $P{iddate1}     and dbo."FMVTS"."NDATEMVT" <=   $P{iddate2} 
+--fin achat
+)as sommeachatsortie
+--fin somme achat et somme sortie
+
+-------------------------------------------------union generale
+union
+--somme achat et somme sortie
+select 0 as stock,0 as achat,0 as sortie,((select ISNULL(sum(QTEUNIT_ENTREE*Farticle.PRIX_VENTE),0) from FMVTS inner join Farticle on Farticle.ARTICLE=FMVTS.ARTICLE_ID  where Farticle.FAMILLE_ID=2 and FMVTS.LOCATION_ID in('1FIM','2FBM') and NDATEMVT<$P{iddate1}  and FMVTS.ajustement_id in('ACH', 'PAT', 'TRFR', 'INV'))-(select ISNULL(sum(QTEUNIT_SORTIE*Farticle.PRIX_VENTE),0) from FMVTS inner join Farticle on Farticle.ARTICLE=FMVTS.ARTICLE_ID where Farticle.FAMILLE_ID=2  and FMVTS.LOCATION_ID in('1FIM','2FBM') and NDATEMVT<$P{iddate1}  and ajustement_id in('VTE', 'TRTO', 'FACT', 'DECL', 'INV'))) as stock2,sum(achat) as achat2,sum(sortie) as sortie2 from(
+--sortie
+select sum(achat) as achat,sum(sortie) as sortie from(
+ SELECT 0 as achat,
+	(((select ISNULL(SUM(QTEUNIT_SORTIE),0) from FMVTS inner join FTIERS on FTIERS.TIERS=FMVTS.TIERS_ID where nature='CLIENT' and TYPETIERS in ('1','2') and FMVTS.ARTICLE_ID=FARTICLE.ARTICLE  and  AJUSTEMENT_ID in ( 'TRTO','DECL') and FMVTS.LOCATION_ID  IN ('1FIM','2FBM')  and NDATEMVT  >= $P{iddate1} and NDATEMVT <= $P{iddate2})-(select ISNULL(SUM(QTEUNIT_SORTIE),0) from FMVTS inner join FTIERS on FTIERS.TIERS=FMVTS.TIERS_ID where nature='CLIENT' and TYPETIERS in ('1','2') and FMVTS.ARTICLE_ID=FARTICLE.ARTICLE  and  AJUSTEMENT_ID in ( 'TRTO') and FMVTS.LOCATION_ID  NOT IN ('1FIM','2FBM')  and NDATEMVT  >= $P{iddate1} and NDATEMVT <= $P{iddate2}) ) * FARTICLE.PRIX_VENTE)as sortie
+	 
+FROM FARTICLE
+where FAMILLE_ID=2 ) as art
+--where sortie>0
+--fin sortie
+union
+--achat
+select sum((ISNULL(FMVTS.qteunit_entree,0)-ISNULL(FMVTS.qteunit_sortie,0))*FARTICLE.PRIX_VENTE) as achat,0 as sortie
+FROM "FARTICLE"
+inner join dbo."FMVTS" on dbo."FARTICLE".ARTICLE="FMVTS".ARTICLE_ID 
+where FAMILLE_ID=2 
+and dbo."FMVTS"."AJUSTEMENT_ID" in ('ACH','PAT','DECL')
+and   "FMVTS".LOCATION_ID in ('1FIM','2FBM')
+AND dbo."FMVTS"."NDATEMVT" >=  $P{iddate1}    and dbo."FMVTS"."NDATEMVT" <=   $P{iddate2} 
+--fin achat
+)as sommeachatsortie
+--fin somme achat et somme sortie
+
+) as tempo]]>
+	</queryString>
+	<field name="stock" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="stock"/>
+	</field>
+	<field name="achat" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="achat"/>
+	</field>
+	<field name="sortie" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="sortie"/>
+	</field>
+	<field name="stock2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="stock2"/>
+	</field>
+	<field name="achat2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="achat2"/>
+	</field>
+	<field name="sortie2" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="sortie2"/>
+	</field>
+	<variable name="tot1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{stock}+$F{achat}+$F{stock2}+$F{achat2}]]></variableExpression>
+	</variable>
+	<variable name="tot2" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{sortie}+$F{sortie2}]]></variableExpression>
+	</variable>
+	<variable name="tot3" class="java.lang.Double" calculation="Sum"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="360" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="50" width="534" height="30" backcolor="#999393" uuid="b5e0201a-3a6a-4c59-8006-b6d332d593d9"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TABLEAU DE VARIATION STOCK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="90" width="40" height="20" uuid="738f9846-d674-48d0-ae9d-2fc44fc17d08"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Période]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="120" width="220" height="20" uuid="886245b6-0790-4ad7-8ef1-2fcd6477f9c9"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="140" width="220" height="20" uuid="a9b2985d-8cb6-4000-9fc8-378018fdfd17"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Montant Chiffre d'affaires réalisé* FOOD ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="160" width="220" height="20" uuid="4b9a8d59-8a21-4518-85f6-d05b451415bc"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Montant Chiffre d'affaires Hand + divers]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="180" width="220" height="20" backcolor="#948B8B" uuid="0f934b1c-b7f3-428a-af44-c9735597dc1b"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTANT CHIFFRE D'AFFAIRES REALISE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="230" y="180" width="150" height="20" backcolor="#948B8B" uuid="4d1f37e9-7e76-492e-9db8-9e99984b7f9b"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="380" y="180" width="164" height="20" backcolor="#948B8B" uuid="341dac51-f0d7-40b4-8dcc-7e2e2afea163"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="160" width="164" height="20" uuid="847f1a7b-eab8-49e9-9a05-2cb8885dca8f"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Ca hors redevance aéroportuaire]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="120" width="150" height="20" uuid="11538481-e52c-4bfd-abe6-728f547ba47f"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Montant en $]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="120" width="164" height="20" uuid="a6037a7f-ecc1-45f7-ae90-8c2e6b50599e"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Observation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="140" width="164" height="20" uuid="9471d0dd-6b2e-4474-ac81-68a283a5cd2a"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Ca hors redevance aéroportuaire]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="201" width="220" height="20" uuid="38ef82c4-809f-4b07-a90e-7c0ad03dd143"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Stock initial]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement x="230" y="201" width="150" height="20" uuid="30acedd3-465d-4d03-b70e-9ebf28f25724"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{stock}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="221" width="220" height="20" uuid="893106d1-f2e2-4069-86c7-90054071a2ff"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Achats Matières FOOD du mois*]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement x="230" y="221" width="150" height="20" uuid="1f931b52-bd25-430e-a4d1-7294d7f3d28e"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{achat}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="241" width="220" height="20" uuid="666cd0df-69d9-44a8-a787-00261d867e3e"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Stock initial]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement x="230" y="241" width="150" height="20" uuid="b03f4092-4625-45c8-828d-43e71ebef5d7"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{stock2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="261" width="220" height="20" uuid="56482475-5f8a-444f-95d0-722c3b206336"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false"/>
+				</textElement>
+				<text><![CDATA[Achats Matières et Lessiviels du mois*]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement x="230" y="261" width="150" height="20" uuid="10b721b2-b4a2-4e10-8ae4-f334eb316e1b"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{achat2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="281" width="220" height="20" backcolor="#948B8B" uuid="3067f2ad-aac4-4045-9eed-395169e70b86"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL ACHAT MOIS]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement mode="Opaque" x="230" y="281" width="150" height="20" backcolor="#948B8B" uuid="8aaeaa32-2e3e-43d0-ba82-67aee68e5af3"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{stock}+$F{achat}+$F{stock2}+$F{achat2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="380" y="281" width="164" height="20" backcolor="#948B8B" uuid="0b675b1b-ea1d-483a-bb1c-ac26346b6a81"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="301" width="220" height="20" uuid="c2913ea4-277e-4173-ba74-8178c792bc54"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Valeur consommation matières FOOD du mois*]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement x="230" y="301" width="150" height="20" uuid="6e36bd46-c0fa-4e32-a9da-aa2932682c98"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{sortie}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="321" width="220" height="20" uuid="af426aea-c931-4fb0-bb65-9dedb8518c6f"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Valeur consommation matières+lessiviel]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement x="230" y="321" width="150" height="20" uuid="5419c388-4b3b-4d2a-98cd-54a885d4c41e"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{sortie2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="340" width="220" height="20" backcolor="#948B8B" uuid="57430448-2c6c-49ba-a097-06d2fd8f7a98"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL CONSOMMATION MOIS]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement mode="Opaque" x="230" y="340" width="150" height="20" backcolor="#948B8B" uuid="43aa695c-5e5a-4738-8db7-4dde33c34926"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{sortie}+$F{sortie2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="380" y="340" width="164" height="20" backcolor="#948B8B" uuid="16e4177d-3403-4120-8182-f0cae4421bbb"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="140" width="150" height="20" uuid="88857c99-1c1c-4c3d-918d-109ad98d21b0"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="160" width="150" height="20" uuid="524cb1d8-31d7-40a5-b853-b7bb921e1dd4"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="201" width="164" height="20" uuid="04767ab5-bf01-45bf-92c2-a1536dee67c7"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="221" width="164" height="20" uuid="98b12359-1a37-49cd-a27d-dda55a001038"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="241" width="164" height="20" uuid="519cbf77-5e71-450f-874d-1de0628ca1cb"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="261" width="164" height="20" uuid="20bbabbb-84ea-4b3a-a46f-4706db6b99d1"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="301" width="164" height="20" uuid="5ab9bc7a-da69-41ed-982a-3c92d2e05218"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="321" width="164" height="20" uuid="93dc244a-8c0d-44ed-bd3d-7ef8bd0b7b89"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="10" width="190" height="40" uuid="87f1d095-ffff-42a8-8ff6-9610ecea37b4"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="10" width="344" height="40" uuid="a71fcbdf-8204-4476-94dc-1e20a965e01c"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[FONDEG CATERING CONGO S.A]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="51" y="90" width="60" height="20" uuid="1b75d334-6cf7-412d-914f-ab48f1c9ef81"/>
+				<textFieldExpression><![CDATA[$P{libdate1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="105" y="90" width="20" height="20" uuid="685244ef-2579-4fc7-9a23-ca1d6269586d"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Au]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="121" y="90" width="80" height="20" uuid="ede41da3-2558-4b5d-91e5-e8eca8916a42"/>
+				<textFieldExpression><![CDATA[$P{libdate2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="135">
+			<componentElement>
+				<reportElement x="10" y="0" width="534" height="130" uuid="a59c34f8-35b9-4655-ab7a-3584c47673a0">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset1" uuid="eed42023-58c9-48ac-b61b-15de37b50f8a">
+						<datasetParameter name="stockfood">
+							<datasetParameterExpression><![CDATA[($F{stock}+$F{achat})-$F{sortie}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="stocklessi">
+							<datasetParameterExpression><![CDATA[($F{stock2}+$F{achat2})-$F{sortie2}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="iddate1">
+							<datasetParameterExpression><![CDATA[$P{iddate1}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="iddate2">
+							<datasetParameterExpression><![CDATA[$P{iddate2}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						<returnValue fromVariable="tot" toVariable="tot3"/>
+					</datasetRun>
+					<jr:column width="220" uuid="0afe1f2a-d12e-42f9-b3b0-7bbf395be6b4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Colonne1"/>
+						<jr:tableFooter style="Table_TH" height="80" rowSpan="1">
+							<frame>
+								<reportElement x="0" y="0" width="220" height="80" uuid="d23ac98a-cc0e-4cfe-83fe-6600fef738f3">
+									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+								</reportElement>
+								<staticText>
+									<reportElement x="0" y="0" width="220" height="28" uuid="aa36ee11-a611-4e23-bdb1-7b35249e0704"/>
+									<box>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<textElement verticalAlignment="Middle"/>
+									<text><![CDATA[Valeur stock final matière fin de mois]]></text>
+								</staticText>
+								<staticText>
+									<reportElement x="0" y="28" width="220" height="26" uuid="0ba71052-7fdd-4651-b01b-5460b7a778e2"/>
+									<box>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<textElement verticalAlignment="Middle"/>
+									<text><![CDATA[Valeur stock materiel/lessiviel]]></text>
+								</staticText>
+								<staticText>
+									<reportElement mode="Opaque" x="0" y="54" width="220" height="26" backcolor="#9E9B9B" uuid="3094ab36-93a1-4391-b9c3-87a62fa78f24"/>
+									<box>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<textElement verticalAlignment="Middle">
+										<font isBold="true"/>
+									</textElement>
+									<text><![CDATA[VALEUR STOCK FINAL FIN DE MOIS]]></text>
+								</staticText>
+							</frame>
+						</jr:tableFooter>
+						<jr:columnFooter style="Table_CH" height="20" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="220" height="20" uuid="fde0d174-e310-439b-8fd1-ef2d9608f607"/>
+								<textElement verticalAlignment="Middle"/>
+								<text><![CDATA[VALEUR CONSO HORS ACTIVITE AERIENNE]]></text>
+							</staticText>
+						</jr:columnFooter>
+						<jr:detailCell style="Table_TD" height="20">
+							<textField>
+								<reportElement x="0" y="0" width="220" height="20" uuid="e8e5de63-efb6-4f4c-bc82-627f78a24169"/>
+								<box>
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{NOMPOSTNOM}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="150" uuid="4fafab35-670f-4847-93cc-a5160495baa4">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Colonne2"/>
+						<jr:tableFooter style="Table_TH" height="80" rowSpan="1">
+							<frame>
+								<reportElement x="0" y="0" width="150" height="80" uuid="8831fda6-6d68-4080-b606-62a8576783a0">
+									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+								</reportElement>
+								<textField pattern="#,##0.000">
+									<reportElement x="0" y="0" width="150" height="28" uuid="a786229a-b569-45f2-8d57-ab18fc91ca46"/>
+									<box rightPadding="5">
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<textElement textAlignment="Right" verticalAlignment="Middle"/>
+									<textFieldExpression><![CDATA[$P{stockfood}]]></textFieldExpression>
+								</textField>
+								<textField pattern="#,##0.000">
+									<reportElement x="0" y="28" width="150" height="26" uuid="4b9e73d1-33b2-43dc-a8e9-440ec1935c14"/>
+									<box rightPadding="5">
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<textElement textAlignment="Right" verticalAlignment="Middle"/>
+									<textFieldExpression><![CDATA[$P{stocklessi}]]></textFieldExpression>
+								</textField>
+								<textField pattern="#,##0.000">
+									<reportElement mode="Opaque" x="0" y="54" width="150" height="26" backcolor="#9E9B9B" uuid="1e92f378-5844-41cb-bc40-7eb7003605dd"/>
+									<box rightPadding="5">
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<textElement textAlignment="Right" verticalAlignment="Middle">
+										<font isBold="true"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$P{stockfood}+$P{stocklessi}]]></textFieldExpression>
+								</textField>
+							</frame>
+						</jr:tableFooter>
+						<jr:columnFooter style="Table_CH" height="20" rowSpan="1">
+							<textField pattern="#,##0.000">
+								<reportElement x="0" y="0" width="150" height="20" uuid="7bdad665-3de7-44c3-99b6-8c56754ee899"/>
+								<box rightPadding="5"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{tot}]]></textFieldExpression>
+							</textField>
+						</jr:columnFooter>
+						<jr:detailCell style="Table_TD" height="20">
+							<textField pattern="#,##0.000">
+								<reportElement x="0" y="0" width="150" height="20" uuid="03b005c9-9a2d-49ec-a714-519d6a610afb"/>
+								<box rightPadding="5">
+									<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Right" verticalAlignment="Middle"/>
+								<textFieldExpression><![CDATA[$F{stock}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="165" uuid="39f30731-0d95-41f3-867d-c894f9c1f6e9">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Colonne3"/>
+						<jr:tableFooter style="Table_TH" height="80" rowSpan="1">
+							<frame>
+								<reportElement x="0" y="0" width="165" height="80" uuid="91c6eb7c-2ee7-4922-b4f3-39bae540a124">
+									<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+								</reportElement>
+								<staticText>
+									<reportElement x="0" y="0" width="165" height="28" uuid="c1d36822-21a8-406d-91ee-f9073872855e"/>
+									<box>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<text><![CDATA[]]></text>
+								</staticText>
+								<staticText>
+									<reportElement x="0" y="28" width="165" height="26" uuid="b2161417-5b0e-425d-983f-4cb2170cc9e3"/>
+									<box>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<text><![CDATA[]]></text>
+								</staticText>
+								<staticText>
+									<reportElement x="0" y="54" width="165" height="26" uuid="b02c80d0-187e-4445-9881-abc8ebd78d86"/>
+									<box>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+									<text><![CDATA[]]></text>
+								</staticText>
+							</frame>
+						</jr:tableFooter>
+						<jr:columnFooter style="Table_CH" height="20" rowSpan="1"/>
+						<jr:detailCell style="Table_TD" height="20"/>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="210">
+			<staticText>
+				<reportElement x="10" y="10" width="170" height="30" uuid="b2ef71e1-6187-4787-b3b5-8672082747fe"/>
+				<text><![CDATA[* Prière annexer (liste des) factures]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="50" width="220" height="20" backcolor="#948B8B" uuid="d5155ea9-f4e1-4347-a258-57e527cfcbf6"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSOMMATION NON-AERIENNE]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement mode="Opaque" x="230" y="50" width="150" height="20" backcolor="#948B8B" uuid="1acee30b-7077-46e3-93b8-85ba2f744022"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{tot3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="70" width="220" height="20" backcolor="#807878" uuid="56087d2a-97b9-4f7d-ad85-b859fa1e2cbd"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONSOMMATION AERIENNE]]></text>
+			</staticText>
+			<textField pattern="#,##0.000">
+				<reportElement mode="Opaque" x="230" y="70" width="150" height="20" backcolor="#807878" uuid="d5144533-f30a-460e-a174-6aa9c83d5295"/>
+				<box rightPadding="5">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{sortie}+$F{sortie2})-$V{tot3}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="90" width="220" height="20" backcolor="#FFFFFF" uuid="87602a20-435e-465b-bdb3-7f49d7554390"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[RATIO ESTIME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="230" y="90" width="150" height="20" backcolor="#FFFFFF" uuid="fbc73036-29dc-49d4-9adf-9bf31624cffb"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="110" width="220" height="20" backcolor="#FFFFFF" uuid="623176bf-9e17-461b-8e47-29a7752788df"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CA FOOD ESTIME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="230" y="110" width="150" height="20" backcolor="#FFFFFF" uuid="c374a27b-64c0-4d4e-945a-bea0b20872ee"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="140" width="240" height="20" uuid="d162ccb6-da93-4ecb-8738-eb1193033b85"/>
+				<text><![CDATA[FONDEG CATERING CONGO SA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="152" width="240" height="20" uuid="0c69a77b-d96e-4a59-bc45-312c4b3a608e"/>
+				<text><![CDATA[Aéroport N'DJILI Commune N'SELE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="163" width="240" height="20" uuid="db3a7eed-e09b-4fb6-a1eb-2785ec0cf5b6"/>
+				<text><![CDATA[KINSHASA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="174" width="240" height="20" uuid="32c86ad5-2c18-4421-8dcb-79ef095fc1ec"/>
+				<text><![CDATA[RDC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="138" width="176" height="20" uuid="f068a121-a043-4480-abdc-13945a7b5f27"/>
+				<text><![CDATA[Tél: +243 85485 9944]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="150" width="176" height="20" uuid="de3ff86d-6aa2-4d2a-a129-131b615aa7ec"/>
+				<text><![CDATA[Tél: +243 085929 9889]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="161" width="176" height="20" uuid="04724f83-10d7-47be-a35a-3ee70cd7a35c"/>
+				<text><![CDATA[RCCM: CD/KIN/RCCM/13-B-066]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="172" width="176" height="20" uuid="a7060cc2-f3ca-4105-8f41-548d83dea8b3"/>
+				<text><![CDATA[ID.NAT : 01-856-N58558T A1008392J]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+</jasperReport>

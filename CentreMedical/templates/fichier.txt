@@ -1,0 +1,1457 @@
+/******
+$.ajax({
+  url: '{% url "centremedical:consultation" %}',  // Remplacez par le nom de votre URL
+  type: 'GET',
+  success: function(data) {
+      alert(data.msg);  // Afficher les données retournées
+  },
+  error: function(xhr, status, error) {
+      console.error(error);
+  }
+});
+*********/
+$('#addpt').on('click',function(e){
+    $.ajax({
+        url: '{% url "centremedical:createpatient" %}',  // Remplacez par le nom de votre URL
+        type: 'GET',
+        success: function(data) {
+            alert(data.msg);  // Afficher les données retournées
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+      });
+   })
+
+
+   
+{% comment %} 
+<body class="hold-transition dark-skin dark-sidebar sidebar-mini theme-mix">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo -->
+	  <div class="logo-mini">
+		  <span class="light-logo"><img src="#" alt="logo"></span>
+		  <span class="dark-logo"><img src="#" alt="logo"></span>
+	  </div>
+      <!-- logo-->
+      <div class="logo-lg">
+		  <span class="light-logo"><img src="#" alt="logo"></span>
+	  	  <span class="dark-logo"><img src="#" alt="logo"></span>
+	  </div>
+    </a>
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+	  <div>
+		  <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+			<i class="ti-align-left"></i>
+		  </a>
+
+		  <a href="#" data-provide="fullscreen" class="sidebar-toggle" title="Full Screen">
+			<i class="mdi mdi-crop-free"></i>
+		  </a>
+
+      <a href="#" data-provide="fullscreen" class="sidebar-toggle" title="Full Screen">
+      Bienvenu(e) dans {{request.session.locationuser}}
+      </a>
+
+	  </div>
+
+      <div class="navbar-custom-menu r-side">
+        <ul class="nav navbar-nav">
+
+
+
+		  <!-- User Account-->
+          <li class="dropdown user user-menu">
+
+            <ul class="dropdown-menu animated flipInX">
+
+            </ul>
+          </li>
+
+
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+            <a href="{% url 'admin:index' %}"><i class="fa fa-cog fa-spin"></i></a>
+          </li>
+
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar-->
+    <section class="sidebar">
+
+        <div class="user-profile">
+			<div class="ulogo">
+				 <a href="{% url 'admin:index' %}">
+				  <!-- logo for regular state and mobile devices -->
+				  <h3><b>Centre</b> Medical</h3>
+				</a>
+			</div>
+			<div class="profile-pic">
+
+					<div class="profile-info"><h5 class="mt-15">Salut {{ request.user.username }} </h5>
+						<div class="text-center d-inline-block">
+							 	<a href="{% url 'gestionstock:uncheck' %}" class="link" data-toggle="tooltip" title="" data-original-title="Logout"><i class="ion ion-power"></i></a>
+						</div>
+					</div>
+			</div>
+        </div>
+
+      <!-- sidebar menu-->
+      <ul class="sidebar-menu" data-widget="tree">
+
+        <li class="header nav-small-cap">Menu</li>
+
+		<li>
+          <a href="{% url 'gestionstock:home' %}">
+            <i class="ti-dashboard"></i>
+            <span>Accueil</span>
+          </a>
+        </li>
+
+           <li>
+              <a href="{% url 'gestionstock:etatbesoin2' %}">
+                <i class="ti-files"></i>
+                <span>Etat de besoins</span>
+              </a>
+          </li> 
+          {% if request.session.locationuser == "PHARMACIE" or request.session.locationuser == "MEDICAL" or request.session.locationuser == "RECEPTION" %}
+          <li class="treeview">
+            <a href="#">
+                <i class="ti-agenda"></i>
+                <span>Centre Medical</span>
+                <span class="pull-right-container">
+            <i class="fa fa-angle-right pull-right"></i>
+          </span>
+            </a>
+            <ul class="treeview-menu">
+              {% if request.session.locationuser == "PHARMACIE" %}
+                <li><a href="{% url 'centremedical:createproduit' %}"><i class="ti-more"></i>Création Produit</a></li>
+              {% endif %}
+                {% if request.session.locationuser == "RECEPTION" %}
+                <li><a href="{% url 'centremedical:createpatient' %}"><i class="ti-more"></i>Enregistrement Patient</a></li>
+                {% endif %}
+                {% if request.session.locationuser == "MEDICAL" %}
+                <li><a href="{% url 'centremedical:consultation' %}"><i class="ti-more"></i>Consultation</a></li>
+                <li><a href="{% url 'centremedical:ordonance' %}"><i class="ti-more"></i>Ordonance</a></li>
+                {% endif %}
+{#                  <li><a href="{% url 'gestionstock:entrestockrecettes' %}"><i class="ti-more"></i>Entrée Rec.</a></li>#}
+{#                  <li><a href="{% url 'gestionstock:sortistockrecettes' %}"><i class="ti-more"></i>Facturation</a></li>#}
+{% if request.session.locationuser == "PHARMACIE" %}                
+      <li><a href="{% url 'centremedical:pharmatie' %}"><i class="ti-more"></i>Pharmacie</a></li>
+                <li><a href="#"><i class="ti-more"></i>Rapport</a></li>
+
+{% endif %}
+            </ul>
+        </li>
+        {% endif %} 
+          {% if perms.gestionstock.Produit %}
+          <li class="treeview">
+              <a href="#">
+                <i class="ti-files"></i>
+                <span>Produits</span>
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-right pull-right"></i>
+                </span>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="{% url 'gestionstock:produit' %}"><i class="ti-more"></i>Création Produits</a></li>
+                 {% if perms.gestionstock.changelocation %} <li><a href="{% url 'gestionstock:produitchange' %}"><i class="ti-more"></i>Changer location Produit</a></li> {% endif %}
+    {#            <li><a href="{% url 'gestionstock:travaux' %}"><i class="ti-more"></i>Travaux</a></li>#}
+                <li><a href="{% url 'gestionstock:modiproduit' %}"><i class="ti-more"></i>Modification Prix</a></li>
+              </ul>
+          </li>
+          {% endif %}
+
+      {% if perms.gestionstock.recettesfiche %}
+         <li class="treeview">
+              <a href="#">
+                  <i class="ti-agenda"></i>
+                  <span>Fiche Tech./Plateau</span>
+                  <span class="pull-right-container">
+              <i class="fa fa-angle-right pull-right"></i>
+            </span>
+              </a>
+              <ul class="treeview-menu">
+                  <li><a href="{% url 'gestionstock:production' %}"><i class="ti-more"></i>Création Rec./Plateau</a></li>
+                  <li><a href="{% url 'gestionstock:fichetechnique' %}"><i class="ti-more"></i>Fiche Téchn.</a></li>
+                  <li><a href="{% url 'gestionstock:plat' %}"><i class="ti-more"></i>Plateau</a></li>
+{#                  <li><a href="{% url 'gestionstock:entrestockrecettes' %}"><i class="ti-more"></i>Entrée Rec.</a></li>#}
+{#                  <li><a href="{% url 'gestionstock:sortistockrecettes' %}"><i class="ti-more"></i>Facturation</a></li>#}
+                  <li><a href="{% url 'gestionstock:raprecette' %}"><i class="ti-more"></i>Liste Fiche Tech./Plateau</a></li>
+              </ul>
+          </li> {% endcomment %}
+          {% endif %} 
+
+          {#           {% if perms.gestionstock.Bon_Commande_Externe %}#}
+          {#          <li class="treeview">#}
+          {#          <a href="#">#}
+          {#            <i class="ti-pie-chart"></i>#}
+          {#            <span>Bon de Commande</span>#}
+          {#            <span class="pull-right-container">#}
+          {#              <i class="fa fa-angle-right pull-right"></i>#}
+          {#            </span>#}
+          {#          </a>#}
+          {#          <ul class="treeview-menu">#}
+          {#           <li><a href="{% url 'gestionstock:boncommande' %}"><i class="ti-more"></i>Manuelle</a></li>#}
+          {#           <li><a href="#" onclick="ChargerAppro()"><i id="btnprint" class="ti-more"></i>Auto</a></li>#}
+          {#            <li><a href="{% url 'gestionstock:boncommandemodi' %}"><i class="ti-more"></i>Modifier</a></li>#}
+          {#            <li><a href="#" ><i class="ti-more"></i>Interne</a></li>#}
+          {#          </ul>#}
+          {#        </li>{% endif %}#}
+          
+          
+          {#          <li class="treeview">#}
+          {#          <a href="#">#}
+          {#            <i class="ti-anchor"></i>#}
+          {#            <span>Validation</span>#}
+          {#            <span class="pull-right-container">#}
+          {#              <i class="fa fa-angle-right pull-right"></i>#}
+          {#            </span>#}
+          {#          </a>#}
+          {#          <ul class="treeview-menu">#}
+          {#            <li><a href="{% url 'gestionstock:modiproduitvalid' %}"><i class="ti-more"></i>Prix Produit</a></li>#}
+          {#            <li><a href="{% url 'gestionstock:boncommandevalide' %}"><i class="ti-more"></i>Bon Commande</a></li>#}
+          {#            <li><a href="{% url 'gestionstock:entrestockvalid' %}"><i class="ti-more"></i>Entrer Stock</a></li>#}
+          {#            <li><a href="{% url 'gestionstock:delaiinventaire' %}"><i class="ti-more"></i>Période Inventaire</a></li>#}
+          {#            <li><a href="{% url 'gestionstock:supprimer' %}"><i class="ti-more"></i>Ajustement</a></li>#}
+          {#            <li><a href="{% url 'gestionstock:ajustementpro' %}"><i class="ti-more"></i>Ajustement Produit</a></li>#}
+          {#            <li><a href="{% url 'gestionstock:visualisation' %}"><i class="ti-more"></i>Visualisation</a></li>#}
+          {#          </ul>#}
+          {#        </li>#}
+          
+          {#		<li>#}
+          {#          <a href="{% url 'gestionstock:facture' %}">#}
+          {#            <i class="ti-panel"></i>#}
+          {#            <span>Facturation</span>#}
+          {#          </a>#}
+          {#        </li>#}
+          {##}
+          {#          <li>#}
+          {#          <a href="currency_exchange.html">#}
+          {#            <i class="ti-files"></i>#}
+          {#            <span>Pro forma</span>#}
+          {#          </a>#}
+          {#        </li>#}
+          
+                    {% if perms.gestionstock.stockmenu %}
+                  {% comment %} <li class="treeview">
+                    <a href="#">
+                      <i class="ti-wallet"></i>
+                      <span>Stock</span>
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-right pull-right"></i>
+                      </span>
+                    </a>
+                    <ul class="treeview-menu">
+          
+                      <li class="treeview">
+                        <a href="#">
+                          <i class="ti-files"></i>
+                          <span>Entrée</span>
+                          <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                          </span>
+                        </a>
+                          <ul class="treeview-menu">
+                              <li><a href="{% url 'gestionstock:entrestock' %}"><i class="ti-more"></i>Entrée Normal</a></li>
+                              <li><a href="{% url 'gestionstock:boncommande' %}"><i class="ti-more"></i>Bon commande</a></li>
+                              <li><a href="{% url 'gestionstock:boncommandemodi' %}"><i class="ti-more"></i>Modifier Bon commande</a></li>
+                              <li><a href="{% url 'gestionstock:entrestock2' %}"><i class="ti-more"></i>Entrée avec Bon Cmd</a></li>
+                          </ul>
+                     </li>
+                        <li class="treeview">
+                        <a href="#">
+                          <i class="ti-files"></i>
+                          <span>Sortie</span>
+                          <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                          </span>
+                        </a>
+                          <ul class="treeview-menu">
+                               <li><a href="{% url 'gestionstock:etatbesoin' %}"><i class="ti-more"></i>Transfert </a></li>
+                               <li><a href="{% url 'gestionstock:transfert' %}"><i class="ti-more"></i>Transfert avec Etat Besoins</a></li>
+          {#                     <li><a href="{% url 'gestionstock:retour' %}"><i class="ti-more"></i>Retour Stock</a></li>#}
+                          </ul>
+                     </li>
+          
+          {#              <li><a href="{% url 'gestionstock:supprimer' %}"><i class="ti-more"></i>Ajustement</a></li>#}
+                      <li><a href="{% url 'gestionstock:ajustementpro' %}"><i class="ti-more"></i>Ajustement Produit</a></li>
+          {#            <li><a href="{% url 'gestionstock:modistock' %}"><i class="ti-more"></i>Modifier Stock</a></li>#}
+          
+                    </ul>
+                  </li> {% endcomment %}
+                    {% endif %}{% comment %} 
+          {% if perms.pointvente.facturation %}
+                <li class="treeview">
+                    <a href="#">
+                      <i class="ti-files"></i>
+                      <span>Point de vente</span>
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-right pull-right"></i>
+                      </span>
+                    </a>
+                    <ul class="treeview-menu">
+                      {% if perms.pointvente.facturation %}<li><a href="{% url 'pointvente:commande' %}"><i class="ti-more"></i>Facturation</a></li>{% endif %}
+                      {% if perms.pointvente.reimprimer %}<li><a href="{% url 'pointvente:reimprimer' %}"><i class="ti-more"></i>Reimprimer</a></li>{% endif %}
+                      {% if perms.pointvente.annulation %}<li><a href="{% url 'pointvente:annulation' %}"><i class="ti-more"></i>Annulation</a></li>{% endif %}
+          {#            {% if perms.pointvente.createrecette %}<li><a href="{% url 'pointvente:prosnack' %}"><i class="ti-more"></i>Produit</a></li>{% endif %}#}
+          
+                     {% if perms.pointvente.recettesrapport %}<li class="treeview">
+                        <a href="#">
+                          <i class="ti-files"></i>
+                          <span>Rapport</span>
+                          <span class="pull-right-container">
+                            <i class="fa fa-angle-right pull-right"></i>
+                          </span>
+                        </a>
+                          <ul class="treeview-menu">
+                              {% if perms.pointvente.recettesrapport %}<li><a href="{% url 'pointvente:pointvente' %}"><i class="ti-more"></i>Rap.Ventes Journalières</a></li>{% endif %}
+                              {% if perms.pointvente.recettesrapport %}<li><a href="{% url 'pointvente:pointvente5' %}"><i class="ti-more"></i>Rap.Factures Annulées</a></li>{% endif %}
+          
+                              {% if perms.pointvente.recettesrapportsys %}<li><a href="{% url 'pointvente:synthesepointvente' %}"><i class="ti-more"></i>Synthèse Ventes</a></li>{% endif %}
+                              {% if perms.pointvente.recettesrapportprofit %}<li><a href="{% url 'pointvente:profit' %}"><i class="ti-more"></i>Rap. Profit</a></li>{% endif %}
+                          </ul>
+                     </li>{% endif %}
+          
+          
+          {#            <li><a href="{% url 'pointvente:pointventeliste' %}"><i class="ti-more"></i>Liste Recap. Ventes</a></li>#}
+                    </ul>
+                  </li>{% endif %}
+           {% endcomment %}
+          <!--          <li class="treeview">-->
+          <!--              <a href="#">-->
+          <!--                  <i class="ti-agenda"></i>-->
+          <!--                  <span>Articles</span>-->
+          <!--                  <span class="pull-right-container">-->
+          <!--              <i class="fa fa-angle-right pull-right"></i>-->
+          <!--            </span>-->
+          <!--              </a>-->
+          <!--              <ul class="treeview-menu">-->
+          <!--                  {% if perms.gestionstock.view_recettes %}<li><a href="{% url 'gestionstock:production' %}"><i class="ti-more"></i>Création Article</a></li>{% endif %}-->
+          <!--{#                  {% if perms.gestionstock.view_detailrecettes %}<li><a href="{% url 'gestionstock:fabproduction' %}"><i class="ti-more"></i>Fabrication</a></li>{% endif %}#}-->
+          <!--                  {% if perms.gestionstock.view_stockrecettes %}<li><a href="{% url 'gestionstock:entrestockrecettes' %}"><i class="ti-more"></i>Entrée Stock Article</a></li>{% endif %}-->
+          <!--                  {% if perms.gestionstock.view_recettestocksortie %}<li><a href="{% url 'gestionstock:sortistockrecettes' %}"><i class="ti-more"></i>Facturation</a></li>{% endif %}-->
+          <!--                  {% if perms.gestionstock.view_recettestocksortie %}<li><a href="{% url 'gestionstock:reimprimer' %}"><i class="ti-more"></i>Reimprimer Facture</a></li>{% endif %}-->
+          <!--                  {% if perms.gestionstock.delete_recettestocksortie %}<li><a href="{% url 'gestionstock:annulation' %}"><i class="ti-more"></i>Annulation</a></li>{% endif %}-->
+          <!--                  {% if perms.gestionstock.recettesrapport %}<li><a href="{% url 'gestionstock:pointvente' %}"><i class="ti-more"></i>Rap.Ventes Journalières</a></li>{% endif %}-->
+          <!--                  {% if perms.gestionstock.recettesrapportentree %}<li><a href="{% url 'gestionstock:pointventeentree' %}"><i class="ti-more"></i>Rap.Entree Stock</a></li>{% endif %}-->
+          <!--                     <li><a href="{% url 'gestionstock:rapclient' %}"><i class="ti-more"></i>Rapport Client</a></li>-->
+          <!--                  {% if perms.gestionstock.recettesrapportsys %}<li><a href="{% url 'gestionstock:synthesepointvente' %}"><i class="ti-more"></i>Synthèse Ventes</a></li>{% endif %}-->
+          <!--{#                  <li><a href="{% url 'gestionstock:raprecette' %}"><i class="ti-more"></i>Rapport Rec.</a></li>#}-->
+          <!--              </ul>-->
+          <!--          </li>-->
+                       
+          {% comment %} 
+                    {% if perms.gestionstock.auditmenu %}
+                  <li class="treeview">
+                    <a href="#">
+                      <i class="ti-stats-up"></i>
+                      <span>Audit</span>
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-right pull-right"></i>
+                      </span>
+                    </a>
+                    <ul class="treeview-menu">
+                      <li><a href="{% url 'gestionstock:rapportlistepriseinventaire' %}" id=""><i class="ti-more"></i>Prise Inventaire</a></li>
+                      <li><a href="{% url 'gestionstock:saisirphysique' %}"><i class="ti-more"></i>Saisir Stock Physique</a></li>
+                      <li><a href="{% url 'gestionstock:rapportlogiquephysique' %}"><i class="ti-more"></i>Rapport Stock Physique/Logique</a></li>
+                      <li><a href="{% url 'gestionstock:misestockinventaire' %}"><i class="ti-more"></i>Mise à Jour Stock après Invent.</a></li>
+                      <li><a href="{% url 'gestionstock:inventaire' %}"><i class="ti-more"></i>Inventaire</a></li>
+          
+                    </ul>
+                  </li>
+                    {% endif %}
+                     {% if perms.gestionstock.rapportmenu %}
+                    <li class="treeview">
+                    <a href="#">
+                      <i class="ti-bar-chart"></i>
+                      <span>Rapports</span>
+                      <span class="pull-right-container">
+                        <i class="fa fa-angle-right pull-right"></i>
+                      </span>
+                    </a>
+                    <ul class="treeview-menu">
+                      <li><a href="{% url 'gestionstock:fichiers' %}"><i class="ti-more"></i>Fichiers</a></li>
+                      <li><a href="{% url 'gestionstock:rapboncommande' %}"><i class="ti-more"></i>Bon Commande</a></li>
+          {#			<li><a href="{% url 'gestionstock:rapbonlivraison' %}"><i class="ti-more"></i>Bon Livraison</a></li>#}
+                      <li><a href="{% url 'gestionstock:rapstock' %}"><i class="ti-more"></i>Rapport Stock</a></li>
+          {#			<li><a href="{% url 'gestionstock:rapvariation' %}"><i class="ti-more"></i>Variation Stock</a></li>#}
+          {#			<li><a href="{% url 'gestionstock:rapclient' %}"><i class="ti-more"></i>Rapport Client</a></li>#}
+                      <li><a href="{% url 'gestionstock:rapsortie' %}"><i class="ti-more"></i>Rapport Sortie</a></li>
+          {#			<li><a href="{% url 'gestionstock:rapsortiefull' %}"><i class="ti-more"></i>Rapport Sortie Full</a></li>#}
+                      <li><a href="{% url 'gestionstock:rapachat' %}"><i class="ti-more"></i>Rapport Entrée</a></li>
+          <!--			<li><a href="{% url 'gestionstock:rapfournisseur' %}"><i class="ti-more"></i>Rapport Fournisseur</a></li>-->
+                      <li><a href="{% url 'gestionstock:rapmvtproduit' %}"><i class="ti-more"></i>Mouvement Produit</a></li>
+                      <li><a href="{% url 'gestionstock:rapinventairethéorique' %}"><i class="ti-more"></i>Inventaire Théorique</a></li>
+                      <li><a href="{% url 'gestionstock:rapinventairethéoriqueval' %}"><i class="ti-more"></i>Inventaire Théorique Valorisé</a></li>
+                      <li><a href="{% url 'gestionstock:rapclientco' %}"><i class="ti-more"></i>Consommations Clients</a></li>
+          
+                    </ul>
+                  </li>
+                    {% endif %}
+           {% endcomment %}
+                </ul>
+              </section>
+            </aside>
+          
+          
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <div class="container-full">
+                  <!-- Content Header (Page header) -->
+                  <div class="content-header">
+                 {% block title %}
+                   
+                      
+          
+                  {% endblock %}
+                      
+                  </div>
+          
+          
+                  <!-- Main content -->
+                  <section class="content">
+                        <div class="row">
+                    {% block content %}
+          
+          
+                      {% if request.user.is_superuser %}
+          {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+              <li {% if message.tags %} class="btn btn-danger"{% endif %}>{{ message }}</li>
+              {% endfor %}
+          </ul>
+          {% endif %}{% comment %} 
+                      <div class="row mt-30">
+                  <div class="col-12 col-md-6 col-lg-4">
+                  <div class="box box-body bg-hexagons-dark pull-up" >
+                    <div class="media align-items-center p-0">
+                    <div class="text-center">
+                      <a href="#"><i class="cc BTC mr-5" title="BTC"></i></a>
+                    </div>
+                    <div>
+                      <h3 class="no-margin">Produits</h3>
+                    </div>
+                    </div>
+                    <div class="flexbox align-items-center mt-25">
+                    <div>
+                      <p class="no-margin" ><span class="text-gray"></span> <span class="text-info"></span></p>
+                    </div>
+                    <div class="text-right">
+                      <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totproduit }}</span></p>
+                    </div>
+                    </div>
+                  </div>
+                  </div>
+                          <div class="col-12 col-md-12 col-lg-8">
+                  <div class="box box-body bg-hexagons-dark pull-up" >
+                    <div class="media align-items-center p-0">
+                    <div class="text-center">
+                      <a href="#"><i class="cc ETH mr-5" title="ETH"></i></a>
+                    </div>
+                    <div>
+                      <h3 class="no-margin">Vente du Jour</h3>
+                    </div>
+                    </div>
+                    <div class="flexbox align-items-center mt-25">
+                    <div>
+                      <p class="no-margin"><span class="text-gray"></span> <span class="text-info"></span></p>
+                    </div>
+                        {% for foo in totfac %}
+                        <div class="text-right">
+                      <p class="no-margin" style="font-size: 40px">{{ foo.destination }} : <span class="text-success" style="font-size: 40px">{{ foo.t }} CDF</span></p>
+                    </div>
+                        {% endfor %}
+                        
+          
+                    </div>
+                  </div>
+                  </div>
+          
+          {#                 <div class="col-12 col-md-6 col-lg-4">#}
+          {#        <div class="box box-body bg-hexagons-dark pull-up" style="background: #3c763d">#}
+          {#          <div class="media align-items-center p-0">#}
+          {#          <div class="text-center">#}
+          {#            <a href="{% url 'gestionstock:listappro' %}"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+          {#          </div>#}
+          {#          <div>#}
+          {#            <h3 class="no-margin">Etat de besoins</h3>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#          <div class="flexbox align-items-center mt-25">#}
+          {#          <div>#}
+          {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+          {#          </div>#}
+          {#          <div class="text-right">#}
+          {#            <p class="no-margin"><span class="text-white" style="font-size: 40px">40</span></p>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#        </div>#}
+          {#        </div>#}
+           <div class="col-6 col-md-6 col-lg-6" >
+          
+                  <div class="box box-body bg-hexagons-dark pull-up" style="background: #6a6a6a">
+          
+                    <div class="media align-items-center p-0">
+                    <div class="text-center">
+                      <a href="#"><i class="cc XRP mr-5" title="XRP"></i></a>
+                    </div>
+                    <div>
+                      <h3 class="no-margin">Produit en alerte stock</h3>
+                    </div>
+                    </div>
+                   <div class="table-responsive">
+                                    <table id="example2stock" class="table table-bordered table-striped">
+                                      <thead style="background:gray">
+                                          <tr>
+                                              <th>#</th>
+                                              <th>Désignation</th>
+                                              <th>Emballage</th>
+                                              <th>Qte Stock</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+          
+          
+                                      </tbody>
+          
+                                    </table>
+                                  </div>
+          
+                  </div>
+          
+                  </div>
+           <div class="col-6 col-md-6 col-lg-6" >
+          
+                  <div class="box box-body bg-hexagons-dark pull-up" style="background: #6a6a6a">
+          
+                    <div class="media align-items-center p-0">
+                    <div class="text-center">
+                      <a href="#"><i class="cc XRP mr-5" title="XRP"></i></a>
+                    </div>
+                    <div>
+                      <h3 class="no-margin">Produit en Peremption</h3>
+                    </div>
+                    </div>
+                   <div class="table-responsive">
+                                    <table id="example2stock1" class="table table-bordered table-striped">
+                                      <thead style="background:gray">
+                                          <tr>
+                                              <th>#</th>
+                                              <th>Désignation</th>
+                                              <th>Emballage</th>
+                                              <th>Date</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+          
+          
+                                      </tbody>
+          
+                                    </table>
+                                  </div>
+          
+                  </div>
+          
+                  </div> {% endcomment %}
+          
+          {# <div class="col-6 col-md-6 col-lg-6">#}
+          {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+          {#          <div class="media align-items-center p-0">#}
+          {#          <div class="text-center">#}
+          {#            <a href="#"><i class="cc DASH mr-5" title="DASH"></i></a>#}
+          {#          </div>#}
+          {#          <div>#}
+          {#            <h3 class="no-margin">Les 6 derniers Bon de Livraison</h3>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#          <div class="table-responsive">#}
+          {#						  <table id="example1bonlivraison" class="table table-bordered table-striped">#}
+          {#							<thead style="background:gray">#}
+          {#								<tr>#}
+          {#									<th>#</th>#}
+          {#									<th>Date</th>#}
+          {#									<th>Client</th>#}
+          {#									<th>Devise</th>#}
+          {#									<th>Total</th>#}
+          {#								</tr>#}
+          {#							</thead>#}
+          {#							<tbody>#}
+          {##}
+          {##}
+          {#							</tbody>#}
+          {##}
+          {#						  </table>#}
+          {#						</div>#}
+          {#        </div>#}
+          {#        </div>#}
+          <!--<div class="col-12 col-md-6 col-lg-4">-->
+          <!--        <div class="box box-body bg-hexagons-dark pull-up" >-->
+          <!--          <div class="media align-items-center p-0">-->
+          <!--          <div class="text-center">-->
+          <!--            <a href="#"><i class="cc LTC mr-5" title="LTC"></i></a>-->
+          <!--          </div>-->
+          <!--          <div>-->
+          <!--            <h3 class="no-margin">Articles</h3>-->
+          <!--          </div>-->
+          <!--          </div>-->
+          <!--          <div class="flexbox align-items-center mt-25">-->
+          <!--          <div>-->
+          <!--            <p class="no-margin"><span class="text-gray"></span> <span class="text-info"></span></p>-->
+          <!--          </div>-->
+          <!--          <div class="text-right">-->
+          <!--            <p class="no-margin"><span class="text-danger" style="font-size: 40px">{{ totarticl }}</span></p>-->
+          <!--          </div>-->
+          <!--          </div>-->
+          <!--        </div>-->
+          <!--        </div>-->
+          <!--       <div class="col-12 col-md-6 col-lg-4">-->
+          <!--        <div class="box box-body bg-hexagons-dark pull-up" >-->
+          <!--          <div class="media align-items-center p-0">-->
+          <!--          <div class="text-center">-->
+          <!--            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>-->
+          <!--          </div>-->
+          <!--          <div>-->
+          <!--            <h3 class="no-margin">Gros Clients</h3>-->
+          <!--          </div>-->
+          <!--          </div>-->
+          <!--          <div class="flexbox align-items-center mt-25">-->
+          <!--          <div>-->
+          <!--            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>-->
+          <!--          </div>-->
+          <!--          <div class="text-right">-->
+          <!--            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>-->
+          <!--          </div>-->
+          <!--          </div>-->
+          <!--        </div>-->
+          <!--        </div>-->
+          
+          
+          {#            <div class="col-12 col-md-6 col-lg-3">#}
+          {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+          {#          <div class="media align-items-center p-0">#}
+          {#          <div class="text-center">#}
+          {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+          {#          </div>#}
+          {#          <div>#}
+          {#            <h3 class="no-margin">Qte Initiale Matière</h3>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#          <div class="flexbox align-items-center mt-25">#}
+          {#          <div>#}
+          {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+          {#          </div>#}
+          {#          <div class="text-right">#}
+          {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#        </div>#}
+          {#        </div>#}
+          {#            <div class="col-12 col-md-6 col-lg-3">#}
+          {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+          {#          <div class="media align-items-center p-0">#}
+          {#          <div class="text-center">#}
+          {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+          {#          </div>#}
+          {#          <div>#}
+          {#            <h3 class="no-margin">Qte Entrant Matière</h3>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#          <div class="flexbox align-items-center mt-25">#}
+          {#          <div>#}
+          {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+          {#          </div>#}
+          {#          <div class="text-right">#}
+          {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#        </div>#}
+          {#        </div>#}
+          {#            <div class="col-12 col-md-6 col-lg-3">#}
+          {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+          {#          <div class="media align-items-center p-0">#}
+          {#          <div class="text-center">#}
+          {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+          {#          </div>#}
+          {#          <div>#}
+          {#            <h3 class="no-margin">Qte Sortant Matière</h3>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#          <div class="flexbox align-items-center mt-25">#}
+          {#          <div>#}
+          {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+          {#          </div>#}
+          {#          <div class="text-right">#}
+          {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#        </div>#}
+          {#        </div>#}
+          {#            <div class="col-12 col-md-6 col-lg-3">#}
+          {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+          {#          <div class="media align-items-center p-0">#}
+          {#          <div class="text-center">#}
+          {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+          {#          </div>#}
+          {#          <div>#}
+          {#            <h3 class="no-margin">Qte Finale Matière</h3>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#          <div class="flexbox align-items-center mt-25">#}
+          {#          <div>#}
+          {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+          {#          </div>#}
+          {#          <div class="text-right">#}
+          {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+          {#          </div>#}
+          {#          </div>#}
+          {#        </div>#}
+          {#        </div>#}
+
+
+
+
+          <body class="hold-transition dark-skin dark-sidebar sidebar-mini theme-mix">
+            <!-- Site wrapper -->
+            <div class="wrapper">
+            
+              <header class="main-header">
+                <!-- Logo -->
+                <a href="#" class="logo">
+                  <!-- mini logo -->
+                  <div class="logo-mini">
+                      <span class="light-logo"><img src="#" alt="logo"></span>
+                      <span class="dark-logo"><img src="#" alt="logo"></span>
+                  </div>
+                  <!-- logo-->
+                  <div class="logo-lg">
+                      <span class="light-logo"><img src="#" alt="logo"></span>
+                        <span class="dark-logo"><img src="#" alt="logo"></span>
+                  </div>
+                </a>
+                <!-- Header Navbar -->
+                <nav class="navbar navbar-static-top">
+                  <!-- Sidebar toggle button-->
+                  <div>
+                      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <i class="ti-align-left"></i>
+                      </a>
+            
+                      <a href="#" data-provide="fullscreen" class="sidebar-toggle" title="Full Screen">
+                        <i class="mdi mdi-crop-free"></i>
+                      </a>
+            
+                  <a href="#" data-provide="fullscreen" class="sidebar-toggle" title="Full Screen">
+                  Bienvenu(e) dans {{request.session.locationuser}}
+                  </a>
+            
+                  </div>
+            
+                  <div class="navbar-custom-menu r-side">
+                    <ul class="nav navbar-nav">
+            
+            
+            
+                      <!-- User Account-->
+                      <li class="dropdown user user-menu">
+            
+                        <ul class="dropdown-menu animated flipInX">
+            
+                        </ul>
+                      </li>
+            
+            
+                      <!-- Control Sidebar Toggle Button -->
+                      <li>
+                        <a href="{% url 'admin:index' %}"><i class="fa fa-cog fa-spin"></i></a>
+                      </li>
+            
+                    </ul>
+                  </div>
+                </nav>
+              </header>
+            
+              <!-- Left side column. contains the logo and sidebar -->
+              <aside class="main-sidebar">
+                <!-- sidebar-->
+                <section class="sidebar">
+            
+                    <div class="user-profile">
+                        <div class="ulogo">
+                             <a href="{% url 'admin:index' %}">
+                              <!-- logo for regular state and mobile devices -->
+                              <h3><b>Gestion</b> Stock</h3>
+                            </a>
+                        </div>
+                        <div class="profile-pic">
+            
+                                <div class="profile-info"><h5 class="mt-15">Salut {{ request.user.username }} </h5>
+                                    <div class="text-center d-inline-block">
+                                             <a href="{% url 'gestionstock:uncheck' %}" class="link" data-toggle="tooltip" title="" data-original-title="Logout"><i class="ion ion-power"></i></a>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+            
+                  <!-- sidebar menu-->
+                  <ul class="sidebar-menu" data-widget="tree">
+            
+                    <li class="header nav-small-cap">Menu</li>
+            
+                    <li>
+                      <a href="{% url 'gestionstock:home' %}">
+                        <i class="ti-dashboard"></i>
+                        <span>Accueil</span>
+                      </a>
+                    </li>
+            
+                      <li>
+                          <a href="{% url 'gestionstock:etatbesoin2' %}">
+                            <i class="ti-files"></i>
+                            <span>Etat de besoins</span>
+                          </a>
+                      </li>
+                      {% if request.session.locationuser == "PHARMACIE" or request.session.locationuser == "MEDICAL" or request.session.locationuser == "RECEPTION" %}
+                      <li class="treeview">
+                        <a href="#">
+                            <i class="ti-agenda"></i>
+                            <span>Centre Medical</span>
+                            <span class="pull-right-container">
+                        <i class="fa fa-angle-right pull-right"></i>
+                      </span>
+                        </a>
+                        <ul class="treeview-menu">
+                          {% if request.session.locationuser == "PHARMACIE" %}
+                            <li><a href="{% url 'centremedical:createproduit' %}"><i class="ti-more"></i>Création Produit</a></li>
+                          {% endif %}
+                            {% if request.session.locationuser == "RECEPTION" %}
+                            <li><a href="{% url 'centremedical:createpatient' %}"><i class="ti-more"></i>Enregistrement Patient</a></li>
+                            {% endif %}
+                            {% if request.session.locationuser == "MEDICAL" %}
+                            <li><a href="{% url 'centremedical:consultation' %}"><i class="ti-more"></i>Consultation</a></li>
+                            <li><a href="{% url 'centremedical:ordonance' %}"><i class="ti-more"></i>Ordonance</a></li>
+                            {% endif %}
+            {#                  <li><a href="{% url 'gestionstock:entrestockrecettes' %}"><i class="ti-more"></i>Entrée Rec.</a></li>#}
+            {#                  <li><a href="{% url 'gestionstock:sortistockrecettes' %}"><i class="ti-more"></i>Facturation</a></li>#}
+            {% if request.session.locationuser == "PHARMACIE" %}                
+                  <li><a href="{% url 'centremedical:pharmatie' %}"><i class="ti-more"></i>Pharmacie</a></li>
+                            <li><a href="#"><i class="ti-more"></i>Rapport</a></li>
+            
+            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
+                      {% if perms.gestionstock.Produit %}
+                      <li class="treeview">
+                          <a href="#">
+                            <i class="ti-files"></i>
+                            <span>Produits</span>
+                            <span class="pull-right-container">
+                              <i class="fa fa-angle-right pull-right"></i>
+                            </span>
+                          </a>
+                          <ul class="treeview-menu">
+                            <li><a href="{% url 'gestionstock:produit' %}"><i class="ti-more"></i>Création Produits</a></li>
+                             {% if perms.gestionstock.changelocation %} <li><a href="{% url 'gestionstock:produitchange' %}"><i class="ti-more"></i>Changer location Produit</a></li> {% endif %}
+                {#            <li><a href="{% url 'gestionstock:travaux' %}"><i class="ti-more"></i>Travaux</a></li>#}
+                            <li><a href="{% url 'gestionstock:modiproduit' %}"><i class="ti-more"></i>Modification Prix</a></li>
+                          </ul>
+                      </li>
+                      {% endif %}
+            
+                  {% if perms.gestionstock.recettesfiche %}
+                     <li class="treeview">
+                          <a href="#">
+                              <i class="ti-agenda"></i>
+                              <span>Fiche Tech./Plateau</span>
+                              <span class="pull-right-container">
+                          <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                          </a>
+                          <ul class="treeview-menu">
+                              <li><a href="{% url 'gestionstock:production' %}"><i class="ti-more"></i>Création Rec./Plateau</a></li>
+                              <li><a href="{% url 'gestionstock:fichetechnique' %}"><i class="ti-more"></i>Fiche Téchn.</a></li>
+                              <li><a href="{% url 'gestionstock:plat' %}"><i class="ti-more"></i>Plateau</a></li>
+            {#                  <li><a href="{% url 'gestionstock:entrestockrecettes' %}"><i class="ti-more"></i>Entrée Rec.</a></li>#}
+            {#                  <li><a href="{% url 'gestionstock:sortistockrecettes' %}"><i class="ti-more"></i>Facturation</a></li>#}
+                              <li><a href="{% url 'gestionstock:raprecette' %}"><i class="ti-more"></i>Liste Fiche Tech./Plateau</a></li>
+                          </ul>
+                      </li>
+                  {% endif %}
+            
+            {#           {% if perms.gestionstock.Bon_Commande_Externe %}#}
+            {#          <li class="treeview">#}
+            {#          <a href="#">#}
+            {#            <i class="ti-pie-chart"></i>#}
+            {#            <span>Bon de Commande</span>#}
+            {#            <span class="pull-right-container">#}
+            {#              <i class="fa fa-angle-right pull-right"></i>#}
+            {#            </span>#}
+            {#          </a>#}
+            {#          <ul class="treeview-menu">#}
+            {#           <li><a href="{% url 'gestionstock:boncommande' %}"><i class="ti-more"></i>Manuelle</a></li>#}
+            {#           <li><a href="#" onclick="ChargerAppro()"><i id="btnprint" class="ti-more"></i>Auto</a></li>#}
+            {#            <li><a href="{% url 'gestionstock:boncommandemodi' %}"><i class="ti-more"></i>Modifier</a></li>#}
+            {#            <li><a href="#" ><i class="ti-more"></i>Interne</a></li>#}
+            {#          </ul>#}
+            {#        </li>{% endif %}#}
+            
+            
+            {#          <li class="treeview">#}
+            {#          <a href="#">#}
+            {#            <i class="ti-anchor"></i>#}
+            {#            <span>Validation</span>#}
+            {#            <span class="pull-right-container">#}
+            {#              <i class="fa fa-angle-right pull-right"></i>#}
+            {#            </span>#}
+            {#          </a>#}
+            {#          <ul class="treeview-menu">#}
+            {#            <li><a href="{% url 'gestionstock:modiproduitvalid' %}"><i class="ti-more"></i>Prix Produit</a></li>#}
+            {#            <li><a href="{% url 'gestionstock:boncommandevalide' %}"><i class="ti-more"></i>Bon Commande</a></li>#}
+            {#            <li><a href="{% url 'gestionstock:entrestockvalid' %}"><i class="ti-more"></i>Entrer Stock</a></li>#}
+            {#            <li><a href="{% url 'gestionstock:delaiinventaire' %}"><i class="ti-more"></i>Période Inventaire</a></li>#}
+            {#            <li><a href="{% url 'gestionstock:supprimer' %}"><i class="ti-more"></i>Ajustement</a></li>#}
+            {#            <li><a href="{% url 'gestionstock:ajustementpro' %}"><i class="ti-more"></i>Ajustement Produit</a></li>#}
+            {#            <li><a href="{% url 'gestionstock:visualisation' %}"><i class="ti-more"></i>Visualisation</a></li>#}
+            {#          </ul>#}
+            {#        </li>#}
+            
+            {#		<li>#}
+            {#          <a href="{% url 'gestionstock:facture' %}">#}
+            {#            <i class="ti-panel"></i>#}
+            {#            <span>Facturation</span>#}
+            {#          </a>#}
+            {#        </li>#}
+            {##}
+            {#          <li>#}
+            {#          <a href="currency_exchange.html">#}
+            {#            <i class="ti-files"></i>#}
+            {#            <span>Pro forma</span>#}
+            {#          </a>#}
+            {#        </li>#}
+            
+                      {% if perms.gestionstock.stockmenu %}
+                    <li class="treeview">
+                      <a href="#">
+                        <i class="ti-wallet"></i>
+                        <span>Stock</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                      </a>
+                      <ul class="treeview-menu">
+            
+                        <li class="treeview">
+                          <a href="#">
+                            <i class="ti-files"></i>
+                            <span>Entrée</span>
+                            <span class="pull-right-container">
+                              <i class="fa fa-angle-right pull-right"></i>
+                            </span>
+                          </a>
+                            <ul class="treeview-menu">
+                                <li><a href="{% url 'gestionstock:entrestock' %}"><i class="ti-more"></i>Entrée Normal</a></li>
+                                <li><a href="{% url 'gestionstock:boncommande' %}"><i class="ti-more"></i>Bon commande</a></li>
+                                <li><a href="{% url 'gestionstock:boncommandemodi' %}"><i class="ti-more"></i>Modifier Bon commande</a></li>
+                                <li><a href="{% url 'gestionstock:entrestock2' %}"><i class="ti-more"></i>Entrée avec Bon Cmd</a></li>
+                            </ul>
+                       </li>
+                          <li class="treeview">
+                          <a href="#">
+                            <i class="ti-files"></i>
+                            <span>Sortie</span>
+                            <span class="pull-right-container">
+                              <i class="fa fa-angle-right pull-right"></i>
+                            </span>
+                          </a>
+                            <ul class="treeview-menu">
+                                 <li><a href="{% url 'gestionstock:etatbesoin' %}"><i class="ti-more"></i>Transfert </a></li>
+                                 <li><a href="{% url 'gestionstock:transfert' %}"><i class="ti-more"></i>Transfert avec Etat Besoins</a></li>
+            {#                     <li><a href="{% url 'gestionstock:retour' %}"><i class="ti-more"></i>Retour Stock</a></li>#}
+                            </ul>
+                       </li>
+            
+            {#              <li><a href="{% url 'gestionstock:supprimer' %}"><i class="ti-more"></i>Ajustement</a></li>#}
+                        <li><a href="{% url 'gestionstock:ajustementpro' %}"><i class="ti-more"></i>Ajustement Produit</a></li>
+            {#            <li><a href="{% url 'gestionstock:modistock' %}"><i class="ti-more"></i>Modifier Stock</a></li>#}
+            
+                      </ul>
+                    </li>
+                      {% endif %}
+            {% if perms.pointvente.facturation %}
+                  <li class="treeview">
+                      <a href="#">
+                        <i class="ti-files"></i>
+                        <span>Point de vente</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                      </a>
+                      <ul class="treeview-menu">
+                        {% if perms.pointvente.facturation %}<li><a href="{% url 'pointvente:commande' %}"><i class="ti-more"></i>Facturation</a></li>{% endif %}
+                        {% if perms.pointvente.reimprimer %}<li><a href="{% url 'pointvente:reimprimer' %}"><i class="ti-more"></i>Reimprimer</a></li>{% endif %}
+                        {% if perms.pointvente.annulation %}<li><a href="{% url 'pointvente:annulation' %}"><i class="ti-more"></i>Annulation</a></li>{% endif %}
+            {#            {% if perms.pointvente.createrecette %}<li><a href="{% url 'pointvente:prosnack' %}"><i class="ti-more"></i>Produit</a></li>{% endif %}#}
+            
+                       {% if perms.pointvente.recettesrapport %}<li class="treeview">
+                          <a href="#">
+                            <i class="ti-files"></i>
+                            <span>Rapport</span>
+                            <span class="pull-right-container">
+                              <i class="fa fa-angle-right pull-right"></i>
+                            </span>
+                          </a>
+                            <ul class="treeview-menu">
+                                {% if perms.pointvente.recettesrapport %}<li><a href="{% url 'pointvente:pointvente' %}"><i class="ti-more"></i>Rap.Ventes Journalières</a></li>{% endif %}
+                                {% if perms.pointvente.recettesrapport %}<li><a href="{% url 'pointvente:pointvente5' %}"><i class="ti-more"></i>Rap.Factures Annulées</a></li>{% endif %}
+            
+                                {% if perms.pointvente.recettesrapportsys %}<li><a href="{% url 'pointvente:synthesepointvente' %}"><i class="ti-more"></i>Synthèse Ventes</a></li>{% endif %}
+                                {% if perms.pointvente.recettesrapportprofit %}<li><a href="{% url 'pointvente:profit' %}"><i class="ti-more"></i>Rap. Profit</a></li>{% endif %}
+                            </ul>
+                       </li>{% endif %}
+            
+            
+            {#            <li><a href="{% url 'pointvente:pointventeliste' %}"><i class="ti-more"></i>Liste Recap. Ventes</a></li>#}
+                      </ul>
+                    </li>{% endif %}
+            
+            <!--          <li class="treeview">-->
+            <!--              <a href="#">-->
+            <!--                  <i class="ti-agenda"></i>-->
+            <!--                  <span>Articles</span>-->
+            <!--                  <span class="pull-right-container">-->
+            <!--              <i class="fa fa-angle-right pull-right"></i>-->
+            <!--            </span>-->
+            <!--              </a>-->
+            <!--              <ul class="treeview-menu">-->
+            <!--                  {% if perms.gestionstock.view_recettes %}<li><a href="{% url 'gestionstock:production' %}"><i class="ti-more"></i>Création Article</a></li>{% endif %}-->
+            <!--{#                  {% if perms.gestionstock.view_detailrecettes %}<li><a href="{% url 'gestionstock:fabproduction' %}"><i class="ti-more"></i>Fabrication</a></li>{% endif %}#}-->
+            <!--                  {% if perms.gestionstock.view_stockrecettes %}<li><a href="{% url 'gestionstock:entrestockrecettes' %}"><i class="ti-more"></i>Entrée Stock Article</a></li>{% endif %}-->
+            <!--                  {% if perms.gestionstock.view_recettestocksortie %}<li><a href="{% url 'gestionstock:sortistockrecettes' %}"><i class="ti-more"></i>Facturation</a></li>{% endif %}-->
+            <!--                  {% if perms.gestionstock.view_recettestocksortie %}<li><a href="{% url 'gestionstock:reimprimer' %}"><i class="ti-more"></i>Reimprimer Facture</a></li>{% endif %}-->
+            <!--                  {% if perms.gestionstock.delete_recettestocksortie %}<li><a href="{% url 'gestionstock:annulation' %}"><i class="ti-more"></i>Annulation</a></li>{% endif %}-->
+            <!--                  {% if perms.gestionstock.recettesrapport %}<li><a href="{% url 'gestionstock:pointvente' %}"><i class="ti-more"></i>Rap.Ventes Journalières</a></li>{% endif %}-->
+            <!--                  {% if perms.gestionstock.recettesrapportentree %}<li><a href="{% url 'gestionstock:pointventeentree' %}"><i class="ti-more"></i>Rap.Entree Stock</a></li>{% endif %}-->
+            <!--                     <li><a href="{% url 'gestionstock:rapclient' %}"><i class="ti-more"></i>Rapport Client</a></li>-->
+            <!--                  {% if perms.gestionstock.recettesrapportsys %}<li><a href="{% url 'gestionstock:synthesepointvente' %}"><i class="ti-more"></i>Synthèse Ventes</a></li>{% endif %}-->
+            <!--{#                  <li><a href="{% url 'gestionstock:raprecette' %}"><i class="ti-more"></i>Rapport Rec.</a></li>#}-->
+            <!--              </ul>-->
+            <!--          </li>-->
+                         
+            
+                      {% if perms.gestionstock.auditmenu %}
+                    <li class="treeview">
+                      <a href="#">
+                        <i class="ti-stats-up"></i>
+                        <span>Audit</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                      </a>
+                      <ul class="treeview-menu">
+                        <li><a href="{% url 'gestionstock:rapportlistepriseinventaire' %}" id=""><i class="ti-more"></i>Prise Inventaire</a></li>
+                        <li><a href="{% url 'gestionstock:saisirphysique' %}"><i class="ti-more"></i>Saisir Stock Physique</a></li>
+                        <li><a href="{% url 'gestionstock:rapportlogiquephysique' %}"><i class="ti-more"></i>Rapport Stock Physique/Logique</a></li>
+                        <li><a href="{% url 'gestionstock:misestockinventaire' %}"><i class="ti-more"></i>Mise à Jour Stock après Invent.</a></li>
+                        <li><a href="{% url 'gestionstock:inventaire' %}"><i class="ti-more"></i>Inventaire</a></li>
+            
+                      </ul>
+                    </li>
+                      {% endif %}
+                       {% if perms.gestionstock.rapportmenu %}
+                      <li class="treeview">
+                      <a href="#">
+                        <i class="ti-bar-chart"></i>
+                        <span>Rapports</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-right pull-right"></i>
+                        </span>
+                      </a>
+                      <ul class="treeview-menu">
+                        <li><a href="{% url 'gestionstock:fichiers' %}"><i class="ti-more"></i>Fichiers</a></li>
+                        <li><a href="{% url 'gestionstock:rapboncommande' %}"><i class="ti-more"></i>Bon Commande</a></li>
+            {#			<li><a href="{% url 'gestionstock:rapbonlivraison' %}"><i class="ti-more"></i>Bon Livraison</a></li>#}
+                        <li><a href="{% url 'gestionstock:rapstock' %}"><i class="ti-more"></i>Rapport Stock</a></li>
+            {#			<li><a href="{% url 'gestionstock:rapvariation' %}"><i class="ti-more"></i>Variation Stock</a></li>#}
+            {#			<li><a href="{% url 'gestionstock:rapclient' %}"><i class="ti-more"></i>Rapport Client</a></li>#}
+                        <li><a href="{% url 'gestionstock:rapsortie' %}"><i class="ti-more"></i>Rapport Sortie</a></li>
+            {#			<li><a href="{% url 'gestionstock:rapsortiefull' %}"><i class="ti-more"></i>Rapport Sortie Full</a></li>#}
+                        <li><a href="{% url 'gestionstock:rapachat' %}"><i class="ti-more"></i>Rapport Entrée</a></li>
+            <!--			<li><a href="{% url 'gestionstock:rapfournisseur' %}"><i class="ti-more"></i>Rapport Fournisseur</a></li>-->
+                        <li><a href="{% url 'gestionstock:rapmvtproduit' %}"><i class="ti-more"></i>Mouvement Produit</a></li>
+                        <li><a href="{% url 'gestionstock:rapinventairethéorique' %}"><i class="ti-more"></i>Inventaire Théorique</a></li>
+                        <li><a href="{% url 'gestionstock:rapinventairethéoriqueval' %}"><i class="ti-more"></i>Inventaire Théorique Valorisé</a></li>
+                        <li><a href="{% url 'gestionstock:rapclientco' %}"><i class="ti-more"></i>Consommations Clients</a></li>
+            
+                      </ul>
+                    </li>
+                      {% endif %}
+            
+                  </ul>
+                </section>
+              </aside>
+            
+            
+              <!-- Content Wrapper. Contains page content -->
+              <div class="content-wrapper">
+                  <div class="container-full">
+                    <!-- Content Header (Page header) -->
+                    <div class="content-header">
+                   {% block title %}
+                     
+                        
+            
+                    {% endblock %}
+                        
+                    </div>
+            
+            
+                    <!-- Main content -->
+                    <section class="content">
+                          <div class="row">
+                      {% block content %}
+            
+            
+                        {% if request.user.is_superuser %}
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="btn btn-danger"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+                        <div class="row mt-30">
+                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="box box-body bg-hexagons-dark pull-up" >
+                      <div class="media align-items-center p-0">
+                      <div class="text-center">
+                        <a href="#"><i class="cc BTC mr-5" title="BTC"></i></a>
+                      </div>
+                      <div>
+                        <h3 class="no-margin">Produits</h3>
+                      </div>
+                      </div>
+                      <div class="flexbox align-items-center mt-25">
+                      <div>
+                        <p class="no-margin" ><span class="text-gray"></span> <span class="text-info"></span></p>
+                      </div>
+                      <div class="text-right">
+                        <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totproduit }}</span></p>
+                      </div>
+                      </div>
+                    </div>
+                    </div>
+                            <div class="col-12 col-md-12 col-lg-8">
+                    <div class="box box-body bg-hexagons-dark pull-up" >
+                      <div class="media align-items-center p-0">
+                      <div class="text-center">
+                        <a href="#"><i class="cc ETH mr-5" title="ETH"></i></a>
+                      </div>
+                      <div>
+                        <h3 class="no-margin">Vente du Jour</h3>
+                      </div>
+                      </div>
+                      <div class="flexbox align-items-center mt-25">
+                      <div>
+                        <p class="no-margin"><span class="text-gray"></span> <span class="text-info"></span></p>
+                      </div>
+                          {% for foo in totfac %}
+                          <div class="text-right">
+                        <p class="no-margin" style="font-size: 40px">{{ foo.destination }} : <span class="text-success" style="font-size: 40px">{{ foo.t }} CDF</span></p>
+                      </div>
+                          {% endfor %}
+                          
+            
+                      </div>
+                    </div>
+                    </div>
+            
+            {#                 <div class="col-12 col-md-6 col-lg-4">#}
+            {#        <div class="box box-body bg-hexagons-dark pull-up" style="background: #3c763d">#}
+            {#          <div class="media align-items-center p-0">#}
+            {#          <div class="text-center">#}
+            {#            <a href="{% url 'gestionstock:listappro' %}"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+            {#          </div>#}
+            {#          <div>#}
+            {#            <h3 class="no-margin">Etat de besoins</h3>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#          <div class="flexbox align-items-center mt-25">#}
+            {#          <div>#}
+            {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+            {#          </div>#}
+            {#          <div class="text-right">#}
+            {#            <p class="no-margin"><span class="text-white" style="font-size: 40px">40</span></p>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#        </div>#}
+            {#        </div>#}
+             <div class="col-6 col-md-6 col-lg-6" >
+            
+                    <div class="box box-body bg-hexagons-dark pull-up" style="background: #6a6a6a">
+            
+                      <div class="media align-items-center p-0">
+                      <div class="text-center">
+                        <a href="#"><i class="cc XRP mr-5" title="XRP"></i></a>
+                      </div>
+                      <div>
+                        <h3 class="no-margin">Produit en alerte stock</h3>
+                      </div>
+                      </div>
+                     <div class="table-responsive">
+                                      <table id="example2stock" class="table table-bordered table-striped">
+                                        <thead style="background:gray">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Désignation</th>
+                                                <th>Emballage</th>
+                                                <th>Qte Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+            
+            
+                                        </tbody>
+            
+                                      </table>
+                                    </div>
+            
+                    </div>
+            
+                    </div>
+             <div class="col-6 col-md-6 col-lg-6" >
+            
+                    <div class="box box-body bg-hexagons-dark pull-up" style="background: #6a6a6a">
+            
+                      <div class="media align-items-center p-0">
+                      <div class="text-center">
+                        <a href="#"><i class="cc XRP mr-5" title="XRP"></i></a>
+                      </div>
+                      <div>
+                        <h3 class="no-margin">Produit en Peremption</h3>
+                      </div>
+                      </div>
+                     <div class="table-responsive">
+                                      <table id="example2stock1" class="table table-bordered table-striped">
+                                        <thead style="background:gray">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Désignation</th>
+                                                <th>Emballage</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+            
+            
+                                        </tbody>
+            
+                                      </table>
+                                    </div>
+            
+                    </div>
+            
+                    </div>
+            
+            {# <div class="col-6 col-md-6 col-lg-6">#}
+            {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+            {#          <div class="media align-items-center p-0">#}
+            {#          <div class="text-center">#}
+            {#            <a href="#"><i class="cc DASH mr-5" title="DASH"></i></a>#}
+            {#          </div>#}
+            {#          <div>#}
+            {#            <h3 class="no-margin">Les 6 derniers Bon de Livraison</h3>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#          <div class="table-responsive">#}
+            {#						  <table id="example1bonlivraison" class="table table-bordered table-striped">#}
+            {#							<thead style="background:gray">#}
+            {#								<tr>#}
+            {#									<th>#</th>#}
+            {#									<th>Date</th>#}
+            {#									<th>Client</th>#}
+            {#									<th>Devise</th>#}
+            {#									<th>Total</th>#}
+            {#								</tr>#}
+            {#							</thead>#}
+            {#							<tbody>#}
+            {##}
+            {##}
+            {#							</tbody>#}
+            {##}
+            {#						  </table>#}
+            {#						</div>#}
+            {#        </div>#}
+            {#        </div>#}
+            <!--<div class="col-12 col-md-6 col-lg-4">-->
+            <!--        <div class="box box-body bg-hexagons-dark pull-up" >-->
+            <!--          <div class="media align-items-center p-0">-->
+            <!--          <div class="text-center">-->
+            <!--            <a href="#"><i class="cc LTC mr-5" title="LTC"></i></a>-->
+            <!--          </div>-->
+            <!--          <div>-->
+            <!--            <h3 class="no-margin">Articles</h3>-->
+            <!--          </div>-->
+            <!--          </div>-->
+            <!--          <div class="flexbox align-items-center mt-25">-->
+            <!--          <div>-->
+            <!--            <p class="no-margin"><span class="text-gray"></span> <span class="text-info"></span></p>-->
+            <!--          </div>-->
+            <!--          <div class="text-right">-->
+            <!--            <p class="no-margin"><span class="text-danger" style="font-size: 40px">{{ totarticl }}</span></p>-->
+            <!--          </div>-->
+            <!--          </div>-->
+            <!--        </div>-->
+            <!--        </div>-->
+            <!--       <div class="col-12 col-md-6 col-lg-4">-->
+            <!--        <div class="box box-body bg-hexagons-dark pull-up" >-->
+            <!--          <div class="media align-items-center p-0">-->
+            <!--          <div class="text-center">-->
+            <!--            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>-->
+            <!--          </div>-->
+            <!--          <div>-->
+            <!--            <h3 class="no-margin">Gros Clients</h3>-->
+            <!--          </div>-->
+            <!--          </div>-->
+            <!--          <div class="flexbox align-items-center mt-25">-->
+            <!--          <div>-->
+            <!--            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>-->
+            <!--          </div>-->
+            <!--          <div class="text-right">-->
+            <!--            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>-->
+            <!--          </div>-->
+            <!--          </div>-->
+            <!--        </div>-->
+            <!--        </div>-->
+            
+            
+            {#            <div class="col-12 col-md-6 col-lg-3">#}
+            {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+            {#          <div class="media align-items-center p-0">#}
+            {#          <div class="text-center">#}
+            {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+            {#          </div>#}
+            {#          <div>#}
+            {#            <h3 class="no-margin">Qte Initiale Matière</h3>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#          <div class="flexbox align-items-center mt-25">#}
+            {#          <div>#}
+            {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+            {#          </div>#}
+            {#          <div class="text-right">#}
+            {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#        </div>#}
+            {#        </div>#}
+            {#            <div class="col-12 col-md-6 col-lg-3">#}
+            {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+            {#          <div class="media align-items-center p-0">#}
+            {#          <div class="text-center">#}
+            {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+            {#          </div>#}
+            {#          <div>#}
+            {#            <h3 class="no-margin">Qte Entrant Matière</h3>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#          <div class="flexbox align-items-center mt-25">#}
+            {#          <div>#}
+            {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+            {#          </div>#}
+            {#          <div class="text-right">#}
+            {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#        </div>#}
+            {#        </div>#}
+            {#            <div class="col-12 col-md-6 col-lg-3">#}
+            {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+            {#          <div class="media align-items-center p-0">#}
+            {#          <div class="text-center">#}
+            {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+            {#          </div>#}
+            {#          <div>#}
+            {#            <h3 class="no-margin">Qte Sortant Matière</h3>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#          <div class="flexbox align-items-center mt-25">#}
+            {#          <div>#}
+            {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+            {#          </div>#}
+            {#          <div class="text-right">#}
+            {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#        </div>#}
+            {#        </div>#}
+            {#            <div class="col-12 col-md-6 col-lg-3">#}
+            {#        <div class="box box-body bg-hexagons-dark pull-up" >#}
+            {#          <div class="media align-items-center p-0">#}
+            {#          <div class="text-center">#}
+            {#            <a href="#"><i class="cc NEO mr-5" title="NEO"></i></a>#}
+            {#          </div>#}
+            {#          <div>#}
+            {#            <h3 class="no-margin">Qte Finale Matière</h3>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#          <div class="flexbox align-items-center mt-25">#}
+            {#          <div>#}
+            {#            <p class="no-margin"> <span class="text-gray"></span> <span class="text-info"></span></p>#}
+            {#          </div>#}
+            {#          <div class="text-right">#}
+            {#            <p class="no-margin"><span class="text-success" style="font-size: 40px">{{ totclientnon }}</span></p>#}
+            {#          </div>#}
+            {#          </div>#}
+            {#        </div>#}
+            {#        </div>#}
+            
+                  </div>
+                          {% else %}
+            
+                             <div class="col-md-12">
+                              <div>
+                                  <h1 class="text-white font-weight-900 font-size-40"> Bienvenu(e) dans la Gestion de Stock</h1>
+                                  <h1 class="text-white"><i class="fa fa-bank text-warning"></i> Kinshasa - R.D.congo</h1>
+            
+            
+                              </div>
+                          </div>
+                          {% endif %}
+            
+            
+            
+            
+            
+                             
+                      {% endblock %}
+                        </div>
+                    </section>
+                    <!-- /.content -->
+            
+                  </div>
+              </div>
+              <!-- /.content-wrapper -->
+            
+               <footer class="main-footer">
+                  &copy; {% now 'Y' %} <a href="#">Gestion Stock</a>. All Rights Reserved.
+              </footer>
+            
+            
+              <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
+              <div class="control-sidebar-bg"></div>
+            </div>
+            <!-- ./wrapper -->

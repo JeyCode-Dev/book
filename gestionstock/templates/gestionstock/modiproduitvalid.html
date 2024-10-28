@@ -1,0 +1,260 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Validation Prix Produit
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+     
+            <li class="breadcrumb-item active">Validation Prix Produit</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+
+				  <!-- /.form group -->
+                <div class="form-group row">
+					<div class="col-sm-2" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Valider Tous</button>
+					</div>
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Emb_Gros</th>
+                                    <th>Prix</th>
+									<th>Emb_Détail</th>
+									<th>Prix</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Emb_Gros</th>
+                                    <th>Prix</th>
+									<th>Emb_Détail</th>
+									<th>Prix</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() { 
+
+
+            	
+             $('.select2').select2();
+             
+             $('#example1').DataTable();
+              $('#example1 tbody').on('dblclick','tr',function(){
+
+                    if(confirm("Voulez-vous valider cette opération")){
+                    var one=this.cells[0].textContent;
+                    $.ajax({
+                        url: '{% url 'gestionstock:modiproduitvalid' %}',
+                        type: 'POST',
+                         data:{
+                            "one":one,
+                             'csrfmiddlewaretoken': '{{ csrf_token }}'
+                         },
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+              }
+                    });
+
+				$('#produit').change(function (e) {
+				    $('#emballage1').val('');
+				 $('#emballage2').val('');
+				 $('#emballage11').val('');
+				 $('#emballage22').val('');
+				 $('#prix1').val('');
+				 $('#prix2').val('');
+
+
+
+				});
+affiche();
+              $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+                         $.ajax({
+                        url: '{% url 'gestionstock:modiproduitvalid' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+
+
+
+
+
+
+
+
+              });
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getpromodifier' %}",
+    "columns":[
+
+    {"data":'id'},
+    {"data":'article__designation'},
+
+    {"data":'emb1__emballage'},
+    {"data":'prix1'},
+            {"data":'emb2__emballage'},
+    {"data":'prix2'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    } 
+
+
+
+ </script>
+
+ {% endblock %}

@@ -1,0 +1,616 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+
+
+{% endblock %}
+ {% block title %}
+     <button style="display:none;" id="btnmodaltaux" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-filltaux">
+
+     </button>
+     <!-- Modal -->
+     <div class="modal modal fade" id="modal-filltaux" tabindex="-1">
+         <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="titre"></h5>
+                     <button type="button" class="close" data-dismiss="modal">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <p>Change :</p>
+                     <div class="row">
+                         <div class="col-md-4">
+                             <p>Taux <input type="text" name="tx" id="tx" class="form-control" value="{{ location.0.txchange }}"></p>
+                         </div>
+                         <div class="col-md-4">
+                             <p>Montant Reçu CDF <input type="text" name="mtncdf" id="mtncdf" class="form-control" value="0"></p>
+                         </div>
+                         <div class="col-md-4">
+                             <p>Montant Reçu USD <input type="text" name="mtnusd" id="mtnusd" class="form-control" value="0"></p>
+                         </div>
+                     </div>
+                     <div class="row">
+                         <div class="col-md-6">
+                            <p>Prix CDF <input type="text"  readonly name="prixcdf" id="prixcdf" class="form-control"></p>
+                         </div>
+                         <div class="col-md-6">
+                            <p>Prix USD <input type="text" readonly name="prixusd" id="prixusd" class="form-control"></p>
+                         </div>
+                     </div>
+
+                     <p>Retour CDF <input readonly type="text" name="retourcdf" id="retourcdf" class="form-control"></p>
+                     <p>Retour USD <input readonly type="text" name="retourusd" id="retourusd" class="form-control"></p>
+                     <input type="hidden" name="idpro" value="" id="idpro" class="form-control">
+                     <p><button id="ajoutarticle2" type="button" class="btn btn-outline btn-info mb-5">Ajouter</button>
+                     <button type="button" class="btn btn-danger btn-info mb-5" data-dismiss="modal">Fermer</button></p>
+                 </div>
+
+             </div>
+         </div>
+     </div>
+
+
+     <button style="display:none;" id="btnmodaltable" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-table">
+
+     </button>
+     <!-- Modal -->
+     <div class="modal modal fade" id="modal-table" tabindex="-1">
+         <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="titre">Tables</h5>
+                     <button type="button" class="close" data-dismiss="modal">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body" id="listetabledispo">
+
+{#                     <button type="button" class="btn btn-danger btn-info mb-5" data-dismiss="modal">Fermer</button></p>#}
+                 </div>
+
+             </div>
+         </div>
+     </div>
+
+
+
+
+
+
+
+
+
+     <!-- /.modal -->
+
+         
+            <h3>
+                Liste des serveurs
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Point de vente</li>
+            <li class="breadcrumb-item active">Facturation</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+        <div class="row">
+            <div class="col-12">
+                <div class="box">
+                 <div id="my-boxx"> </div>
+                    <div class="box-body p-0">
+                        <div class="row align-items-center">
+
+                            <div class="col-lg-3">
+                                <div>
+                                    <input class="form-control p-20" style="background-color: white;color: white" type="text" id="idrech" data-ref="input-search" placeholder="Recherche...">
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+           <label style="color: #d19b3d;margin-left: 15px;">Date Session en Cours : {{ request.session.sesio }}</label>
+            <div class="col-lg-12 col-12" id="listserveur">
+                <div class="row ico-filter" data-ref="ico-filter">
+                    {% for serveur in serveurs %}
+                        <div class="col-12 col-md-6 col-lg-4 mix {{ serveur.nom|to_and }} {{ serveur.nom|lower }} modamoda">
+                            <div class="box box-body bg-hexagons-dark pull-up">
+                                <div class="media align-items-center p-0">
+                                    <div class="text-center">
+                                        <a href="#"><i class="cc {{ serveur.nom|to_and_icon }} mr-5" title="{{ serveur.nom|to_and_icon }}"></i></a>
+                                    </div>
+                                    <div>
+                                        <h3 class="no-margin text-bold">{{ serveur.nom|lower }}</h3>
+
+                                    </div>
+                                </div>
+                                {% to_get_table_serveur serveur.id request.user as my_var_name %}
+                                <div class="flexbox align-items-center mt-25" >
+
+                                        {{ my_var_name|safe }}
+
+                                </div>
+{#                                <div class="flexbox align-items-center mt-25" >#}
+{##}
+{#                                    <div class="row">#}
+{#                                        <div class="col-md-4">#}
+{#                                            <p class="no-margin"><button id="#" type="button" class="btn btn-warning btn-info mb-5">Table 5</button></p>#}
+{#                                        </div>#}
+{#                                        <div class="col-md-4">#}
+{#                                            <p class="no-margin"><button id="#" type="button" class="btn btn-success btn-info mb-5">Table 6</button></p>#}
+{#                                        </div>#}
+{#                                        <div class="col-md-4">#}
+{#                                            <p class="no-margin"><button id="#" type="button" class="btn btn-outline btn-info mb-5">Table 7</button></p>#}
+{#                                        </div>#}
+{#                                    </div>#}
+{##}
+{#                                </div>#}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+     <script src="{% static 'assets/vendor_components/mixitup-v3/dist/mixitup.js' %}"></script>
+     <script src="{% static 'js/pages/ico-filter.js' %}"></script>
+     <script src="{% static '/js/pages/list.js' %}"></script>
+     <script>
+ $(document).ready(function() {
+                        affiche();
+
+                         $('.ti-align-left,.mixitup-control-active').click();
+
+
+                        $(document).on('click','.btn_nouvelle',function(e){
+                        var serveurx=$(this).attr("data-serveur")
+                         $('#btnmodaltable').click();
+
+                             $.ajax({
+                    url:  "{% url 'pointvente:gettabledispo' %}",
+                    data:{
+                        'serveur':serveurx
+                        },
+                    type: 'GET',
+                    success: function (data) {
+                              $('#listetabledispo').empty();
+                              $('#listetabledispo').html(data.data);
+
+
+
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+
+                        });
+                        $(document).on('click','.btn_nouvelle_one',function(e){
+                         window.location.href="{% url 'pointvente:commande' %}?tablelib="+$(this).attr("data-tablelib")+"&table="+$(this).attr("data-table")+"&serveur="+$(this).attr("data-serveur")
+                        });
+
+                        $('#fermer').click(function (e) {
+
+                        v(0);
+                                         });
+
+               });
+
+
+                function livree() {
+
+                 if ($('#qte').val()==""){
+                                     $.toast({
+                                    heading: 'Point de vente',
+                                    text: "Vérifier la quantitée",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }if ($('#pa').val()==""){
+
+                     $.toast({
+                                    heading: 'Point de vente',
+                                    text: "Vérifier le prix",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+
+                 var fruitArray = [];
+                 $.each($("input[name='commentaire']:checked"), function (K, V) {
+                    fruitArray.push(V.value);
+                });
+
+
+
+
+               $.ajax({
+                    url:  "{% url 'pointvente:addrectempo' %}",
+                    data: {
+                        "id":$('#idpro').val(),
+                        "qte":$('#qte').val(),
+                        "designation":$('#titrepro').html(),
+                        "pa":$('#pa').val(),
+                        "commentaire":fruitArray,
+                        "categorie":$("input[name=flexRadioDefault]:checked").val(),
+                        "autonum":$('#autonum').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                 v(0);
+
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Point de vente',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Point de vente',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                   $('#qte').val('1');
+                                   $('#idpro').val('');
+                                   $('#pa').val('');
+                                   $('#idrech').val('');
+                                   $('#idrech').select();
+
+                                   $("input:checkbox").prop('checked', false);
+
+                                affiche();
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+                function affiche()
+                {
+
+                $.ajax({
+                    url:  "{% url 'pointvente:addrectempoaff' %}",
+                    type: 'GET',
+                    success: function (data) {
+
+            $('#tempo').html(data.data);
+            $('#tempotot').html(data.tot);
+
+            $('#prixcdf').val(data.totcdf);
+            $('#prixusd').val(parseFloat(data.totcdf)/parseFloat($('#tx').val()));
+
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+
+                }
+
+                function supprimer(produit,id) {
+
+
+
+                        $.ajax({
+                            url: '{% url 'pointvente:addrectempodel' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                "produit":produit,
+                                "id":id
+                            },
+                            async: false,
+                            success: function (data) {
+                                $('#msx').show();
+                                if(data.id=="0"){
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text: data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'error',
+                                        hideAfter: 3500
+
+                                    });
+                                }else{
+
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                      $('#qte').val('1');
+                                   $('#idpro').val('');
+                                   $('#pa').val('');
+
+                                    affiche();
+                                }
+
+                            }
+                        });
+
+
+
+
+                }
+                function autonum() {
+
+
+
+                        $.ajax({
+                            url: '{% url 'pointvente:numerorectempodel' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}'
+                            },
+                            async: false,
+                            success: function (data) {
+
+
+                                      $('#autonum').val(data.tot);
+                                      $('#autoid').html(data.tot);
+                                       $('#idrech').select();
+
+
+
+
+
+                            }
+                        });
+
+
+
+
+                }
+
+                function valider() {
+
+                        {#setTimeout(function() { $('#mtncdf').focus() }, 1000);#}
+                        {#$('#btnmodaltaux').click();#}
+                        {#return false;#}
+
+                    {% if request.session.check == '1' %}
+                         var c=prompt("INSERER NOM SERVEUR ET NUMERO TABLE.");
+                         if(c){
+
+                              $.ajax({
+                            url: '{% url 'pointvente:validerrec' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                "reference":c,
+
+                            },
+                            async: false,
+                            success: function (data) {
+                                $('#msx').show();
+                                if(data.id=="0"){
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text: data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'error',
+                                        hideAfter: 3500
+
+                                    });
+                                }else{
+
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                      $('#qte').val('1');
+                                   $('#idpro').val('');
+                                   $('#pa').val('');
+                                   $('#commentaire').text('');
+                                    //imprimer(data.autonum,data.bon);
+
+
+                                    //imprimer
+                                    var iframe = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframe.className='pdfIframe'
+                                    document.body.appendChild(iframe);
+                                    iframe.style.display = 'none';
+                                    iframe.onload = function () {
+                                        setTimeout(function () {
+                                            iframe.focus();
+                                            iframe.contentWindow.print(0);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    //add --kiosk-printing icone chrome
+                                    iframe.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+                                    //imprimer
+
+                                   //imprimer
+                                    var iframee = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframee.className='pdfIframe'
+                                    document.body.appendChild(iframee);
+                                    iframee.style.display = 'none';
+                                    iframee.onload = function () {
+                                        setTimeout(function () {
+                                            iframee.focus();
+                                            iframee.contentWindow.print(1);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    iframee.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+
+
+
+
+                                    autonum();
+                                    affiche();
+                                }
+
+                            }
+                        });
+                         }
+                    {% else  %}
+                        $.ajax({
+                            url: '{% url 'pointvente:validerrec' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}'
+
+                            },
+                            async: false,
+                            success: function (data) {
+                                $('#msx').show();
+                                if(data.id=="0"){
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text: data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'error',
+                                        hideAfter: 3500
+
+                                    });
+                                }else{
+
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                      $('#qte').val('1');
+                                   $('#idpro').val('');
+                                   $('#pa').val('');
+                                   $('#commentaire').text('');
+                                    //imprimer(data.autonum,data.bon);
+
+
+                                    //imprimer
+                                    var iframe = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframe.className='pdfIframe'
+                                    document.body.appendChild(iframe);
+                                    iframe.style.display = 'none';
+                                    iframe.onload = function () {
+                                        setTimeout(function () {
+                                            iframe.focus();
+                                            iframe.contentWindow.print(0);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    //add --kiosk-printing icone chrome
+                                    iframe.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+                                    //imprimer
+
+                                   //imprimer
+                                    var iframee = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframee.className='pdfIframe'
+                                    document.body.appendChild(iframee);
+                                    iframee.style.display = 'none';
+                                    iframee.onload = function () {
+                                        setTimeout(function () {
+                                            iframee.focus();
+                                            iframee.contentWindow.print(1);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    iframee.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+
+
+
+
+                                    autonum();
+                                    affiche();
+                                }
+
+                            }
+                        });
+                    {% endif  %}
+
+
+
+
+
+                }
+
+
+     </script>
+
+ {% endblock %}

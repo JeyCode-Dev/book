@@ -1,0 +1,420 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            {% comment %} <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet"> {% endcomment %}
+             <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+    <style>
+
+      .custom-textarea {
+        background-color: white!important; /* Met le fond en blanc */
+        color: black; /* Assure que le texte est lisible */
+        height: 250px!important;  Ajuste la hauteur selon tes besoins */
+    }
+    </style>   
+{% endblock %}
+ {% block title %}
+
+
+         
+        <h3>
+        Mise à jour Consultation
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Produit</li>
+       
+        </ol>
+        {% if message %}
+          <input type="hidden" id="msg" value="{{message}}">
+        {% endif %}
+          {% endblock %}
+
+{% block content %}
+
+<div class="col-4" style="float: right">
+
+			 {% comment %}  <div class="box" style="background-color: white;color:black;font-weight: bold"> {% endcomment %}
+
+    <div class="box-body">
+        <div class="row">
+            {% comment %} <div class="col-sm-4">
+                <label>Catégorie<span id="stn1"></span></label>
+                <select name="categorie" required id="categorie" class="form-control select2" >
+                        <option value="0" >Local</option>
+                        <option value="1" >Externe</option>
+                    
+                </select>
+            </div> {% endcomment %}
+            {% comment %} <div class="col-sm-4">
+                <label>Stock <span id="stn2"></span></label>
+                <input type="text" id="st2" readonly class="form-control" >
+            </div>
+            <div class="col-sm-4">
+                <label>Stock <span id="stn3"></span></label>
+                <input type="text" id="st3" readonly class="form-control" >
+            </div> {% endcomment %}
+        </div>
+    </div>
+    </div>
+    </div>
+
+	<div class="col-12 container-fluid" >
+
+								
+			  <div class="box" >
+				 
+				<div class="box-body">
+                
+                <hr>
+              {% comment %}   <div class="form-group row" style="display: none"> {% endcomment %}
+
+              <div class="">
+                <div class="row">
+                    <div class="col-md-6 ">
+                        
+                        <ul class="list-group text-white">
+                          <h4 class="list-group-item bg-primary">Signes Viteaux</h4>
+                          <li class="list-group-item bg-primary">Numéro Fiche: <span id="num_pt" class="bg-white text-primary p-2" style="float: right; font-weight: bold; border-radius: 10px;"></span></li>
+                            <li class="list-group-item bg-primary">Nom: <span id="nom_pt" class="bg-white text-primary p-2" style="float: right; font-weight: bold; border-radius: 10px;"></span></li>
+                            <li class="list-group-item bg-primary">Sexe: <span id="sexe_pt" class="bg-white text-primary p-2" style="float: right; font-weight: bold; border-radius: 10px;"></span></li>
+                            <li class="list-group-item bg-primary">Statut: <span id="statut_pt" class="bg-white text-primary p-2" style="float: right; font-weight: bold; border-radius: 10px;"></span></li>
+                            <li class="list-group-item bg-primary">Température: <span id="temp_pt" class="bg-white text-primary p-2" style="float: right; font-weight: bold; border-radius: 10px;"></li>
+                            <li class="list-group-item bg-primary">Poids: <span id="poid_pt" class="bg-white text-primary p-2" style="float: right; font-weight: bold; border-radius: 10px;"></li>
+                              <li class="list-group-item bg-primary">Tention: <span id="tention_pt" class="bg-white text-primary p-2" style="float: right; font-weight: bold; border-radius: 10px;"></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 bg-primary text-white rounded">
+                      {% if message %}
+                      <input type="hidden" id="msg" value="{{message}}"> 
+                      {% endif %}
+                        <h4>Diagnostique</h4>
+                        <form  method="post">
+                          {% csrf_token %}
+                            <input type="hidden" required id="id_pt" name="user_id">
+                            <div class="form-group">
+                                <label for="nom">Nom</label>
+                                <input type="text" class="form-control bg-white" name="name_pt" id="nom" required placeholder="Entrez votre nom" readonly>
+                            </div>
+                           {% comment %}  <div class="form-group">
+                                <label for="message">Conclusion</label>
+                                <textarea class="form-control text-white" name="diag"id="message" rows="5" required placeholder="Votre message" readonly></textarea>
+                            </div> {% endcomment %}
+                            <div class="form-group ">
+                              <label for="message">Conclusion</label>
+                              <textarea class="form-control   custom-textarea" name="diag" id="message" rows="5" required placeholder="Votre message" readonly></textarea>
+                          </div>
+                          
+                            <button type="submit" class="btn btn-success my-2" >Envoyer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow my-3 ">
+              <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Liste Patient</h6>
+              </div>
+              <div class="card-body">
+                  <div class="table-responsive">
+                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                          <thead>
+                            <th>Date</th>
+                            <th>Nom Patient</th>
+                            <th>Température</th>
+                                              <th>Poinds</th>
+                            <th>Tention</th>
+                                              <th>Action</th>
+                            {% comment %} <th>Pcs</th> {% endcomment %}
+                            
+          {#									<th>PV</th>#}
+          
+                                              {% comment %} <th>Emb.2</th> {% endcomment %}
+          {#									<th>Pcs(Emb3)</th>#}
+          {#									<th>PA</th>#}
+          {#									<th>PV</th>#}
+          {##}
+          {#                                    <th>Emb.3</th>#}
+          {#									<th>Pcs</th>#}
+          {#									<th>PA</th>#}
+          {#									<th>PV</th>#}
+          
+                            
+                          </tr>
+                          </thead>
+                          <tfoot>
+                            <th>Date</th>
+                            <th>Nom Patient</th>
+                            <th>Température</th>
+                                              <th>Poinds</th>
+                            <th>Tention</th>
+                                              <th>Action</th>
+                            {% comment %} <th>Pcs</th> {% endcomment %}
+                            
+          {#									<th>PV</th>#}
+          
+                                              {% comment %} <th>Emb.2</th> {% endcomment %}
+          {#									<th>Pcs(Emb3)</th>#}
+          {#									<th>PA</th>#}
+          {#									<th>PV</th>#}
+          {##}
+          {#                                    <th>Emb.3</th>#}
+          {#									<th>Pcs</th>#}
+          {#									<th>PA</th>#}
+          {#									<th>PV</th>#}
+          
+                            
+                          </tr>
+                          </tfoot>
+                          <tbody>
+                            {% for i in tab  %}
+                              
+                            <tr>
+                             <td>{{ i.created_at}} </td>
+                             <td>{{ i.patient.nom }}</td>
+                             <td>{{ i.temperature }}</td>
+                             <td>{{ i.poids }}</td>
+                             <td>{{ i.tention}}</td>
+                             
+                             <td>
+                                 <button type="button" class="btn btn-primary consult" id="{{i.id}}" data-toggle="modal" data-target="#myModal">
+                                 Consulter
+                             </button></td>
+                          </tr>
+                       
+                            {% endfor %} 
+                           </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+
+
+					  <div class="col-sm-2">
+                        {% comment %}
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc1" value="{{floc.cptetaxe}}"   name="pourc1" class="form-control pourc" >#}
+                                 <input type="text"  id="pourc1" value="0"    name="pourc1" class="form-control pourc" > {% endcomment %}
+
+					  </div>
+                        {% comment %} <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text" required id="pv1" value="0"   name="pv1" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text" required id="pv1cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden" id="pv1cdf_" value="0" class="form-control pvcdf_" >
+					  </div> {% endcomment %}
+
+                </div>
+
+                {% comment %} <div class="form-group row" style="display:none">
+
+                  <div class="col-sm-2">
+								<label>Pcs.(Contient Combien d'emb3 ou emb2)</label>
+								<input type="text"   id="qte2"   name="qte2" class="form-control qte" >
+					</div>
+
+					   <div class="col-sm-2">
+								<label>Prix Achat</label>
+								<input type="text"   id="pa2"    name="pa2" class="form-control pa" >
+					  </div>
+
+					  <div class="col-sm-2">
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc2" value="{{floc.cptetaxev}}"   name="pourc2" class="form-control pourc" >#}
+                                <input type="text"  id="pourc2"     name="pourc2" class="form-control pourc" >
+
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text"    id="pv2" value="0"   name="pv2" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text"  id="pv2cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden"    id="pv2cdf_" value="0" class="form-control pvcdf_" >
+					  </div>
+
+                </div>
+
+                 <div class="form-group row" style="display:none" >
+					<div class="col-sm-2">
+								<label>Emb.3</label>
+								<select name="emballage3"   id="emballage3" class="form-control select2" >
+									<option value="" ></option>
+                                    {% for i in emballage  %}
+										<option value="{{i.emballage}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                  <div class="col-sm-2">
+								<label>Pcs.</label>
+								<input type="text"   id="qte3"  name="qte3" class="form-control qte" >
+					</div>
+
+					   <div class="col-sm-2">
+								<label>Prix Achat</label>
+								<input type="text"   id="pa3"    name="pa3" class="form-control pa" >
+					  </div>
+
+					  <div class="col-sm-2">
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc3" value="{{floc.cptechf}}"   name="pourc3" class="form-control pourc" >#}
+                                <input type="text"   id="pourc3"    name="pourc3" class="form-control pourc" >
+
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text"     id="pv3" value="0"   name="pv3" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text"    id="pv3cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden"   id="pv3cdf_" value="0" class="form-control pvcdf_" >
+					  </div>
+
+                </div>
+
+                     <hr>
+             <div class="form-group row">
+					<div class="col-sm-2">
+								<label>Qté Alerte</label>
+								<input type="text" required name="seuil"  id="seuil" class="form-control">
+					</div> {% endcomment %}
+{#					<div class="col-sm-2">#}
+{#								<label>Catégorie</label>#}
+{#								<select name="categorie" id="categorie" class="form-control select2" >#}
+{#										<option value="0" >Stock</option>#}
+{#										<option value="1" >Point Vente</option>#}
+{##}
+{##}
+{#								</select>#}
+{#					</div>#}
+{#					<div class="col-sm-2">#}
+{#								<label>N° cpte.</label>#}
+{#								<input type="text" name="numcpt" id="numcpt" class="form-control">#}
+{#					</div>#}
+
+					{% comment %} <div class="col-sm-4" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-success btn-info mb-5">Valider</button>
+								<button id="deletearticle" onclick="deleteitem()" type="button" class="btn btn-danger mb-5">Supprimer</button>
+					</div> {% endcomment %}
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+                 <!-- Bouton pour ouvrir le modal -->
+    
+
+    <!-- Modal -->
+    
+</div>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				 
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box" style="background-color: #4b4b62;color:#ffca2c;font-weight: bold">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						 {% comment %}  {% endcomment %}
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+         
+            {% comment %} <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> {% endcomment %}
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+           {% comment %}  <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script> {% endcomment %}
+
+     <script>
+            $(document).ready(function() {
+               
+              
+            
+             $('.select2').select2();
+             $('#designation').select();
+             $('#example1').DataTable();
+
+             $(document).on('click','.consult', function(e){
+              
+                $.ajax({
+                    url: '{% url "centremedical:getconsultpatient" %}',
+                    type: 'GET',
+                    data: {'q': $(this).attr('id')},
+                    contentType: 'application/json',
+                    success: function (response) {
+                             var souschaine = response.data.slice(1,-1)
+                             var tab = souschaine.split(",")
+                             const sexe = tab[1] == "1" ? "Masculin":"Feminin";
+                             const statut = tab[2] == "1" ? "Agent":"Externe";
+                             $('#nom').val(tab[0])
+                             $('#nom_pt').html(tab[0])
+                             $('#sexe_pt').html(sexe)
+                             $('#statut_pt').html(statut)
+                             //parseInt(str, 10)
+                             $('#temp_pt').html((tab[3]))
+                             $('#poid_pt').html(tab[4])
+                             $('#tention_pt').html(tab[5])
+                             $('#id_pt').val(tab[6])
+                             $('#num_pt').html(tab[7])
+
+                             $('#message').removeAttr('readonly')
+                             $('#message').focus()
+                              $.toast({
+                                heading: 'Gestion de stock',
+                                text:response.msg,
+                                position: 'top-right',
+                                loaderBg: '#ff6849',
+                                icon: 'success',
+                                hideAfter: 3500,
+                                stack: 6
+                            });
+                        
+                            $('form').on('submit', function(e){
+                              swal("Valider !", "Opération éffectuée", "success")
+                             })
+                    },error:function (data) {
+                  
+                        }
+                    });
+             })
+            
+
+            })
+
+
+function convert(){
+    
+    
+}
+convert()
+ </script>
+
+ {% endblock %}

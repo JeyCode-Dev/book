@@ -1,0 +1,222 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+         
+            <h3>
+        Annulation facture
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+            <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li class="breadcrumb-item" aria-current="page">Point de vente</li>
+            <li class="breadcrumb-item active">Annulation</li>
+       
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  <div class="form-group row">
+                        <div class="col-sm-4">
+                            <label>Location</label>
+                            <select style="background-color:black;" class="form-control select2" id="location" onchange="affiche()" name="location">
+                                {%  for foo in location %}
+                                    <option value="{{ foo.location }}">{{ foo.designation}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Date debut</label>
+                            <input type="date"  id="db1" required name="db1" value="{% now 'Y-m-d' %}" class="form-control" >
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Date fin</label>
+                            <input type="date"  id="db2" required name="db2" value="{% now 'Y-m-d' %}" class="form-control" >
+                        </div>
+                         <div class="col-sm-2" style="margin-top: 25px;">
+                                <button id="ajoutarticle" type="button" onclick="affiche()" class="btn btn-outline btn-info mb-5">Afficher</button>
+                         </div>
+                    </div>
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Date</th>
+									<th>Client</th>
+									<th>Total</th>
+                                    <th>Action</th>
+								</tr>
+							</thead>
+							 <tbody>
+{#                              {% for mvt in mvts %}#}
+{#                              <tr>#}
+{#                                  <td>{{ mvt.document }}</td>#}
+{#                                  <td>{{ mvt.datemvt }}</td>#}
+{#                                  <td>{{ mvt.somme }}</td>#}
+{#                              </tr>#}
+{#                              {% endfor %}#}
+
+
+                              </tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Date</th>
+                                    <th>Client</th>
+									<th>Total</th>
+                                    <th>Action</th>
+
+								</tr>
+							</tfoot>
+
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+
+            $(document).ready(function() {
+
+             
+             $('#example1').DataTable({
+                 "order": [[ 0, "desc" ], [ 1, "desc" ]]
+             });
+
+
+
+              });
+function annula(id,dt) {
+                    Swal.fire({
+                              title: 'Confirmer',
+                              text: "Voulez-vous vraiment annuler cette facture !",
+                              icon: 'warning',
+                              showCancelButton: true,
+                             color: '#3085d6',
+                              confirmButtonColor: '#3085d6',
+                              cancelButtonColor: '#d33',
+                              confirmButtonText: 'Oui'
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                   $('#btnimp'+id).attr('class','spinner-border spinner-border-sm mr-2');
+                                $.ajax({
+                                    url: '{% url 'pointvente:annulation' %}',
+                                    type: 'POST',
+                                    data:{
+                                        "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                        "document":id,
+                                         "idlocationuser":$('#location').val(),
+                                        "dt":dt,
+
+                                    },
+                                    async: true,
+                                    success: function (data) {
+$('#btnimp'+id).attr('class','');
+                                        if(data.id=="0"){
+
+                                            $.toast({
+                                                heading: 'Point de vente',
+                                                text: data.msg,
+                                                position: 'top-right',
+                                                loaderBg: '#ff6849',
+                                                icon: 'error',
+                                                hideAfter: 3500
+
+                                            });
+                                        }else{
+                                            affiche()
+
+
+                                        }
+
+                                    },
+                                    error: function(request, status, err) {
+                            $('#btnimp'+id).attr('class','');
+                            //alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+                            }
+                                });
+                              }
+                            })
+
+             }
+function affiche()
+    {
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'pointvente:annulation' %}?idlocationuser="+$('#location').val()+"&db1="+$('#db1').val()+"&db2="+$('#db2').val(),
+    "columns":[
+
+    {"data":'document'},
+    {"data":'datemvt'},
+    {"data":'description'},
+    {"data":'somme'},
+    {"data":'somme',"render":function (data, type, row, meta){
+        return '<a href="#" onclick=annula("'+row.document+'","'+row.datemvt+'"); data-id="'+row.id+'" data-periode="'+row.periodepaie+'" class="open-edite btn btn-white text-success "> <i class="fa fa-trash" ></i><span id="btnimp'+row.document+'" role="status"></span></a>'
+
+
+    }}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+
+
+ </script>
+
+ {% endblock %}

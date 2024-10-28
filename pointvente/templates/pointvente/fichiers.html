@@ -1,0 +1,191 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+           
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Impression Fichiers Divers
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Rapport</li>
+            <li class="breadcrumb-item active">Fichiers</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+<div id="my-box"> </div>
+        <div class="box-body">
+
+          <div class="demo-radio-button">
+            <input name="group1" type="radio" id="radio_1" value="1" />
+            <label for="radio_1">Emballages</label>
+            <input name="group1" type="radio" id="radio_2" value="2" />
+            <label for="radio_2">Classes Articles</label>
+            <input name="group1" type="radio"  id="radio_3" value="3" />
+            <label for="radio_3">Familles Articles</label>
+            <input name="group1" type="radio" id="radio_4" value="4"/>
+            <label for="radio_4">Magasin</label>
+            <input name="group1" type="radio" id="radio_5" value="5"  />
+            <label for="radio_5">Liste des Articles</label>
+          
+          </div>
+ <div class="form-group row">
+ 
+          <div class="col-sm-4" style="margin-top:22px">
+            <input type="hidden" id="code" name="code" class="form-control">
+
+                <button id="ajoutarticle" type="button" class="btn btn-outline btn-info mb-5">Imprimer</button>
+          </div>
+
+          
+          <!-- /.input group -->
+          </div>
+        </div>
+			 
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+ 
+
+            	 <script>
+            $(document).ready(function() {
+            	
+              $('input[type=radio][name=group1]').on('change',function(){
+                                                  
+                          $('#code').val(this.value);
+
+                          ;});
+
+              $('#ajoutarticle').on('click',function(){
+
+                         
+                          creation();
+                       
+
+                         
+
+
+
+                        });
+
+
+
+
+
+
+
+
+
+
+              });
+
+          function creation(){ 
+
+     $('#my-box').html('');
+                           $('#my-box').show();
+    var cmp=0;
+
+    $.ajax({
+     url: '{% url 'pointvente:fichiers' %}',
+    type: 'POST',
+     data:{
+         'csrfmiddlewaretoken': '{{ csrf_token }}',
+         'code':  $('#code').val()
+     },
+    beforeSend: function(){
+        $('#my-box').html('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+        $('.progress-bar').animate({width: "30%"}, 100);
+
+        setTimeout(function(argument) {
+          $('.progress-bar').animate({width: "55%"}, 100);
+        }, 10000);
+ 
+    },
+
+       xhr: function(){
+       var xhr = new window.XMLHttpRequest();
+       //Upload progress
+       xhr.upload.addEventListener("progress", function(evt){
+       if (evt.lengthComputable) {
+         //var percentComplete = evt.loaded / evt.total;
+          var percent = Math.round((evt.loaded / evt.total) * 100);
+         //  if (percent == 100)
+         //     {
+         //        console.log("complet");
+
+         //     }
+         // //Do something with upload progress
+         // console.log(percent);
+         }
+       }, false);
+     //Download progress
+       xhr.addEventListener("progress", function(evt){
+         if (evt.lengthComputable) {
+           //var percent = Math.round((evt.loaded / evt.total) * 100);
+          // var percentComplete = parseInt( (evt.loaded / evt.total * 100), 10);
+          //     console.log(percentComplete);
+         //Do something with upload progress
+         //console.log(percent);
+         }
+       }, false);
+       return xhr;
+     },
+    success: function(d){  
+       if(d=="true"){ 
+         $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-box').hide();
+                }, 100);
+            }, 500);
+            if($('#code').val()==1){
+              window.open('{{ MEDIA_URL }}emballage.pdf');
+            }else if($('#code').val()==2){
+              window.open('{{ MEDIA_URL }}classe.pdf');
+            }
+            else if($('#code').val()==3){
+              window.open('{{ MEDIA_URL }}famille.pdf');
+            }
+            else if($('#code').val()==4){
+              window.open('{{ MEDIA_URL }}magasin.pdf');
+            }
+            else if($('#code').val()==5){
+              window.open('{{ MEDIA_URL }}articles.pdf');
+            }
+         
+         } 
+         
+    },
+    error: function(request, status, err) {
+        alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+    }
+});
+
+      
+}
+ </script>
+
+ {% endblock %}

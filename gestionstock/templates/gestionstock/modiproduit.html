@@ -1,0 +1,367 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Modification Prix Produit
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+     
+            <li class="breadcrumb-item active">Modification Prix Produit</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+
+                  <div class="col-sm-10">
+								<label>Produit</label>
+								<select name="produit" required id="produit" class="form-control select2">
+								 {% for i in produit  %}
+										<option value="{{i.article}}" >{{ i.designation}}</option>
+								{% endfor %}
+								</select>
+					</div>
+<!--                  <div class="col-sm-2">-->
+<!--								<label>Devise</label>-->
+<!--								<select name="devise" required id="devise" class="form-control select2">-->
+
+<!--										<option value="USD" >USD</option>-->
+<!--{#										<option value="CDF" >CDF</option>#}-->
+
+<!--								</select>-->
+<!--					</div>-->
+{#                  <div class="col-sm-1">#}
+{#								<label>Unite_Gros </label>#}
+{#								<input type="text" id="emballage11" disabled name="emballage11" class="form-control">#}
+{#								<input type="hidden" id="emballage1"  name="emballage1" class="form-control">#}
+{#					</div>#}
+{#                  <div class="col-sm-1">#}
+{#								<label>Prix_Gros</label>#}
+{#								<input type="text" required name="prix1" id="prix1" class="form-control">#}
+{#					</div>#}
+<!--                  <div class="col-sm-1">-->
+<!--								<label>Unite_Détail </label>-->
+<!--								<input type="text" id="emballage22" disabled name="emballage22" class="form-control">-->
+<!--								<input type="hidden" id="emballage2"  name="emballage2" class="form-control">-->
+<!--					</div>-->
+<!--                  <div class="col-sm-1">-->
+<!--								<label>Prix_Détail</label>-->
+<!--								<input type="text" required name="prix2" id="prix2" class="form-control">-->
+<!--					</div>-->
+					
+				  </div>
+				  <!-- /.form group -->
+{#                <div class="form-group row">#}
+{#					<div class="col-sm-2 offset-5" style="margin-top:22px">#}
+{#								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Modifier Produit</button>#}
+{#					</div>#}
+{#				  </div>#}
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Date</th>
+									<th>Location Dest.</th>
+									<th>Produit</th>
+									<th>Unite_Gros</th>
+									<th>Entree</th>
+									<th>Sortie</th>
+                                    <th>Prix</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Date</th>
+                                    <th>Location Dest.</th>
+									<th>Produit</th>
+									<th>Unite_Gros</th>
+									<th>Entree</th>
+									<th>Sortie</th>
+                                    <th>Prix</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+             $('.select2').select2();
+             
+             $('#example1').DataTable();
+              $('#example1 tbody').on('dblclick','tr',function(){
+
+    
+                    });
+                {#charger();#}
+				$('#produit').change(function (e) {
+				    {#$('#emballage1').val('');#}
+					{# $('#emballage11').val('');#}
+					{# $('#prix1').val('');#}
+					{#charger();#}
+				});
+affiche();
+
+$(document).on("change", ".prix", function () {
+
+                    var idcode=$(this).closest('tr').find('.idcode').text()
+                    var pa=$(this).closest('tr').find('.prix').val()
+                     livree(idcode,pa);
+
+				});
+
+
+
+
+              {#$('#fprm2').submit(function (e) {#}
+              {#           e.preventDefault();#}
+              {##}
+              {#           $.ajax({#}
+              {#          url: '{% url 'gestionstock:modiproduit' %}',#}
+              {#          type: 'POST',#}
+              {#           data:$(this).serialize(),#}
+              {#          async: false,#}
+              {#          success: function (data) {#}
+              {#               $('#msx').show();#}
+              {#              if(data.id=="0"){#}
+              {##}
+              {#                   $.toast({#}
+              {#                      heading: 'Gestion de stock',#}
+              {#                      text: data.msg,#}
+              {#                      position: 'top-right',#}
+              {#                      loaderBg: '#ff6849',#}
+              {#                      icon: 'error',#}
+              {#                      hideAfter: 3500#}
+              {##}
+              {#                  });#}
+              {#              }else{#}
+              {##}
+              {##}
+              {#                    $.toast({#}
+              {#                          heading: 'Gestion de stock',#}
+              {#                          text:data.msg,#}
+              {#                          position: 'top-right',#}
+              {#                          loaderBg: '#ff6849',#}
+              {#                          icon: 'success',#}
+              {#                          hideAfter: 3500,#}
+              {#                          stack: 6#}
+              {#                      });#}
+              {#              }#}
+              {##}
+              {#          },error:function (data) {#}
+              {##}
+              {#              }#}
+              {#          });#}
+              {##}
+              {##}
+              {##}
+              {#          });#}
+
+
+
+
+
+
+
+
+
+
+              });
+
+            function livree(idass,pa) {
+
+
+
+                 if (pa==""){
+
+                         $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier le prix d'achat",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:modiproduit' %}",
+                    data: {
+                        "id":idass,
+                        "modi":1,
+                        "pa":pa,
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getpromodifier' %}?id="+$('#produit').val(),
+    "columns":[
+
+    {"data":'mvt','render':function (data) {
+
+                    return '<span class="idcode">'+data+'</span>'
+                }},
+    {"data":'datemvt'},
+    {"data":'location__designation','render':function (type,data,row) {
+
+                    return '<span>'+row.location__designation+'</span>'
+                }},
+    {"data":'article__designation'},
+
+    {"data":'emballage_id'},
+    {"data":'qte_entree'},
+    {"data":'qte_sortie'},
+    {"data":'prix_achat','render':function (data) {
+                    return '<input class="form-control prix" style="background-color: white;color: red" type="text" value="'+data+'">'
+                }}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    } 
+
+
+     {#function charger() {#}
+     {#         #}
+     {##}
+     {#           $.ajax({#}
+     {#               url:  "{% url 'gestionstock:getqteproduitfacture' %}",#}
+     {#               data: {#}
+     {#                   "produit":$('#produit').val(),#}
+     {#                   "modi":1,#}
+     {#                    'csrfmiddlewaretoken': '{{ csrf_token }}'#}
+     {#                         },#}
+     {#               type: 'POST',#}
+     {#               success: function (data) {#}
+     {##}
+     {#                           #}
+     {#                    $('#emballage1').val(data.emb);#}
+		{#				 $('#emballage11').val(data.emb);#}
+     {##}
+		{#				 // $('#emballage2').val(value.emballageu_id);#}
+		{#				 // $('#emballage22').val(value.emballageu_id);#}
+		{#				 $('#prix1').val(data.prix);#}
+		{#				 $('#prix1').select();#}
+		{#				 affiche()#}
+     {##}
+     {##}
+     {##}
+     {#                },#}
+     {#                    error: function (data) {#}
+     {#                                                #}
+     {#                    }#}
+     {#               });#}
+     {#       }#}
+
+ </script>
+
+ {% endblock %}

@@ -1,0 +1,647 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+           {% comment %}  <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+ {% endcomment %}
+        {% endblock %}
+ {% block title %}
+
+
+         
+        {% comment %} <h3>
+        Mise à Jour Patient
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Produit</li>
+       
+        </ol>
+        {% if error %}
+        <div class="alert alert-danger">{{error}}</div>
+      {% endif %}
+        {% if message %}
+          <input type="text" id="msg" value="{{message}}">
+        {% endif %} {% endcomment %}
+          {% endblock %}
+
+{% block content %}
+
+<div class="col-4" style="float: right">
+
+			 {% comment %}  <div class="box" style="background-color: white;color:black;font-weight: bold"> {% endcomment %}
+
+    <div class="box-body">
+        <div class="row">
+            {% comment %} <div class="col-sm-4">
+                <label>Catégorie<span id="stn1"></span></label>
+                <select name="categorie" required id="categorie" class="form-control select2" >
+                        <option value="0" >Local</option>
+                        <option value="1" >Externe</option>
+                    
+                </select>
+            </div> {% endcomment %}
+            {% comment %} <div class="col-sm-4">
+                <label>Stock <span id="stn2"></span></label>
+                <input type="text" id="st2" readonly class="form-control" >
+            </div>
+            <div class="col-sm-4">
+                <label>Stock <span id="stn3"></span></label>
+                <input type="text" id="st3" readonly class="form-control" >
+            </div> {% endcomment %}
+        </div>
+    </div>
+    </div>
+    </div>
+<div class="container-fluid">
+   
+    {% if error %}
+        <div class="alert alert-danger">{{error}}</div>
+      {% endif %}
+        {% if message %}
+          <input type="hidden" id="msg" value="{{message}}">
+        {% endif %}
+       
+    <div class="">
+	<div class="col-12">
+        <h3 class="mb-2">
+            Création Patient
+            </h3>
+      		
+			  <div class="box shadow p-2 bg-primary text-white rounded" style="background-color: white;color:black;font-weight: bold">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                
+
+					{% comment %} <div class="col-sm-2" style="display: none">
+								<label>Classe</label>
+								<select name="classe"   id="classe" class="form-control select2" >
+									{% for i in classe  %}
+										<option value="{{i.classe}}" >{{ i.designation}}</option>
+									{% endfor %}
+									 
+								</select>
+					</div> {% endcomment %}
+                    <div class="col-sm-2">
+                        <label>Date du jour</label>
+                        <input type="date"  id="DateJ"   required name=" dateJ" value="{% now 'Y-m-d' %}" class="form-control taux" >
+              </div>
+                  	  	<div class="col-sm-2">
+								<label>Nom</label>
+								<input type="text" id="designation" style="text-transform:uppercase"  required name="nom" class="form-control" >
+								{% comment %} <input type="hidden" id="idpro" value="0"   name="idpro" class="form-control" > {% endcomment %}
+{#                                 <div id="replaceable-content" align="right">#}
+{#                                    {% include 'gestionstock/artists-results-partial.html' %}#}
+{#                                </div>#}
+
+					</div>
+                   
+                    <div class="col-sm-2">
+                        <label>Sexe<span id="stn1"></span></label>
+                        <select name="sexe" required id="categorie" class="form-control select2" >
+                                <option value="1" >Masculin</option>
+                                <option value="0" >Feminin</option>
+                            
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Etat civil<span id="stn1"></span></label>
+                        <select name="etat" required id="categorie" class="form-control select2" >
+                                <option value="1" >Marié</option>
+                                <option value="0" >Célibataire</option>
+                            
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Statut<span id="stn1"></span></label>
+                        <select name="statut" required id="categorie" class="form-control select2" >
+                                <option value="A" >Agent</option>
+                                <option value="E" >Externe</option>
+                            
+                        </select>
+                    </div>
+                   {% comment %} <div class="col-sm-1">
+								<label>Pcs</label>
+								<input type="text" required id="qte1"   name="qte1" class="form-control" >
+					</div> {% endcomment %}
+                  {% comment %} <div class="col-sm-2">
+								<label>Emb.2</label>
+
+								<select name="emballage2"   id="emballage2" class="form-control select2" >
+									<option value="" ></option>
+                                    {% for i in emballage  %}
+										<option value="{{i.emballage}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div> {% endcomment %}
+
+                    <div class="col-sm-2">
+								<label>Date de naissance</label>
+								<input type="date"  id="Date"  value="{% now 'Y-m-d' %}" required name="date" class="form-control taux" >
+					  </div>
+                      <div class="col-sm-1">
+                        <label>Taille</label>
+                        <input type="text"  id="taille"  required name="taille" class="form-control taux" >
+              </div>
+                      <div class="col-sm-3">
+                        <label>Adresse</label>
+                        <input type="text"  id="adresse"  required name="adresse" class="form-control taux" >
+              </div>
+              <div class="col-sm-4">
+                <label>telephone</label>
+                <input type="text"  id="telephone" required  name="telephone" class="form-control taux" >
+             </div>
+             <div class="col-sm-4">
+                <label>email</label>
+                <input type="email"  id="email"   name="email" class="form-control taux" >
+             </div>
+                      
+                      {% comment %} <div class="col-sm-1">
+                        <label>Devise</label>
+                        <input type="text" readonly id="taux" value=""  name="taux" class="form-control taux" >
+              </div> {% endcomment %}
+					  </div>
+                <hr>
+              {% comment %}   <div class="form-group row" style="display: none"> {% endcomment %}
+
+
+
+
+
+					  <div class="col-sm-2">
+                        {% comment %}
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc1" value="{{floc.cptetaxe}}"   name="pourc1" class="form-control pourc" >#}
+                                 <input type="text"  id="pourc1" value="0"    name="pourc1" class="form-control pourc" > {% endcomment %}
+
+					  </div>
+                        {% comment %} <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text" required id="pv1" value="0"   name="pv1" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text" required id="pv1cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden" id="pv1cdf_" value="0" class="form-control pvcdf_" >
+					  </div> {% endcomment %}
+
+                </div>
+
+                {% comment %} <div class="form-group row" style="display:none">
+
+                  <div class="col-sm-2">
+								<label>Pcs.(Contient Combien d'emb3 ou emb2)</label>
+								<input type="text"   id="qte2"   name="qte2" class="form-control qte" >
+					</div>
+
+					   <div class="col-sm-2">
+								<label>Prix Achat</label>
+								<input type="text"   id="pa2"    name="pa2" class="form-control pa" >
+					  </div>
+
+					  <div class="col-sm-2">
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc2" value="{{floc.cptetaxev}}"   name="pourc2" class="form-control pourc" >#}
+                                <input type="text"  id="pourc2"     name="pourc2" class="form-control pourc" >
+
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text"    id="pv2" value="0"   name="pv2" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text"  id="pv2cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden"    id="pv2cdf_" value="0" class="form-control pvcdf_" >
+					  </div>
+
+                </div>
+
+                 <div class="form-group row" style="display:none" >
+					<div class="col-sm-2">
+								<label>Emb.3</label>
+								<select name="emballage3"   id="emballage3" class="form-control select2" >
+									<option value="" ></option>
+                                    {% for i in emballage  %}
+										<option value="{{i.emballage}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                  <div class="col-sm-2">
+								<label>Pcs.</label>
+								<input type="text"   id="qte3"  name="qte3" class="form-control qte" >
+					</div>
+
+					   <div class="col-sm-2">
+								<label>Prix Achat</label>
+								<input type="text"   id="pa3"    name="pa3" class="form-control pa" >
+					  </div>
+
+					  <div class="col-sm-2">
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc3" value="{{floc.cptechf}}"   name="pourc3" class="form-control pourc" >#}
+                                <input type="text"   id="pourc3"    name="pourc3" class="form-control pourc" >
+
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text"     id="pv3" value="0"   name="pv3" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text"    id="pv3cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden"   id="pv3cdf_" value="0" class="form-control pvcdf_" >
+					  </div>
+
+                </div>
+
+                     <hr>
+             <div class="form-group row">
+					<div class="col-sm-2">
+								<label>Qté Alerte</label>
+								<input type="text" required name="seuil"  id="seuil" class="form-control">
+					</div> {% endcomment %}
+{#					<div class="col-sm-2">#}
+{#								<label>Catégorie</label>#}
+{#								<select name="categorie" id="categorie" class="form-control select2" >#}
+{#										<option value="0" >Stock</option>#}
+{#										<option value="1" >Point Vente</option>#}
+{##}
+{##}
+{#								</select>#}
+{#					</div>#}
+{#					<div class="col-sm-2">#}
+{#								<label>N° cpte.</label>#}
+{#								<input type="text" name="numcpt" id="numcpt" class="form-control">#}
+{#					</div>#}
+
+					<div class="col-sm-4" style="margin-top:22px">
+								<button id="addpt" type="submit" class="btn btn-success px-5">Valider</button>
+								{% comment %} <button id="deletearticle" onclick="deleteitem()" type="button" class="btn btn-danger mb-5">Supprimer</button> {% endcomment %}
+					</div>
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+                 <!-- Bouton pour ouvrir le modal -->
+    
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Enregistrement Signes Vitaux</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="consult fprm2">
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" id="id_val"  >
+                        <div class="form-group">
+                            <label for="id_patient">Numéro Fiche</label>
+                            <input type="text" class="form-control" id="numero"  readonly >
+                        </div>
+                        <div class="form-group">
+                            <label for="id_patient"> Patient</label>
+                            <input type="text" class="form-control" id="id_patient"  readonly >
+                        </div>
+                       {% comment %}  <div class="form-group">
+                            <label for="id_article">ID Article</label>
+                            <input type="text" class="form-control" id="id_article"  value="" placeholder="Entrez l'ID de l'article" >
+                        </div> {% endcomment %}
+                        
+                        <div class="form-group">
+                            <label for="temperature">Température (°C)</label>
+                            <input type="number" class="form-control" id="temperature" required placeholder="Entrez la température" >
+                        </div>
+                        <div class="form-group">
+                            <label for="tension">Tension (mmHg)</label>
+                            <input type="text" class="form-control" id="tension" required placeholder="Entrez la tension" >
+                        </div>
+                        <div class="form-group">
+                            <label for="poids">Poids (kg)</label>
+                            <input type="number" class="form-control" id="poids" required placeholder="Entrez le poids" >
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+				  <!-- /.form group -->
+    <div class="card shadow mb-4 mt-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Liste Patient</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Sexe</th>
+                                        <th>Statut</th>
+                                        <th>Téléphone</th>
+                                        <th>Adresse</th>
+                                        <th>consultation</th>
+                                        {% comment %} <th>Pcs</th> {% endcomment %}
+                                        
+    {#									<th>PV</th>#}
+    
+                                        {% comment %} <th>Emb.2</th> {% endcomment %}
+    {#									<th>Pcs(Emb3)</th>#}
+    {#									<th>PA</th>#}
+    {#									<th>PV</th>#}
+    {##}
+    {#                                    <th>Emb.3</th>#}
+    {#									<th>Pcs</th>#}
+    {#									<th>PA</th>#}
+    {#									<th>PV</th>#}
+    
+                                        
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Sexe</th>
+                                        <th>Statut</th>
+                                        <th>Téléphone</th>
+                                        <th>Adresse</th>
+                                        <th>consultation</th>
+                                        {% comment %} <th>Pcs</th> {% endcomment %}
+                                        
+    {#									<th>PV</th>#}
+    
+                                        {% comment %} <th>Emb.2</th> {% endcomment %}
+    {#									<th>Pcs(Emb3)</th>#}
+    {#									<th>PA</th>#}
+    {#									<th>PV</th>#}
+    {##}
+    {#                                    <th>Emb.3</th>#}
+    {#									<th>Pcs</th>#}
+    {#									<th>PA</th>#}
+    {#									<th>PV</th>#}
+    
+                                        
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    {% for i in liste  %}
+                                    <tr>
+                                     <td>{{ i.nom }}</td>
+                                     <td>{{ i.sexe }}</td>
+                                     <td>{{ i.statut }}</td>
+                                     <td>{{ i.telephone}}</td>
+                                     <td>{{ i.adresse}}</td>
+                                     <td>
+                                         <button type="button" class="btn btn-primary sng" id="{{i.id}}" data-toggle="modal" data-target="#myModal">
+                                         Signe Viteaux
+                                     </button></td>
+                                  </tr>
+                                    {% endfor %}
+                                 </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+				  <!-- time Picker -->
+				  
+<div class="form-group row">
+ <div class="col-sm-12">
+
+<div class="box" style="background-color: #4b4b62;color:#ffca2c;font-weight: bold">
+					 
+					<!-- /.box-header -->
+                <div class="box-body">
+                                    <div class="table-responsive">
+                                   <!---
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead style="background:#9f6c44;font-weight: bold">
+                                            <tr>
+                                                <th>Nom</th>
+                                                <th>Sexe</th>
+                                                <th>Statut</th>
+                                                <th>Téléphone</th>
+                                                <th>Adresse</th>
+                                                <th>consultation</th>
+                                                {% comment %} <th>Pcs</th> {% endcomment %}
+                                                
+            {#									<th>PV</th>#}
+
+                                                {% comment %} <th>Emb.2</th> {% endcomment %}
+            {#									<th>Pcs(Emb3)</th>#}
+            {#									<th>PA</th>#}
+            {#									<th>PV</th>#}
+            {##}
+            {#                                    <th>Emb.3</th>#}
+            {#									<th>Pcs</th>#}
+            {#									<th>PA</th>#}
+            {#									<th>PV</th>#}
+
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for i in liste  %}
+                                        <tr>
+                                            <td>{{ i.nom }}</td>
+                                            <td>{{ i.sexe }}</td>
+                                            <td>{{ i.statut }}</td>
+                                            <td>{{ i.telephone}}</td>
+                                            <td>{{ i.adresse}}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary sng" id="{{i.id}}" data-toggle="modal" data-target="#myModal">
+                                                Signe Viteaux
+                                            </button></td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        <tfoot style="background:gray">
+                                            <tr>
+                                                <th>Nom</th>
+                                                <th>Sexe</th>
+                                                <th>Statut</th>
+                                                <th>Téléphone</th>
+                                                <th>Adresse</th>
+                                                <th>consultation</th>
+            {#									<th>PV</th>#}
+
+                                            {% comment %}  <th>Emb.2</th> {% endcomment %}
+            {#									<th>Pcs(Emb3)</th>#}
+            {#									<th>PA</th>#}
+            {#									<th>PV</th>#}
+
+            {#                                    <th>Emb.3</th>#}
+            {#									<th>Pcs</th>#}
+            {#									<th>PA</th>#}
+            {#									<th>PV</th>#}
+
+                                                {% comment %} <th>Seuil</th> {% endcomment %}
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                   
+                                   
+                                   -->
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                                </div>
+                                <!-- /.form group -->
+                        
+                            </div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+        </div>
+    </div>
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+     <script>
+            $(document).ready(function() {
+               
+                function AfficherMessageSuccess(message){
+                    if (message){
+                        $.toast({
+                            heading: 'Centre Medical',
+                            text:message,
+                            position: 'top-right',
+                            loaderBg: '#1cc88a',
+                            icon: 'success',
+                            hideAfter: 3500,
+                            stack: 6
+                        });
+                    }
+                }
+                AfficherMessageSuccess($('#msg').val())
+                
+                $(document).on('click','.sng', function() {
+                    // Récupérer l'id du bouton cliqué
+                    var buttonId = $(this).attr('id');
+                    
+                    //$('#id_patient').val(butt)onId
+                    $.ajax({
+                        url: '{% url "centremedical:getPatient" %}',  // Remplacez par le nom de votre URL
+                        type: 'GET',
+                        data: {'id' : buttonId},
+                        success: function(data) {
+                            console.log(data)
+                           $('#numero').val(data.num)
+                           $('#id_val').val(buttonId)
+                           console.log('-----')
+                           console.log($('#id_val').val())
+                            $('#id_patient').val(data.name);
+                            if(data.tp){
+                             AfficherMessageSuccess(data.msg)
+                             $('#temperature').val(data.tp)
+                             $('#tension').val(data.tt)
+                            $('#poids').val(data.pd)
+                            } //Afficher les données retournées
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                      });
+                    // Afficher l'id dans la console ou utiliser comme bon vous semble
+                    console.log('ID du bouton : ' + buttonId);
+                    
+                    // Vous pouvez également utiliser buttonId pour remplir un champ de votre modal, par exemple
+                    //$('#someInputField').val(buttonId); // Exemple d'utilisation
+                    
+                  
+                });
+                $('.modal-body > form').on('submit', function(event) {
+                    //var postData = $(this).serializeArray();
+                    event.preventDefault(); // Empêche le rechargement de la page
+                    console.log('------')
+                    if ($(this).data('submitted')) return;
+                    $(this).data('submitted', true);
+                    // Récupérer les données du 
+                   if($('#id_val').val() != undefined ){
+                    var formData = {
+                        'id_patient':  $('#id_val').val(),
+                        'temperature': $('#temperature').val(),
+                        'tension': $('#tension').val(),
+                        'poids': $('#poids').val(),
+                        'num': $('#numero').val()
+                    };
+                    console.log(formData)
+                   
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "centremedical:insertdata" %}',  // Remplacez par votre URL
+                        data: JSON.stringify(formData),
+                        contentType: 'application/json',
+                        headers: {
+                            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+                        },
+                        success: function(response) {
+                           console.log(response.message)
+                           
+						   
+                           swal("Valider !", response.message, "success");
+                            
+                              
+                              setTimeout(function() {
+                                location.reload();
+                            }, 2000); 
+                              
+                              $('input').each(function() {
+                                $(this).val('');
+                            });
+                            $(this).data('submitted', false); //  // Réinitialise le formulaire
+                        },
+                        error: function(xhr, status, error) {
+                            $(this).data('submitted', false);
+                            //alert('Une erreur est survenue : ' + xhr.responseJSON.error);
+                        }
+                    });
+                   } 
+                   
+                });
+             $('.ti-align-left,.mixitup-control-active').click();
+             $('.select2').select2();
+             $('#designation').select();
+
+             $('#example1').DataTable();
+
+            })
+
+
+function convert(){
+    
+    
+}
+convert()
+ </script>
+
+ {% endblock %}

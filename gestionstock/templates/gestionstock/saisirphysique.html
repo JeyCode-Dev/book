@@ -1,0 +1,485 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Saisir Stock Physique
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Audit</li>
+        <li class="breadcrumb-item active">Saisir Stock Physique</li>
+       
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                  <div class="col-sm-2">
+                <label>Date Opération</label>
+                <input type="date"  id="dateop" required name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+
+                  <div class="col-sm-10">
+                    <label>Période Inventaire</label>
+                    <select name="periode" required id="periode" class="form-control select2" >
+                        {% for i in periode  %}
+                            <option value="{{i.periode}}" >{{ i.periode}}</option>
+                        {% endfor %}
+
+                    </select>
+					</div>
+
+{#                  <div class="col-sm-4">#}
+{#								<label>Produit</label>#}
+{#								<select name="produit" required id="produit" class="form-control select2" >#}
+{#                                <option value="" ></option>#}
+{#									{% for i in article  %}#}
+{#										<option value="{{i.article}}" >{{ i.designation}}</option>#}
+{#									{% endfor %}#}
+{##}
+{#								</select>#}
+{#					</div>#}
+{##}
+{#					 #}
+{#					<div class="col-sm-2">#}
+{#								<label>1-Unit.</label>#}
+{#								<input type="text" disabled="" id="emballage11"name="emballage11" class="form-control" >#}
+{#								<input type="hidden" id="emballage1"name="emballage1" class="form-control" >#}
+{##}
+{#					</div>#}
+{#                  <div class="col-sm-2">#}
+{#								<label>Stock Physique 1</label>#}
+{#								<input type="text" required id="qte1"   name="qte1" class="form-control" >#}
+{#					</div>#}
+{##}
+{##}
+{#					  <div class="col-sm-2" >#}
+{#								<label>2-Unit.</label>#}
+{#								<input type="text" disabled="" id="emballage22"name="emballage22" class="form-control" >#}
+{#								<input type="hidden"  id="emballage2"name="emballage2" class="form-control" >#}
+{#					</div>#}
+{#                   <div class="col-sm-2" >#}
+{#								<label>Stock Physique 2</label>#}
+{#								<input type="text" required id="qte2"  name="qte2" class="form-control" >#}
+{#					</div>#}
+{#					    <div class="col-sm-2">#}
+{#								<label>Prix Physique 1</label>#}
+{#								<input type="text" required id="pa" value="0"   name="pa" class="form-control" >#}
+{#					  </div>#}
+{#					  <div class="col-sm-2">#}
+{#								<label>Taux</label>#}
+{#								<input type="text" required id="taux" value="{{taux}}"  name="taux" class="form-control" >#}
+{#					  </div>#}
+{#					  <div class="col-sm-2">#}
+{#								<label>Devise</label>#}
+{#								<select name="devise" id="devise" class="form-control select2"><option value="USD">USD</option><option value="CDF">CDF</option></select>#}
+{#					  </div>#}
+{#					   <div class="col-sm-2 offset-5">#}
+{#                        <label style="color: red">Entree Prix Total(Facultatif Zigida) pour générer Prix Achat</label>#}
+{#                        <input type="text"  name="prixtotal" id="prixtotal" class="form-control">#}
+{#                    </div>#}
+
+					
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+					
+
+					 
+{#					<div class="col-sm-2" style="margin-top:22px">#}
+{#								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Valider</button>#}
+{#					</div>#}
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+                        <form >
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Désignation</th>
+									<th>Qte1</th>
+									<th>Emb1</th>
+									<th>Qte2</th>
+									<th>Emb2</th>
+									<th>Qte3</th>
+									<th>Emb3</th>
+								</tr>
+							</thead>
+							<tbody id="frm_contact">
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Désignation</th>
+									<th>Qte1</th>
+									<th>Emb1</th>
+									<th>Qte2</th>
+									<th>Emb2</th>
+									<th>Qte3</th>
+									<th>Emb3</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+                        </form>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+             
+             $('#example1').DataTable({
+    paging: false
+});
+             $('#periode').change(function (){
+                 affiche();
+
+             });
+
+              $(document).on("keydown", ".s", function (e) {
+
+                        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+
+                        if(key == 13) {
+                            e.preventDefault();
+                            var inputs = $(this).closest('form').find(':input:visible');
+                            inputs.eq( inputs.index(this)+ 1 ).select();
+                        }
+                    });
+
+
+
+              $(document).on("change", ".emballagee_id", function () {
+
+
+                    var periode=$('#periode').val()
+                    var produit=$(this).closest('tr').find('.produit').text();
+                    var emballage=$(this).closest('tr').find('.emb1').text();
+                    var qte=$(this).val();
+
+
+
+                     livree(periode,produit,emballage,qte);
+                });
+
+              $(document).on("change", ".emballageu_id", function () {
+
+
+                    var periode=$('#periode').val()
+                    var produit=$(this).closest('tr').find('.produit').text();
+                    var emballage=$(this).closest('tr').find('.emb2').text();
+                    var qte=$(this).val();
+
+
+
+                     livree(periode,produit,emballage,qte);
+                });
+
+              $(document).on("change", ".emballagea", function () {
+
+
+                    var periode=$('#periode').val()
+                    var produit=$(this).closest('tr').find('.produit').text();
+                    var emballage=$(this).closest('tr').find('.emb3').text();
+                    var qte=$(this).val();
+
+
+
+                     livree(periode,produit,emballage,qte);
+                });
+
+             {#$('#example1 tbody').on('click','tr',function(){#}
+             {##}
+             {#    $('#emballage1').val($(this).find('td').eq(2).text());#}
+             {#    $('#emballage11').val($(this).find('td').eq(2).text());#}
+             {#    $('#emballage2').val($(this).find('td').eq(3).text());#}
+             {#    $('#emballage22').val($(this).find('td').eq(3).text());#}
+             {#    $('#qte1').val($(this).find('td').eq(4).text());#}
+             {#    $('#qte2').val($(this).find('td').eq(5).text());#}
+             {#    $('#produit').val($(this).find('td').eq(0).text());#}
+             {#    $('#produit').change();#}
+             {##}
+             {#});#}
+
+            {#$('#produit').change(function () {#}
+            {##}
+            {#    $.ajax({#}
+            {#            url: '{% url 'gestionstock:getlibemballage' %}',#}
+            {#            type: 'POST',#}
+            {#             data:{#}
+            {#                "produit":$('#produit').val(),#}
+            {#                 'csrfmiddlewaretoken': '{{ csrf_token }}'#}
+            {##}
+            {#             },#}
+            {#            async: false,#}
+            {#            success: function (data) {#}
+            {##}
+            {##}
+            {#                       $('#emballage1').val(data.emb1);#}
+            {#                       $('#emballage11').val(data.emb1);#}
+            {#                       $('#emballage2').val(data.emb2);#}
+            {#                       $('#emballage22').val(data.emb2);#}
+            {##}
+            {#                       $('#pa').val(data.prix_achat);#}
+            {##}
+                                   {#$('#qte1').val(0);#}
+                                   {#$('#qte2').val(0);#}
+            {##}
+            {##}
+            {##}
+            {#                       setTimeout(function(argument) {#}
+            {#                           $('#qte1').select();#}
+            {#                        }, 100);#}
+            {##}
+            {##}
+            {##}
+            {##}
+            {#            },error:function (data) {#}
+            {#                    $('#qte1').select();#}
+            {#                }#}
+            {#            });#}
+            {##}
+            {#});#}
+             affiche();
+
+             //$('.s :input:enabled:visible:first').select();
+
+            setTimeout(function () {
+                     $('#frm_contact').find('input:first').select();
+                },1000);
+
+
+              {#$('#fprm2').submit(function (e) {#}
+              {#           e.preventDefault();#}
+              {##}
+              {#           $.ajax({#}
+              {#          url: '{% url 'gestionstock:saisirphysique' %}',#}
+              {#          type: 'POST',#}
+              {#           data:$(this).serialize(),#}
+              {#          async: false,#}
+              {#          success: function (data) {#}
+              {#               $('#msx').show();#}
+              {#              if(data.id=="0"){#}
+              {##}
+              {#                   $.toast({#}
+              {#                      heading: 'Gestion de stock',#}
+              {#                      text: data.msg,#}
+              {#                      position: 'top-right',#}
+              {#                      loaderBg: '#ff6849',#}
+              {#                      icon: 'error',#}
+              {#                      hideAfter: 3500#}
+              {##}
+              {#                  });#}
+              {#              }else{#}
+              {##}
+              {##}
+              {#                    $.toast({#}
+              {#                          heading: 'Gestion de stock',#}
+              {#                          text:data.msg,#}
+              {#                          position: 'top-right',#}
+              {#                          loaderBg: '#ff6849',#}
+              {#                          icon: 'success',#}
+              {#                          hideAfter: 3500,#}
+              {#                          stack: 6#}
+              {#                      });#}
+              {#                      #}
+              {#                     $('#qte1').val('');#}
+              {#                     $('#qte2').val('');#}
+              {##}
+              {#                  affiche();#}
+              {#              }#}
+              {##}
+              {#          },error:function (data) {#}
+              {##}
+              {#              }#}
+              {#          });#}
+              {##}
+              {##}
+              {##}
+              {#          });#}
+
+
+              });
+
+function livree(periode,produit,emballage,qte) {
+
+
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:saisirphysique' %}",
+                    data: {
+                        "periode":periode,
+                        "produit":produit,
+                        "dateop":$('#dateop').val(),
+                        "qte":qte,
+                        "emballage":emballage,
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:saisirphysique' %}?periode="+$('#periode').val(),
+    "columns":[
+
+    {"data":'article','render':function (data, type, row, meta) {
+        return '<span class="produit">'+data+'</span>'
+        }
+                 },
+    {"data":'designation'},
+            {"data":'emballagee_id','render':function (data, type, row, meta) {
+                 if(data!=null){
+                    return '<input class="form-control emballagee_id s" style="background-color: white;color: black" type="text" value="'+row.qt1+'">'}else{
+                    return ''
+                }
+                }},
+            {"data":'emballagee_id','render':function (data, type, row, meta) {
+        if(data!=null){
+                       return '<span class="emb1">'+data+'</span>'
+                }else{
+                    return ''
+                }
+        }},
+            {"data":'emballageu_id','render':function (data, type, row, meta) {
+                  if(data!=null){
+                    return '<input class="form-control emballageu_id s" style="background-color: white;color: black" type="text" value="'+row.qt2+'">'
+                      }else{
+                    return ''
+                }
+                }},
+            {"data":'emballageu_id','render':function (data, type, row, meta) {
+          if(data!=null){
+                       return '<span class="emb2">'+data+'</span>'
+                }else{
+                    return ''
+                }
+        }},
+        {"data":'emballagea','render':function (data, type, row, meta) {
+              if(data!=null){
+                    return '<input class="form-control emballagea s" style="background-color: white;color: black" type="text" value="'+row.qt3+'">'
+              }else{
+                  return ''
+              }
+                }},
+            {"data":'emballagea','render':function (data, type, row, meta) {
+                if(data!=null){
+                       return '<span class="emb3">'+data+'</span>'
+                }else{
+                    return ''
+                }
+
+        }}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+ </script>
+
+ {% endblock %}

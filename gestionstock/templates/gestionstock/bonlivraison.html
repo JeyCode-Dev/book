@@ -1,0 +1,296 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+      <button style="display:none;" id="btnmodal" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-right">
+
+				  </button>
+      <!-- Modal -->
+  <div class="modal modal-right fade" id="modal-right" tabindex="-1">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="titre"></h5>
+			<button type="button" class="close" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+            <p>Unité <select name="emballage" id="emballage" class="form-control select2"></select></p>
+            <p>Qte cmd <input type="text" name="qtecmd" id="qtecmd" class="form-control" placeholder=""></p>
+            <p>Qte livrée <input type="text" name="qte" id="qte" class="form-control" placeholder=""></p>
+            <p>PAU <input type="text" name="pa" value="0" id="pa" class="form-control" placeholder=""></p>
+{#            <p>Prix Vente<input type="text" name="privente" value="0" id="privente" class="form-control" placeholder=""></p>#}
+              <input type="hidden" name="privente" value="0" id="privente" class="form-control" placeholder="">
+            <p><button id="modifyarticle" type="button" class="btn btn-outline btn-warning mb-5">Modifier Produit</button></p>
+		  </div>
+
+		</div>
+	  </div>
+	</div>
+  <!-- /.modal -->
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Bon Livraison
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Rapport</li>
+            <li class="breadcrumb-item active">Bon Livraison</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+
+				  	<div class="col-sm-6">
+								<label>N° bon livraison</label>
+                                <select name="numbon" id="numbon" class="form-control select2" >
+                        
+									{% for i in bon  %}
+										<option value="{{ i.serielivraison}}" >{{ i.commande.observation}} / {{ i.datejour }} / {{ i.commande.tiers.nompostnom }}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+
+				  </div>
+
+          <div class="form-group row">
+
+
+            
+
+          </div>
+
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+
+						<div class="table-responsive">
+						  <table id="example1" class="table editable-table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+
+									<th width="70px" >Unit.</th>
+                                    <th width="70px">Qte cmd</th>
+                                    <th width="70px">Prix cmd</th>
+                                    <th width="70px">Qte livrée</th>
+                                    <th width="70px">Prix livrée</th>
+                                    <th style="display: none"></th>
+
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+									<th width="70px" >Unit.</th>
+                                    <th width="70px">Qte cmd</th>
+                                    <th width="70px">Prix cmd</th>
+                                    <th width="70px">Qte livrée</th>
+                                    <th width="70px">Prix livrée</th>
+                                    <th style="display: none"></th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+
+
+
+
+
+
+            	var idass=0;
+             $('.select2').select2();
+ affiche();
+
+                 $('#numbon').change(function (e) {
+              affiche();
+
+           });
+
+
+               $('#example1').DataTable();
+
+
+
+
+
+
+
+
+
+
+              });
+
+            function livree(idass) {
+                 if ($('#qte').val()==""){
+
+                         return false;
+                     }
+
+                 if ($('#pa').val()==""){
+
+                         return false;
+                     }
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:modifyqte' %}",
+                    data: {
+                        "id":idass,
+                        "qte":$('#qte').val(),
+                        "qtecmd":$('#qtecmd').val(),
+                        "privente":$('#privente').val(),
+                        "pa":$('#pa').val(),
+                        "dateop":$('#dateop').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                  $('#btnmodal').click();
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                   $('#qte').val('');
+                                   $('#privente').val('0');
+                                   $('#pa').val('0');
+                                affiche();
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+            function affiche()
+    {
+
+    try{
+
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getboncommande' %}?validation="+$('#numbon').val(),
+    "columns":[
+
+    {"data":'id'},
+    {"data":'article__designation'},
+
+
+    {"data":'emballage'},
+            {"data":'quantite'},
+            {"data":'prix_unitaire'},
+    {"data":'qtelivree'},
+            {"data":'prixunitaire'}
+    , {"data":'total',"autoWidth":true,"visible":false,"render":function (data){
+                $('#total').html("Valeur livrée : "+data);
+            return data;
+    }}
+
+    ],
+
+    "bDestroy":true
+    });
+    $('#total').html("Total Livraison : "+ltot);
+    }catch(e){
+
+    }
+    }
+ </script>
+
+ {% endblock %}

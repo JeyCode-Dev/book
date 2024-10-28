@@ -1,0 +1,378 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+
+{% endblock %}
+ {% block title %}
+<button style="display:none;" id="btnmodal" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-right">
+
+				  </button>
+      <!-- Modal -->
+  <div class="modal modal-left fade" id="modal-right" tabindex="-1">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="titre">Nouveau Client</h5>
+			<button type="button" class="close" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+            <p>Noms <input type="text" name="nom" id="nom" class="form-control" ></p>
+            <p>Adresse<input type="text" name="adresse" id="adresse" class="form-control" ></p>
+            <p>Catégorie<select style="background: black" name="categorie"  id="categorie" class="form-control">
+                                    <option value="1" >Client</option>
+{#                                    <option value="2" >Client non Aérien</option>#}
+            </select></p>
+
+            <p><button id="ajoutfournisseur" type="button" class="btn btn-outline btn-info mb-5">Ajouter</button></p>
+		  </div>
+
+		</div>
+	  </div>
+	</div>
+  <!-- /.modal -->
+
+         
+            <h3>
+                Facturation N° : <strong id="autoid"></strong>
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Article</li>
+            <li class="breadcrumb-item active">Facturation</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+    &nbsp;
+
+
+            <div class="col-12">
+                <div class="box">
+                 <div id="my-boxx"> </div>
+                    <div class="box-body p-0">
+                        <div class="row align-items-center">
+                            <div class="col-lg-2">
+                                <div>
+                                    <input class="form-control p-20 bg-dark" type="text" id="idrech" data-ref="input-search" placeholder="Recherche...">
+                                </div>
+                            </div>
+                            <div class="col-lg-10">
+                                <ul class="list-inline text-center mb-0">
+                                    <li data-filter="all" id="tous"><a href="#" class="text-bold list-link hover-warning p-15" >Tous</a></li>
+                                    {% for cat in categories %}
+                                        <li data-filter=".{{ cat.libelle|to_and }}"><a href="#" class="text-bold list-link hover-warning p-15">{{ cat.libelle }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+          	<div class="col-md-3 col-12">
+					<div class=" ">
+					  <form action="#" method="POST" id="fprm2">
+                            {% csrf_token %}
+                            <div id="smartcart"></div>
+                            <input type="hidden" name="autonum" id="autonum" >
+                            <div class="col-sm-12" >
+								<label>Client</label><a href="#" id="addclient"> <span style="Color:red">(Ajouter) </span></a>
+								<select name="client" id="client" required class="form-control select2">
+{#                                <option value="cash" >cash</option>#}
+{% for i in fournisseur  %}
+										<option value="{{i.tiers}}" >{{ i.nompostnom}}</option>
+									{% endfor %}
+								</select>
+{#                            <br><br>#}
+{#                                <label>Dettes</label><br>#}
+{#								<select name="dette" id="dette" required class="form-control select2">#}
+{#                                    <option value="1" >Non</option>#}
+{#                                    <option value="2" >Oui</option>#}
+{#								</select>#}
+                            <br><br>
+                                <label>Taux</label><br>
+								<input type="text" value="2300" id="taux" name="taux">
+                            <br><br>
+                                <label>Montant Payé</label><br>
+								<input type="text"  id="mtnpaye" name="mtnpaye">
+
+					</div>
+                        </form>
+					</div>
+				</div>
+
+				<div class="col-md-9 col-12">
+					<div class="">
+
+                        <div class="row ico-filter" data-ref="ico-filter">
+                    {% for recette in recettes %}
+                        <div class="col-12 col-md-6 col-lg-4 mix {{ recette.categorie.libelle|to_and }} {{ recette.libelle|lower }} sc-product-item" data-prix="{{ recette.prix }}" data-id="{{ recette.id }}" data-titre="{{ recette.libelle|lower }}" >
+                            <div class="box box-body bg-hexagons-dark pull-up sc-add-to-cart">
+                                <div class="media align-items-center p-0">
+                                    <div class="text-center">
+{#                                        <a href="#"><i class="cc {{ recette.categorie.libelle|to_and_icon }} mr-5" title="{{ recette.categorie.libelle|to_and_icon }}"></i></a>#}
+                                        <a class="avatar avatar-lg" href="#">
+                                                        <img src="{{recette.image.url}}" alt="...">
+                                                      </a>
+                                    </div>
+                                    <div>
+                                        <h3 class="no-margin text-bold" data-name="product_name">{{ recette.libelle|lower }}</h3>
+                                        <span>{{ recette.categorie.libelle }}</span>
+                                    </div>
+                                </div>
+                                <div class="flexbox align-items-center mt-25" >
+                                    <div>
+                                        <p class="no-margin font-weight-600"><span class="text-warning">USD {{ recette.prix }}</span></p>
+                                        <p class="no-margin">Facturation</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="no-margin font-weight-600"><span class="text-warning"></span></p>
+                                        <p class="no-margin"></p>
+                                        <input name = "product_image" value = "{{ recette.image.url }}" type = "hidden" />
+                                        <input name = "product_price_2" value = "{{ recette.prix|to_and_prix }}" type = "hidden" />
+                                        <input name = "product_price" value = "{{ recette.prix|to_and_prix }}" type = "hidden" />
+                                        <input name = "product_id" value = "{{ recette.id }}" type = "hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+
+					</div>
+				</div>
+
+
+
+
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+     <script src="{% static 'assets/vendor_components/mixitup-v3/dist/mixitup.js' %}"></script>
+     <script src="{% static 'js/pages/ico-filter.js' %}"></script>
+     <script src="{% static '/js/pages/list.js' %}"></script>
+       <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+     <script>
+ $(document).ready(function() {
+
+
+     $('.select2').select2();
+                         //init panier
+                        $('#smartcart').smartCart();
+                        //init panier
+
+                        autonum();
+                        $('#idrech').select();
+                        $('.ti-align-left,.mixitup-control-active').click();
+
+
+                         $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+
+                          $.ajax({
+                         url: '{% url 'gestionstock:sortistockrecettes' %}',
+                         type: 'POST',
+                         data:$(this).serialize(),
+                         async: false,
+                         success: function (data) {
+
+                              if(data.id=="0"){
+
+                                    $.toast({
+                                        heading: 'Gestion de stock',
+                                        text: data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'error',
+                                        hideAfter: 3500
+
+                                    });
+                                }else{
+
+
+                                    $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                    $('.sc-cart-clear').click();
+                                     autonum();
+
+
+                                      //imprimer
+                                    var iframe = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframe.className='pdfIframe'
+                                    document.body.appendChild(iframe);
+                                    iframe.style.display = 'none';
+                                    iframe.onload = function () {
+                                        setTimeout(function () {
+                                            iframe.focus();
+                                            iframe.contentWindow.print(0);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    //add --kiosk-printing icone chrome
+                                    iframe.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+                                    //imprimer
+                                }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+
+
+                          $('#addclient').click(function (e) {
+
+            		 $('#btnmodal').click();
+            		  window.setTimeout(function () {
+                                $('#nom').select();
+
+                            },1000);
+
+            	});
+
+
+                           $('#ajoutfournisseur').click(function (e) {
+
+                     if ($('#nom').val()==""){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier le nom Client",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:ajoutfournisseur' %}",
+                    data: {
+                        "nom":$('#nom').val(),
+                        "raison":"",
+                        "idnat":"",
+                        "type":$('#categorie').val(),
+                        "nature":"CLIENT",
+                        "adresse":$('#adresse').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                  $('#btnmodal').click();
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                    $('#client').append($('<option>',{
+                                              value:data.idfou,
+                                              text:data.nom
+                                          }));
+                                   $('#client').val(data.idfou);
+                                   $('#client').change();
+                                   $('#nom').val('');
+                                   $('#adresse').val('');
+
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+
+           });
+
+
+
+
+
+                       });
+
+ function autonum() {
+
+
+
+                        $.ajax({
+                            url: '{% url 'gestionstock:numerorectempodel' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}'
+                            },
+                            async: false,
+                            success: function (data) {
+
+
+                                      $('#autonum').val(data.tot);
+                                      $('#autoid').html(data.tot);
+
+
+
+
+
+                            }
+                        });
+
+
+
+
+                }
+
+
+      </script>
+
+ {% endblock %}

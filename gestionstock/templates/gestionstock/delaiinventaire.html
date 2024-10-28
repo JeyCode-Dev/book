@@ -1,0 +1,212 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Période de l'inventaire
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Validation</li>
+            <li class="breadcrumb-item active">Période de l'inventaire</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+{#                    <div class="col-sm-3">#}
+{#                <label>Date Début Inventaire</label>#}
+{#                <input type="date"  id="datedebu" required name="datedebu" value="{% now 'Y-m-d' %}" class="form-control" >#}
+{#                  </div>#}
+
+                  <div class="col-sm-3">
+                <label>Date Fin Inventaire</label>
+                <input type="date"  id="detefin" required name="detefin" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+
+                  <div class="col-sm-3">
+                <label>Période</label>
+                <input type="month"  id="periode" name="periode"  required class="form-control" >
+                  </div>
+                      <div class="col-sm-2" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Valider</button>
+					</div>
+				  </div>
+
+
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table editable-table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+{#									<th>Date Début</th>#}
+									<th>Date Fin</th>
+									<th>Période</th>
+									<th>Location</th>
+
+								</tr>
+							</thead>
+							<tbody>
+
+								{% for foo in delai %}
+
+                                    <tr>
+									<th width="50px">{{ foo.id }}</th>
+{#									<th>{{ foo.datedebutop|date:'d-m-Y' }}</th>#}
+									<th>{{ foo.datefinop|date:'d-m-Y' }}</th>
+									<th>{{ foo.periode }}</th>
+									<th>{{ foo.location.designation }}</th>
+								</tr>
+
+								{% endfor %}
+
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+{#									<th>Date Début</th>#}
+									<th>Date Fin</th>
+									<th>Période</th>
+                                    <th>Location</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+
+            	var idass=0;
+             $('.select2').select2();
+
+             $('#example1').DataTable();
+
+              $('#example1 tbody').on('click','tr',function(){
+
+                   // $('#code').val(this.cells[0].textContent);
+                    //$('#datedebu').val(this.cells[1].textContent);
+
+                    //$('#periode').val(this.cells[2].textContent);
+                   // $('#datefin').val(this.cells[1].textContent);
+
+                });
+
+ $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+                         $.ajax({
+                        url: '{% url 'gestionstock:delaiinventaire' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+
+                                   location.reload();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+              });
+
+
+
+ </script>
+
+ {% endblock %}

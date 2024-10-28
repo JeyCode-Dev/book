@@ -1,0 +1,477 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+      <button style="display:none;" id="btnmodal" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-right">
+
+				  </button>
+      <!-- Modal -->
+  <div class="modal modal-right fade" id="modal-right" tabindex="-1">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="titre"></h5>
+			<button type="button" class="close" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+            <p>Unité <select name="emballage" id="emballage" class="form-control select2"></select></p>
+            <p>Qte cmd <input type="text"  disabled name="qtecmd" id="qtecmd" class="form-control" placeholder=""></p>
+            <p>Qte livrée <input type="text" disabled name="qte" id="qte" class="form-control" placeholder=""></p>
+            <p>PAU <input type="text" name="pa" disabled value="0" id="pa" class="form-control" placeholder=""></p>
+{#            <p>Prix Vente<input type="text" name="privente" value="0" id="privente" class="form-control" placeholder=""></p>#}
+              <input type="hidden" name="privente" value="0" id="privente" class="form-control" placeholder="">
+              <input type="hidden" name="qtecmd_" id="qtecmd_" class="form-control" placeholder="">
+              <input type="hidden" name="qte_" id="qte_" class="form-control" placeholder="">
+              <input type="hidden" name="pa_" id="pa_" class="form-control" placeholder="">
+              <hr>
+              <p>Qte Ajust. <input type="text"  name="qtecmda" id="qtecmda" class="form-control" placeholder=""> <select name="ajustement1" id="ajustement1" class="form-control select2"><option value="PAT">AJUST. POSITIF</option><option value="DECL">AJUST. NEGATIF</option></select></p>
+              <p>PU Ajust. <input type="text" name="pua" id="pua" class="form-control" placeholder=""></p>
+            <p><button id="modifyarticle" type="button" class="btn btn-outline btn-warning mb-5">Modifier Produit</button></p>
+            <p><button id="supprimerarticle" type="button" class="btn btn-outline btn-danger mb-5">Supprimer Produit</button></p>
+		  </div>
+
+		</div>
+	  </div>
+	</div>
+  <!-- /.modal -->
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Ajustement Entrer Stock
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Validation</li>
+            <li class="breadcrumb-item active">Entrer Stock</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                  <div class="col-sm-3">
+                <label>Date Opération</label>
+                <input type="date"  id="dateop" name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+				  	<div class="col-sm-9">
+								<label>N° bon livraison</label>
+                                <select name="numbon" id="numbon" class="form-control select2" >
+                        
+									{% for i in bon  %}
+										<option value="{{ i.serielivraison}}" >{{ i.commande.observation}} / {{ i.datejour }} / {{ i.commande.tiers.nompostnom }}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+
+                 <div class="col-sm-6" style="margin-top:22px">
+                                &nbsp;
+                                <label id="total" style="font-size: 20px"> Valeur livrée : </label>
+
+					</div>
+
+
+				  </div>
+
+          <div class="form-group row">
+
+
+            
+
+          </div>
+
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+
+						<div class="table-responsive">
+						  <table id="example1" class="table editable-table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+
+									<th width="70px" >Unit.</th>
+                                    <th width="70px">Qte cmd</th>
+                                    <th width="70px">Prix cmd</th>
+                                    <th width="70px">Qte livrée</th>
+                                    <th width="70px">Prix livrée</th>
+                                    <th style="display: none"></th>
+
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+									<th width="70px" >Unit.</th>
+                                    <th width="70px">Qte cmd</th>
+                                    <th width="70px">Prix cmd</th>
+                                    <th width="70px">Qte livrée</th>
+                                    <th width="70px">Prix livrée</th>
+                                    <th style="display: none"></th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+
+
+
+                {#$('#fprm2').submit(function (e) {#}
+                {#         e.preventDefault();#}
+                {##}
+                {#         $.ajax({#}
+                {#        url: '{% url 'gestionstock:entrestockvalid' %}',#}
+                {#        type: 'POST',#}
+                {#         data:$(this).serialize(),#}
+                {#        async: false,#}
+                {#        success: function (data) {#}
+                {#             $('#msx').show();#}
+                {#            if(data.id=="0"){#}
+                {##}
+                {#                 $.toast({#}
+                {#                    heading: 'Gestion de stock',#}
+                {#                    text: data.msg,#}
+                {#                    position: 'top-right',#}
+                {#                    loaderBg: '#ff6849',#}
+                {#                    icon: 'error',#}
+                {#                    hideAfter: 3500#}
+                {##}
+                {#                });#}
+                {#            }else{#}
+                {##}
+                {##}
+                {#                  $.toast({#}
+                {#                        heading: 'Gestion de stock',#}
+                {#                        text:data.msg,#}
+                {#                        position: 'top-right',#}
+                {#                        loaderBg: '#ff6849',#}
+                {#                        icon: 'success',#}
+                {#                        hideAfter: 3500,#}
+                {#                        stack: 6#}
+                {#                    });#}
+                {##}
+                {##}
+                {#                   $('#qtess').val($('#qtes').val());#}
+                {#                   $('#qte').val('');#}
+                {#                   $('#totalpro').val('');#}
+                {#                   $('#prix').val('');#}
+                {#                   $('#prixx').val('');#}
+                {#                   location.reload();#}
+                {#                //affiche();#}
+                {#            }#}
+                {##}
+                {#        },error:function (data) {#}
+                {##}
+                {#            }#}
+                {#        });#}
+                {##}
+                {##}
+                {##}
+                {#        });#}
+
+
+
+            	var idass=0;
+             $('.select2').select2();
+ affiche();
+
+                 $('#numbon').change(function (e) {
+              affiche();
+
+           });
+
+
+                 $('#modifyarticle').click(function (e) {
+
+                    livree(idass);
+
+           });
+                  $('#supprimerarticle').click(function (e) {
+
+                    livreesup(idass);
+
+           });
+                 $('#example1').DataTable();
+
+               $('#example1 tbody').on('click','tr',function(){
+                    idass=this.cells[0].textContent;
+                    $('#titre').html(this.cells[1].textContent+"(Ajustement)");
+                    $('#qtecmd').val(this.cells[3].textContent);
+                    $('#qtecmd_').val(this.cells[3].textContent);
+                    $('#emballage').children().remove();
+
+                     $('#emballage').append($('<option>',{
+                                              value:this.cells[2].textContent,
+                                              text:this.cells[2].textContent
+                                          }));
+
+
+                    $('#qte').val(this.cells[5].textContent);
+                    $('#qte_').val(this.cells[5].textContent);
+                    $('#pa').val(this.cells[6].textContent);
+                    $('#pa_').val(this.cells[6].textContent);
+
+                     
+                     $('#btnmodal').click();
+                      window.setTimeout(function () {
+                                $('#qte').select();
+
+                            },1000);
+
+
+
+
+
+
+                });
+               $('#qtecmda').keydown(function (e) {
+
+                       if(e.keyCode==13){
+                            livree(idass);
+
+                       }
+                });
+               $('#pua').keydown(function (e) {
+
+                       if(e.keyCode==13){
+                            livree(idass);
+
+                       }
+                });
+
+
+
+
+
+
+
+
+              });
+
+            function livree(idass) {
+                
+                 
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:ajustementqte' %}",
+                    data: {
+                        "id":idass,
+                        "qtecmd":$('#qtecmda').val(),
+                        "qtecmd_":$('#qte_').val(),
+                        "qte_":$('#qte').val(),
+                        "privente":$('#privente').val(),
+                        "pa":$('#pua').val(),
+                        "pa_":$('#pa_').val(),
+                        "ajustement1":$('#ajustement1').val(),
+                        "ajustement2":$('#ajustement2').val(),
+                        "dateop":$('#dateop').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                  $('#btnmodal').click();
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                   $('#qtecmda').val('');
+                                   $('#privente').val('0');
+                                   $('#pua').val('');
+
+                                   $('#qtecmd_').val('');
+                                   $('#qte').val('');
+
+                                    $('#pa_').val('');
+                                affiche();
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+
+             function livreesup(idass) {
+                
+                 
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:ajustementqtesupprimer' %}",
+                    data: {
+                        "id":idass,
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                  $('#btnmodal').click();
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                   $('#qtecmda').val('');
+                                   $('#privente').val('0');
+                                   $('#pua').val('');
+
+                                   $('#qtecmd_').val('');
+                                   $('#qte').val('');
+
+                                    $('#pa_').val('');
+                                affiche();
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+            function affiche()
+    {
+
+    try{
+
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getboncommande' %}?validation="+$('#numbon').val(),
+    "columns":[
+
+    {"data":'id'},
+    {"data":'article__designation'},
+
+
+    {"data":'emballage'},
+            {"data":'quantite'},
+            {"data":'prix_unitaire'},
+    {"data":'qtelivree'},
+            {"data":'prixunitaire'}
+    , {"data":'total',"autoWidth":true,"visible":false,"render":function (data){
+                $('#total').html("Valeur livrée : "+data);
+            return data;
+    }}
+
+    ],
+
+    "bDestroy":true
+    });
+    $('#total').html("Total Livraison : "+ltot);
+    }catch(e){
+
+    }
+    }
+ </script>
+
+ {% endblock %}

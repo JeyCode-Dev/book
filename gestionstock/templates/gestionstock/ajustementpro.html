@@ -1,0 +1,358 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+      <button style="display:none;" id="btnmodal" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-right">
+
+				  </button>
+      <!-- Modal -->
+  <div class="modal modal-right fade" id="modal-right" tabindex="-1">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="titre"></h5>
+			<button type="button" class="close" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+            <p>Unité <select name="emballage" id="emballage" class="form-control select2"></select></p>
+            <p>Qte cmd <input type="text"  disabled name="qtecmd" id="qtecmd" class="form-control" placeholder=""></p>
+            <p>Qte livrée <input type="text" disabled name="qte" id="qte" class="form-control" placeholder=""></p>
+            <p>PAU <input type="text" name="pa" disabled value="0" id="pa" class="form-control" placeholder=""></p>
+{#            <p>Prix Vente<input type="text" name="privente" value="0" id="privente" class="form-control" placeholder=""></p>#}
+              <input type="hidden" name="privente" value="0" id="privente" class="form-control" placeholder="">
+              <input type="hidden" name="qtecmd_" id="qtecmd_" class="form-control" placeholder="">
+              <input type="hidden" name="qte_" id="qte_" class="form-control" placeholder="">
+              <input type="hidden" name="pa_" id="pa_" class="form-control" placeholder="">
+              <hr>
+              <p>Qte Ajust. <input type="text"  name="qtecmda" id="qtecmda" class="form-control" placeholder=""> <select name="ajustement1" id="ajustement1" class="form-control select2"><option value="PAT">AJUST. POSITIF</option><option value="DECL">AJUST. NEGATIF</option></select></p>
+              <p>PU Ajust. <input type="text" name="pua" id="pua" class="form-control" placeholder=""></p>
+            <p><button id="modifyarticle" type="button" class="btn btn-outline btn-warning mb-5">Modifier Produit</button></p>
+		  </div>
+
+		</div>
+	  </div>
+	</div>
+  <!-- /.modal -->
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Ajustement Stock Produit
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Validation</li>
+            <li class="breadcrumb-item active">Entrer Stock</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                  <div class="col-sm-3">
+                <label>Date Opération</label>
+                <input type="date"  id="dateop" name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+				  	<div class="col-sm-3">
+								<label>Produit</label>
+                                <select name="produit" id="produit" class="form-control select2" >
+                        
+									{% for i in produit  %}
+										<option value="{{ i.article}}"  data-emb1="{{ i.emballagee_id }}"  data-emb2="{{ i.emballageu_id  }}">{{ i.designation }}</option>
+									{% endfor %}
+
+								</select>
+					</div>	<div class="col-sm-2">
+								<label>Emb.</label>
+                                <select style="background-color:black" name="emb" id="emb" class="form-control">
+
+                            </select>
+					</div>
+
+                      <div class="col-sm-2">
+                          <label>Ajustement</label>
+                          <select name="ajustement" id="ajustement" class="form-control select2" >
+
+                              {% for i in ajustement  %}
+                                  <option value="{{ i.ajustement}}" >{{ i.designation }}</option>
+                              {% endfor %}
+
+                          </select>
+                      </div>
+
+                      <div class="col-sm-2">
+                          <label>Qte</label>
+                          <input type="text"  id="qte" name="qte"  class="form-control" >
+					  </div>
+                      <div class="col-sm-2" style="margin-top:22px">
+                          <button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Valider</button>
+                      </div>
+
+				  </div>
+
+          <div class="form-group row">
+
+
+            
+
+          </div>
+
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+
+						<div class="table-responsive">
+						  <table id="example1" class="table editable-table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+                                    <th width="50px">#</th>
+                                    <th>Article</th>
+                                    <th width="70px" >Unit.</th>
+                                    <th width="70px">Qte E</th>
+                                    <th width="70px">Qte S</th>
+                                    <th width="70px">Ajustement</th>
+                                    <th width="70px">User</th>
+                                    <th width="70px">Date</th>
+
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+                                    <th width="50px">#</th>
+                                    <th>Article</th>
+                                    <th width="70px" >Unit.</th>
+                                    <th width="70px">Qte E</th>
+                                    <th width="70px">Qte S</th>
+                                    <th width="70px">Ajustement</th>
+                                    <th width="70px">User</th>
+                                    <th width="70px">Date</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+
+
+
+                $('#fprm2').submit(function (e) {
+                        e.preventDefault();
+
+                        $.ajax({
+                       url: '{% url 'gestionstock:ajustementpro' %}',
+                       type: 'POST',
+                        data:$(this).serialize(),
+                       async: false,
+                       success: function (data) {
+                            $('#msx').show();
+                           if(data.id=="0"){
+
+                                $.toast({
+                                   heading: 'Gestion de stock',
+                                   text: data.msg,
+                                   position: 'top-right',
+                                   loaderBg: '#ff6849',
+                                   icon: 'error',
+                                   hideAfter: 3500
+
+                               });
+                           }else{
+
+
+                                 $.toast({
+                                       heading: 'Gestion de stock',
+                                       text:data.msg,
+                                       position: 'top-right',
+                                       loaderBg: '#ff6849',
+                                       icon: 'success',
+                                       hideAfter: 3500,
+                                       stack: 6
+                                   });
+
+
+                                  $('#qte').val('');
+                               affiche();
+
+                           }
+
+                       },error:function (data) {
+
+                           }
+                       });
+
+
+
+                       });
+
+
+
+             $('.select2').select2();
+            affiche();
+
+                 $('#produit').change(function (e) {
+                    charger()
+              affiche();
+
+           });
+$('#produit').change()
+
+                 $('#example1').DataTable();
+
+
+
+
+
+
+
+
+              });
+
+
+            function affiche()
+    {
+
+    try{
+
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getajustementpro' %}?produit="+$('#produit').val(),
+    "columns":[
+
+    {"data":'mvt'},
+    {"data":'article__designation'},
+
+
+    {"data":'emballage_id'},
+            {"data":'qte_entree'},
+            {"data":'qte_sortie'},
+            {"data":'ajustement__designation'},
+    {"data":'codeuser__username'},
+            {"data":'datemvt'}
+
+
+    ],
+
+    "bDestroy":true
+    });
+
+    }catch(e){
+
+    }
+    }
+
+        function charger() {
+
+                     $('#emb').children().remove();
+
+                $.ajax({
+                    url:  "{% url 'gestionstock:getqteproduitfacture' %}",
+                    data: {
+                        "produit":$('#produit').val(),
+                        "ctrl":0,
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+
+                     $.each(data.emb,function(key,value){
+
+                         if (value.emballagee_id!=null){
+                               $('#emb').append($('<option>',{
+                                              value:value.emballagee_id,
+                                              text:value.emballagee_id
+                                          }));
+                         }
+
+                        if (value.emballageu_id!=null){
+                             $('#emb').append($('<option>',{
+                                              value:value.emballageu_id,
+                                              text:value.emballageu_id
+                                          }));
+                         }
+
+
+
+                             });
+
+
+
+
+
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+ </script>
+
+ {% endblock %}

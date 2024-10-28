@@ -1,0 +1,940 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Mise à Jour Produits
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Produit</li>
+       
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+<div class="col-4" style="float: right">
+
+			  <div class="box" style="background-color: white;color:black;font-weight: bold">
+
+    <div class="box-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <label>Stock <span id="stn1"></span></label>
+                <input type="text" id="st1" readonly class="form-control" >
+            </div>
+            <div class="col-sm-4">
+                <label>Stock <span id="stn2"></span></label>
+                <input type="text" id="st2" readonly class="form-control" >
+            </div>
+            <div class="col-sm-4">
+                <label>Stock <span id="stn3"></span></label>
+                <input type="text" id="st3" readonly class="form-control" >
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+	<div class="col-12">
+
+								
+			  <div class="box" style="background-color: white;color:black;font-weight: bold">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                  <div class="col-sm-2">
+								<label>Famille</label>
+								<select name="famille" required id="famille" class="form-control select2" >
+
+                                    {% for i in famille  %}
+										<option value="{{i.famille}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+
+					<div class="col-sm-2" style="display: none">
+								<label>Classe</label>
+								<select name="classe"   id="classe" class="form-control select2" >
+									{% for i in classe  %}
+										<option value="{{i.classe}}" >{{ i.designation}}</option>
+									{% endfor %}
+									 
+								</select>
+					</div>
+                  	  	<div class="col-sm-2">
+								<label>Libélle Produit</label>
+								<input type="text" id="designation" style="text-transform:uppercase"  required name="designation" class="form-control" >
+								<input type="hidden" id="idpro" value="0"   name="idpro" class="form-control" >
+{#                                 <div id="replaceable-content" align="right">#}
+{#                                    {% include 'gestionstock/artists-results-partial.html' %}#}
+{#                                </div>#}
+
+					</div>
+                  <div class="col-sm-2">
+								<label>Prix Achat</label>
+								<input type="text" required id="pa1"    name="pa1" class="form-control pa" >
+					  </div>
+                  <div class="col-sm-2">
+								<label>Emb.1</label>
+								<select name="emballage1" required id="emballage1" class="form-control select2" >
+									<option value="" ></option>
+                                    {% for i in emballage  %}
+										<option value="{{i.emballage}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                   <div class="col-sm-1">
+								<label>Pcs</label>
+								<input type="text" required id="qte1"   name="qte1" class="form-control" >
+					</div>
+                  <div class="col-sm-2">
+								<label>Emb.2</label>
+
+								<select name="emballage2"   id="emballage2" class="form-control select2" >
+									<option value="" ></option>
+                                    {% for i in emballage  %}
+										<option value="{{i.emballage}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+
+                    <div class="col-sm-1">
+								<label>Taux</label>
+								<input type="text" readonly id="taux" value="{{floc.txchange}}"  name="taux" class="form-control taux" >
+					  </div>
+					  </div>
+                <hr>
+                <div class="form-group row" style="display: none">
+
+
+
+
+
+					  <div class="col-sm-2">
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc1" value="{{floc.cptetaxe}}"   name="pourc1" class="form-control pourc" >#}
+                                <input type="text"  id="pourc1" value="0"    name="pourc1" class="form-control pourc" >
+
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text" required id="pv1" value="0"   name="pv1" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text" required id="pv1cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden" id="pv1cdf_" value="0" class="form-control pvcdf_" >
+					  </div>
+
+                </div>
+
+                <div class="form-group row" style="display:none">
+
+                  <div class="col-sm-2">
+								<label>Pcs.(Contient Combien d'emb3 ou emb2)</label>
+								<input type="text"   id="qte2"   name="qte2" class="form-control qte" >
+					</div>
+
+					   <div class="col-sm-2">
+								<label>Prix Achat</label>
+								<input type="text"   id="pa2"    name="pa2" class="form-control pa" >
+					  </div>
+
+					  <div class="col-sm-2">
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc2" value="{{floc.cptetaxev}}"   name="pourc2" class="form-control pourc" >#}
+                                <input type="text"  id="pourc2"     name="pourc2" class="form-control pourc" >
+
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text"    id="pv2" value="0"   name="pv2" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text"  id="pv2cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden"    id="pv2cdf_" value="0" class="form-control pvcdf_" >
+					  </div>
+
+                </div>
+
+                 <div class="form-group row" style="display:none" >
+					<div class="col-sm-2">
+								<label>Emb.3</label>
+								<select name="emballage3"   id="emballage3" class="form-control select2" >
+									<option value="" ></option>
+                                    {% for i in emballage  %}
+										<option value="{{i.emballage}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                  <div class="col-sm-2">
+								<label>Pcs.</label>
+								<input type="text"   id="qte3"  name="qte3" class="form-control qte" >
+					</div>
+
+					   <div class="col-sm-2">
+								<label>Prix Achat</label>
+								<input type="text"   id="pa3"    name="pa3" class="form-control pa" >
+					  </div>
+
+					  <div class="col-sm-2">
+								<label>(%) Vente</label>
+{#                                <input type="text" readonly id="pourc3" value="{{floc.cptechf}}"   name="pourc3" class="form-control pourc" >#}
+                                <input type="text"   id="pourc3"    name="pourc3" class="form-control pourc" >
+
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente USD</label>
+								<input type="text"     id="pv3" value="0"   name="pv3" class="form-control pvusd" >
+					  </div>
+                        <div class="col-sm-2">
+								<label>Prix Vente CDF</label>
+								<input type="text"    id="pv3cdf" value="0" class="form-control pvcdf" >
+								<input type="hidden"   id="pv3cdf_" value="0" class="form-control pvcdf_" >
+					  </div>
+
+                </div>
+
+                     <hr>
+             <div class="form-group row">
+					<div class="col-sm-2">
+								<label>Qté Alerte</label>
+								<input type="text" required name="seuil"  id="seuil" class="form-control">
+					</div>
+{#					<div class="col-sm-2">#}
+{#								<label>Catégorie</label>#}
+{#								<select name="categorie" id="categorie" class="form-control select2" >#}
+{#										<option value="0" >Stock</option>#}
+{#										<option value="1" >Point Vente</option>#}
+{##}
+{##}
+{#								</select>#}
+{#					</div>#}
+{#					<div class="col-sm-2">#}
+{#								<label>N° cpte.</label>#}
+{#								<input type="text" name="numcpt" id="numcpt" class="form-control">#}
+{#					</div>#}
+
+					<div class="col-sm-4" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-success btn-info mb-5">Valider</button>
+								<button id="deletearticle" onclick="deleteitem()" type="button" class="btn btn-danger mb-5">Supprimer</button>
+					</div>
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box" style="background-color: #4b4b62;color:#ffca2c;font-weight: bold">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:#9f6c44;font-weight: bold">
+								<tr>
+									<th>#</th>
+									<th>Famille</th>
+									<th>Désignation</th>
+									<th>Emb.1</th>
+									<th>Pcs</th>
+									<th>PA</th>
+{#									<th>PV</th>#}
+
+                                    <th>Emb.2</th>
+{#									<th>Pcs(Emb3)</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+{##}
+{#                                    <th>Emb.3</th>#}
+{#									<th>Pcs</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+									<th>Seuil</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Famille</th>
+									<th>Désignation</th>
+									<th>Emb.1</th>
+									<th>Pcs</th>
+									<th>PA</th>
+{#									<th>PV</th>#}
+
+                                    <th>Emb.2</th>
+{#									<th>Pcs(Emb3)</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+{#                                    <th>Emb.3</th>#}
+{#									<th>Pcs</th>#}
+{#									<th>PA</th>#}
+{#									<th>PV</th>#}
+
+									<th>Seuil</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+
+
+             $('.ti-align-left,.mixitup-control-active').click();
+             $('.select2').select2();
+             $('#designation').select();
+
+             $('#example1').DataTable();
+
+
+             $(document).on("click", ".btnmodi", function () {
+                    var id=$(this).data('id')
+                    var designation=$(this).data('designation')
+                    $('#designation').select()
+                    $('#idpro').val(id)
+                    $('#designation').val(designation)
+
+                    $.ajax({
+                        url: '{% url 'gestionstock:getproduit' %}',
+                        type: 'GET',
+                         data:{
+                         	"id":$('#idpro').val(),
+                             "r":1
+                         },
+                        async: false,
+                        success: function (data) {
+                            $.each(data.data,function(key,value){
+
+
+                                         $('#classe').val(value.classe__classe);
+                                         $('#classe').change();
+                                         $('#famille').val(value.famille_id);
+                                         $('#famille').change();
+
+                                         $('#emballage1').val(value.emballagee_id);
+                                         $('#emballage1').change();
+                                         $('#emballage2').val(value.emballageu_id);
+                                         $('#emballage2').change();
+                                         {#$('#emballage3').val(value.emballagea);#}
+                                         {#$('#emballage3').change();#}
+
+
+                                         {#$('#categorie').val(value.categorie);#}
+                                         {#$('#categorie').change();#}
+
+                                         {#$('#qte3').val(value.quantitea);#}
+                                         {#$('#qte2').val(value.quantiteu);#}
+                                         $('#qte1').val(value.quantitee);
+
+                                         $('#pa1').val(value.prix_achat);
+                                         {#$('#pa2').val(value.pa);#}
+                                         {#$('#pa3').val(value.old_prix_achat);#}
+
+                                         {#$('#pv1').val(value.prix_vente);#}
+                                         {#$('#pv2').val(value.prix_vente_cdf);#}
+                                         {#$('#pv3').val(value.old_prix_vente);#}
+
+                                         // $('#numcpt').val(value.numcompte);
+                                         $('#seuil').val(value.qte_stock_minimal);
+
+                                          {#$('#pv1cdf').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv1').val()))));#}
+                                          {#$('#pv1cdf_').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv1').val()))));#}
+                                          {#$('#pv2cdf').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv2').val()))));#}
+                                          {#$('#pv2cdf_').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv2').val()))));#}
+                                          {#$('#pv3cdf').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv3').val()))));#}
+                                          {#$('#pv3cdf_').val(arondir(Math.trunc(parseFloat($('#taux').val())*parseFloat( $('#pv3').val()))));#}
+                                          {#if($.isNumeric(value.prix_vente)) {#}
+                                          {#    var valeurv1 = parseFloat(value.prix_vente) - parseFloat(value.prix_achat)#}
+                                          {#    if(valeurv1){#}
+                                          {#    $('#pourc1').val(Math.ceil((parseFloat(valeurv1) * 100) / parseFloat(value.prix_achat)));}#}
+                                          {#}else{#}
+                                          {#    $('#pourc1').val(0)#}
+                                          {#}#}
+                                          {#if($.isNumeric(value.prix_vente_cdf)) {#}
+                                          {#    var valeurv1 = parseFloat(value.prix_vente_cdf) - parseFloat(value.pa)#}
+                                          {#    if(valeurv1){#}
+                                          {#    $('#pourc2').val(Math.ceil((parseFloat(valeurv1) * 100) / parseFloat(value.pa)));}#}
+                                          {#}else{#}
+                                          {#    $('#pourc2').val(0)#}
+                                          {#}#}
+
+                                          {# if($.isNumeric(value.old_prix_vente)) {#}
+                                          {#    var valeurv1 = parseFloat(value.old_prix_vente) - parseFloat(value.old_prix_achat)#}
+                                          {#     if(valeurv1){#}
+                                          {#         $('#pourc3').val(Math.ceil((parseFloat(valeurv1) * 100) / parseFloat(value.old_prix_achat)));#}
+                                          {#     }#}
+                                          {##}
+                                          {#}else{#}
+                                          {#    $('#pourc3').val(0)#}
+                                          {#}#}
+
+
+
+
+
+
+
+
+                             });
+                            $('#st1').val(data.st1);
+                            $('#st2').val(data.st2);
+                            $('#st3').val(data.st3);
+
+                            $('#stn1').html(data.stn1);
+                            $('#stn2').html(data.stn2);
+                            $('#stn3').html(data.stn3);
+                            $("html, body").animate({ scrollTop: 0 }, "slow");
+
+
+                        },error:function (data) {
+
+                            }
+                        });
+                });
+             {#$(document).on("change", ".pa", function () {#}
+             {##}
+                    {#var pa=$(this).val()#}
+                    {#var pourc=$(this).closest('.row').find('.pourc').val()#}
+                    {#var pvusd=$(this).closest('.row').find('.pvusd')#}
+                    {#var pvcdf=$(this).closest('.row').find('.pvcdf')#}
+                    {#var taux= $('#taux').val()#}
+                    {#var pourcpa=(parseFloat(pa)*parseFloat(pourc))/100#}
+                    {##}
+                    {#if($.isNumeric(pa)){#}
+                    {#    try {#}
+                    {#    pvusd.val(parseFloat(pourcpa)+parseFloat(pa))#}
+                    {#    pvcdf.val(arondir(Math.trunc(parseFloat(taux)*parseFloat(pvusd.val()))))#}
+                    {#}catch (e) {#}
+                    {#    pvcdf.val(0)#}
+                    {#    pvusd.val(0)#}
+                    {#}#}
+                    {#}else {#}
+                    {#    pvcdf.val(0)#}
+                    {#    pvusd.val(0)#}
+                    {#}#}
+             {#       paall();#}
+             {#       qteall();#}
+             {##}
+             {##}
+             {##}
+             {#   });#}
+             {#$(document).on("change", ".pourc", function () {#}
+             {##}
+             {#       var pourc=$(this).val()#}
+             {#       var pa=$(this).closest('.row').find('.pa').val()#}
+             {#       var pvusd=$(this).closest('.row').find('.pvusd')#}
+             {#       var pvcdf=$(this).closest('.row').find('.pvcdf')#}
+             {#       var taux= $('#taux').val()#}
+             {#       var pourcpa=(parseFloat(pa)*parseFloat(pourc))/100#}
+             {##}
+             {#       if($.isNumeric(pourc)){#}
+             {#           try {#}
+             {#           pvusd.val(parseFloat(pourcpa)+parseFloat(pa))#}
+             {#           pvcdf.val(arondir(Math.trunc(parseFloat(taux)*parseFloat(pvusd.val()))))#}
+             {#       }catch (e) {#}
+             {#           pvcdf.val(0)#}
+             {#           pvusd.val(0)#}
+             {#       }#}
+             {#       }else {#}
+             {#           pvcdf.val(0)#}
+             {#           pvusd.val(0)#}
+             {#       }#}
+             {##}
+             {##}
+             {##}
+             {#   });#}
+             {#$(document).on("change", ".pvcdf", function () {#}
+             {##}
+             {#       var pvcdf=$(this).val()#}
+             {#       var pourc=$(this).closest('.row').find('.pourc')#}
+             {#       var pvusd=$(this).closest('.row').find('.pvusd')#}
+             {#       var pa=$(this).closest('.row').find('.pa').val()#}
+             {#       var pvcdf_=$(this).closest('.row').find('.pvcdf_').val()#}
+             {##}
+             {##}
+             {##}
+             {##}
+             {#       if($.isNumeric(pvcdf)){#}
+             {#           if(parseFloat(pvcdf)>=parseFloat(pvcdf_)){#}
+             {##}
+             {#               try {#}
+             {#                   pvusd.val(parseFloat(pvcdf)/parseFloat( $('#taux').val()))#}
+             {#                   var valeurv=parseFloat(pvusd.val())-parseFloat(pa)#}
+             {#                   pourc.val((parseFloat(valeurv)*100)/parseFloat(pa))#}
+             {#                   pourc.change()#}
+             {#                  $(this).closest('.row').find('.pvcdf_').val(pvcdf)#}
+             {##}
+             {#               }catch (e) {#}
+             {#                   $(this).val(pvcdf_)#}
+             {#               }#}
+             {#           }else {#}
+             {#           $(this).val(pvcdf_)#}
+             {#       }#}
+             {##}
+             {##}
+             {#       }else {#}
+             {#           $(this).val(pvcdf_)#}
+             {#       }#}
+             {##}
+             {##}
+             {##}
+             {#   });#}
+             {#$(document).on("change", ".pvusd", function () {#}
+             {##}
+             {#       var pvusd=$(this).val()#}
+             {#       var pa=$(this).closest('.row').find('.pa').val()#}
+             {#       var pourc=$(this).closest('.row').find('.pourc')#}
+             {##}
+             {#       if($.isNumeric(pvusd)){#}
+             {#           if(parseFloat(pvusd)>parseFloat(pa)){#}
+             {#               try {#}
+             {#                   var valeurv=parseFloat(pvusd)-parseFloat(pa)#}
+             {#                   pourc.val((parseFloat(valeurv)*100)/parseFloat(pa))#}
+             {#                   pourc.change()#}
+             {#               }catch (e) {#}
+             {#                   pvcdf.val(0)#}
+             {#                   pvusd.val(0)#}
+             {#               }#}
+             {#           }else {#}
+             {#           pvcdf.val(0)#}
+             {#           pvusd.val(0)#}
+             {#           pourc.val(0)#}
+             {#       }#}
+             {##}
+             {##}
+             {#       }else {#}
+             {#           pvcdf.val(0)#}
+             {#           pvusd.val(0)#}
+             {#       }#}
+             {##}
+             {##}
+             {##}
+             {#   });#}
+             {#$(document).on("change", ".qte", function () {#}
+             {##}
+             {#       var qte=$(this).val()#}
+             {#       var pa1= $('#pa1').val()#}
+             {#       var qte1= $('#qte1').val()#}
+             {#       var valeurunit=parseFloat(pa1)/parseFloat(qte1)#}
+             {#       var prix=$(this).closest('.row').find('.pa')#}
+             {#       prix.val(parseFloat(valeurunit)*parseFloat(qte))#}
+             {##}
+             {##}
+             {##}
+             {##}
+             {##}
+             {#   });#}
+
+              affiche();
+              $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+                         verification()
+						if($('#seuil').val()=="0"){
+							 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier votre quantité seuil",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+			              return false;
+			            }
+                         $.ajax({
+                        url: '{% url 'gestionstock:produit' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                  effacer();
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+                        });
+
+                $('input').keydown( function(e) {
+                        var key = e.charCode ? e.charCode : e.keyCode ? e.keyCode : 0;
+                        if(key == 13) {
+                            e.preventDefault();
+                            var inputs = $(this).closest('form').find(':input:visible');
+                            inputs.eq( inputs.index(this)+ 1 ).focus();
+                        }
+                    });
+
+                $(document).on('focus', '.select2', function() {
+                    $(this).siblings('select').select2('open');
+                });
+
+               $("#emballage1").on("select2:close", function (e) {
+                    //e.target.focus();
+                    $("#qte1").focus();
+
+                });
+               $("#emballage2").on("select2:close", function (e) {
+                    //e.target.focus();
+                    $("#qte2").focus();
+
+                });
+               $("#emballage3").on("select2:close", function (e) {
+                    //e.target.focus();
+                    $("#qte3").focus();
+
+                });
+
+
+
+               $("#designation").on('change', function () {
+                        search_ajax($("#designation").val())
+                })
+
+              });
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getproduit' %}",
+    "columns":[
+
+     {"data":'article','render':function (data, type, row, meta) {
+
+                    return '<button type="button" data-id="'+data+'" data-designation="'+row.designation+'" class="btn btn-warning mb-5 btnmodi">Modifier</button>'
+                }},
+     {"data":'famille__designation'},
+     {"data":'designation'},
+
+     {"data":'emballagee_id'},
+     {"data":'quantitee'},
+     {"data":'prix_achat'},
+     {#{"data":'prix_vente'},#}
+
+     {"data":'emballageu_id'},
+     {#{"data":'quantiteu'},#}
+     {#{"data":'pa'},#}
+     {#{"data":'prix_vente_cdf'},#}
+     {##}
+     {#{"data":'emballagea'},#}
+     {#{"data":'quantitea'},#}
+     {#{"data":'old_prix_achat'},#}
+     {#{"data":'old_prix_vente'},#}
+
+     {"data":'qte_stock_minimal'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+
+
+    function deleteitem() {
+            	 var postData = $('#fprm2').serializeArray();
+            	 postData.push({name:'delete_',value:1 });
+		 swal({
+                                    title: "Confirmation ?",
+                                    text: "Voulez-vous vraiment Valider ?",
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "Valider",
+                                    cancelButtonText: "Annuler",
+                                    closeOnConfirm: false
+                                }, function(isConfirm){
+                                            if(isConfirm==true){
+
+                         $.ajax({
+                        url: '{% url 'gestionstock:produit' %}',
+                        type: 'POST',
+                         data:postData,
+                        async: true,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+								swal("Valider !", data.msg, "error");
+                            }else{
+
+                                   effacer();
+							affiche()
+                            swal("Valider !", data.msg, "success");
+
+
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+                         }
+
+
+                                });
+	}
+
+
+	function effacer() {
+         $('#designation').val('');
+                                   $('#designation').select();
+                                   $('#seuil').val('');
+                                   $('#qte1').val('');
+                                   $('#qte2').val('');
+                                   $('#qte3').val('');
+                                   $('#pa1').val('');
+                                   $('#pa2').val('');
+                                   $('#pa3').val('');
+                                   $('#st1').val('');
+                                   $('#st2').val('');
+                                   $('#st3').val('');
+                                   $('#stn1').html('');
+                                   $('#stn2').html('');
+                                   $('#stn3').html('');
+                                   $('#pv1').val('0');
+                                   $('#pv2').val('0');
+                                   $('#pv3').val('0');
+                                   $('#pv1').val('0');
+                                   $('#pv2').val('0');
+                                   $('#pv3').val('0');
+                                    $('#pv1cdf').val('0');
+                                   $('#pv2cdf').val('0');
+                                   $('#pv3cdf').val('0');
+                                   $('#idpro').val('0');
+
+                                    $('#pourc1').val('');
+                                   $('#pourc2').val('');
+                                   $('#pourc3').val('');
+    }
+
+    function arondir(x) {
+
+        var v1=x.toString().slice(0,x.toString().length-3)//5958//9085
+
+        var v2=x.toString().slice(x.toString().length-3,x.toString().length)//958
+
+        p1=v2.slice(0,1)//9
+
+        p2=parseInt(v2.slice(1,3))//58
+
+
+        if (p2>=50){
+            v2=(parseInt(p1)+1)*100
+        }else{
+            if(parseInt(p1)==0){
+                v2='000'
+            }else{
+                v2=parseInt(p1)*100
+            }
+
+        }
+        return (parseInt(v1)*1000)+parseInt(v2)
+    }
+
+    function search_ajax(id) {
+         $.ajax({
+                        url: '{% url 'gestionstock:produit' %}',
+                        type: 'get',
+                         data: {
+                            'q':id
+                         },
+                        async: true,
+                        success: function (data) {
+                            if(data.data=='1'){
+                                 $('#designation').val('');
+                                 $('#designation').select();
+                                  $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: 'Produit existe déjà.',
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }
+                            {#$('#replaceable-content').html(data.html_from_view)#}
+                        },error:function (data) {
+
+                            }
+                        });
+    }
+
+
+    function verification() {
+
+                if( $("#emballage1").val()=="" || $("#emballage2").val()=="" || $('#qte1').val()=='' ||  $('#qte1').val()=='0' || $('#pa1').val()=='' ||  $('#pa1').val()=='0'  ){
+                {#if( $("#emballage1").val()=="" || $('#qte1').val()=='' ||  $('#qte1').val()=='0' || $('#pa1').val()=='' ||  $('#pa1').val()=='0'  || $('#pv1').val()=='' ||  $('#pv1').val()=='0'  || $('#pv1cdf').val()=='' ||  $('#pv1cdf').val()=='0' ){#}
+                {#if( $("#emballage1").val()=="" || $('#qte1').val()=='' ||  $('#qte1').val()=='0' || $('#pa1').val()=='' ||  $('#pa1').val()=='0' || $('#pourc1').val()=='' ||  $('#pourc1').val()=='0' || $('#pv1').val()=='' ||  $('#pv1').val()=='0'  || $('#pv1cdf').val()=='' ||  $('#pv1cdf').val()=='0' ){#}
+                    $("#emballage1").val('')
+                    $("#emballage1").change()
+                    $('#qte1').val('')
+                    $('#pa1').val('')
+
+                }
+
+
+                {#if( $("#emballage2").val()=="" || $('#qte2').val()=='' ||  $('#qte2').val()=='0' || $('#pa2').val()=='' ||  $('#pa2').val()=='0' ||  $('#pv2').val()=='' ||  $('#pv2').val()=='0'  || $('#pv2cdf').val()=='' ||  $('#pv2cdf').val()=='0' ){#}
+                {#if( $("#emballage2").val()=="" || $('#qte2').val()=='' ||  $('#qte2').val()=='0' || $('#pa2').val()=='' ||  $('#pa2').val()=='0' || $('#pourc2').val()=='' ||  $('#pourc2').val()=='0' || $('#pv2').val()=='' ||  $('#pv2').val()=='0'  || $('#pv2cdf').val()=='' ||  $('#pv2cdf').val()=='0' ){#}
+                {#    $("#emballage2").val('')#}
+                {#    $("#emballage2").change()#}
+                {#    $('#qte2').val('')#}
+                {#    $('#pa2').val('')#}
+                {#    $('#pourc2').val('')#}
+                {#    $('#pv2').val('0')#}
+                {#    $('#pv2cdf').val('0')#}
+                {#}#}
+
+
+                {#if( $("#emballage3").val()=="" || $('#qte3').val()=='' ||  $('#qte3').val()=='0' || $('#pa3').val()=='' ||  $('#pa3').val()=='0' ||  $('#pv3').val()=='' ||  $('#pv3').val()=='0'  || $('#pv3cdf').val()=='' ||  $('#pv3cdf').val()=='0' ){#}
+                {#if( $("#emballage3").val()=="" || $('#qte3').val()=='' ||  $('#qte3').val()=='0' || $('#pa3').val()=='' ||  $('#pa3').val()=='0' || $('#pourc3').val()=='' ||  $('#pourc3').val()=='0' || $('#pv3').val()=='' ||  $('#pv3').val()=='0'  || $('#pv3cdf').val()=='' ||  $('#pv3cdf').val()=='0' ){#}
+                {#    $("#emballage3").val('')#}
+                {#    $("#emballage3").change()#}
+                {#    $('#qte3').val('')#}
+                {#    $('#pa3').val('')#}
+                {#    $('#pourc3').val('')#}
+                {#    $('#pv3').val('0')#}
+                {#    $('#pv3cdf').val('0')#}
+                {#}#}
+    }
+    
+    function qteall() {
+        $('.qte').each(function(){
+
+            var qte=$(this).val()
+            var pa1= $('#pa1').val()
+            var qte1= $('#qte1').val()
+
+            var prix=$(this).closest('.row').find('.pa')
+
+           if(prix.val()==='' || typeof prix.val()==='undefined' || qte==='' || typeof qte==='undefined'){
+
+           }else {
+                var valeurunit=parseFloat(pa1)/parseFloat(qte1)
+            prix.val(parseFloat(valeurunit)*parseFloat(qte))
+           }
+
+
+
+         });
+    }
+    function paall() {
+        $('.pa').each(function(){
+
+          var pa=$(this).val()
+                    var pourc=$(this).closest('.row').find('.pourc').val()
+                    var pvusd=$(this).closest('.row').find('.pvusd')
+                    var pvcdf=$(this).closest('.row').find('.pvcdf')
+                    var taux= $('#taux').val()
+                    var pourcpa=(parseFloat(pa)*parseFloat(pourc))/100
+
+                    if($.isNumeric(pa)){
+                        try {
+                        pvusd.val(parseFloat(pourcpa)+parseFloat(pa))
+                        pvcdf.val(arondir(Math.trunc(parseFloat(taux)*parseFloat(pvusd.val()))))
+                    }catch (e) {
+                        pvcdf.val(0)
+                        pvusd.val(0)
+                    }
+                    }else {
+                        pvcdf.val(0)
+                        pvusd.val(0)
+                    }
+
+
+         });
+    }
+
+
+
+ </script>
+
+ {% endblock %}

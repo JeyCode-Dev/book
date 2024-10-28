@@ -1,0 +1,867 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+ <head>
+  <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="">
+
+    <title>Gestion de Stock</title>
+
+	<!-- Bootstrap 4.0-->
+	<link rel="stylesheet" href="{% static 'assets/vendor_components/bootstrap/dist/css/bootstrap.min.css' %}">
+
+	<!-- theme style -->
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+	<!-- Admin skins -->
+	<link rel="stylesheet" href="{% static 'css/skin_color.css' %}">
+  <link href="{% static 'assets/vendor_components/jquery-toast-plugin-master/src/jquery.toast.css' %}" rel="stylesheet">
+
+  {% block style %}
+    <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+  {% endblock %}
+
+
+
+</head>
+ {% if request.user.username %}
+
+
+     <body class="hold-transition theme-mix bg-img" style="background-image: url({% static 'images/bg-123.jpg' %})" data-overlay="3">
+
+
+     <section class="content">
+			<div class="row">
+				<div class="col-xl-4 col-12">
+					<div class="box box-inverse pull-up bg-facebook">
+					  <div class="box-header no-border">
+						<span class="fa fa-facebook font-size-30"></span>
+						  <div class="box-tools pull-right">
+							<h5 class="box-title box-title-bold">Facebook feed</h5>
+						  </div>
+					  </div>
+
+					  <blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+						<p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+						<div class="flexbox">
+						  <time class="text-white" datetime="2017-11-21 20:00">21 November, 2017</time>
+						  <span><i class="fa fa-heart"></i> 75</span>
+						</div>
+					  </blockquote>
+				  </div>
+				</div>
+
+				<div class="col-xl-4 col-12">
+					<div class="box box-inverse bg-hexagons-white pull-up bg-twitter">
+					  <div class="box-header no-border">
+						<span class="fa fa-twitter font-size-30"></span>
+						  <div class="box-tools pull-right">
+							<h5 class="box-title box-title-bold">Latest Tweets</h5>
+						  </div>
+					  </div>
+
+					  <blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+						<p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+						<div class="flexbox">
+						  <time class="text-white" datetime="2017-11-21 20:00">21 November, 2017</time>
+						  <span><i class="fa fa-heart"></i> 45</span>
+						</div>
+					  </blockquote>
+					</div>
+				  </div>
+
+				<div class="col-xl-4 col-12">
+					<div class="box box-inverse bg-google pull-up">
+					  <div class="box-header no-border">
+						<span class="fa fa-google-plus font-size-30"></span>
+						  <div class="box-tools pull-right">
+							<h5 class="box-title box-title-bold">Google Plus</h5>
+						  </div>
+					  </div>
+
+					  <blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+						<p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+						<div class="flexbox">
+						  <time class="text-white" datetime="2017-11-21 20:00">21 November, 2017</time>
+						  <span><i class="fa fa-heart"></i> 75</span>
+						</div>
+					  </blockquote>
+				  </div>
+				</div>
+
+				  <div class="col-xl-4 col-12">
+					<div class="box box-inverse bg-hexagons-white pull-up bg-facebook">
+					  <div class="box-header no-border">
+						<span class="fa fa-facebook font-size-30"></span>
+						  <div class="box-tools pull-right">
+							<h5 class="box-title box-title-bold">Carousel feed</h5>
+						  </div>
+					  </div>
+					  <div class="carousel slide" data-ride="carousel">
+						  <div class="carousel-inner">
+							<div class="carousel-item">
+								  <blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+									  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+									  <div class="flexbox">
+										<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+										<span><i class="fa fa-heart"></i> 62</span>
+									  </div>
+								  </blockquote>
+							</div>
+							<div class="carousel-item active">
+							      <blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+									  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+									  <div class="flexbox">
+										<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+										<span><i class="fa fa-heart"></i> 45</span>
+									  </div>
+								  </blockquote>
+							</div>
+							<div class="carousel-item">
+							      <blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+									  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+									  <div class="flexbox">
+										<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+										<span><i class="fa fa-heart"></i> 65</span>
+									  </div>
+								  </blockquote>
+							</div>
+						  </div>
+					  </div>
+
+					</div>
+				  </div>
+
+				  <div class="col-xl-4 col-12">
+					<div class="box box-inverse bg-hexagons-white pull-up bg-twitter">
+					  <div class="box-header no-border">
+						<span class="fa fa-twitter font-size-30"></span>
+						  <div class="box-tools pull-right">
+							<h5 class="box-title box-title-bold">Carousel feed</h5>
+						  </div>
+					  </div>
+
+					  <div class="carousel slide" data-ride="carousel">
+						  <div class="carousel-inner">
+							<div class="carousel-item active">
+								<blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+								  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+								  <div class="flexbox">
+									<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+									<span><i class="fa fa-heart"></i> 62</span>
+								  </div>
+								</blockquote>
+							</div>
+							<div class="carousel-item">
+								<blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+								  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+								  <div class="flexbox">
+									<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+									<span><i class="fa fa-heart"></i> 45</span>
+								  </div>
+								</blockquote>
+							</div>
+							<div class="carousel-item">
+								<blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+								  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+								  <div class="flexbox">
+									<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+									<span><i class="fa fa-heart"></i> 65</span>
+								  </div>
+								</blockquote>
+							</div>
+						  </div>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-xl-4 col-12">
+					<div class="box box-inverse bg-hexagons-white pull-up bg-google">
+					  <div class="box-header no-border">
+						<span class="fa fa-google-plus font-size-30"></span>
+						  <div class="box-tools pull-right">
+							<h5 class="box-title box-title-bold">Carousel feed</h5>
+						  </div>
+					  </div>
+					  <div class="carousel slide" data-ride="carousel">
+						  <div class="carousel-inner">
+							<div class="carousel-item">
+								<blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+								  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+								  <div class="flexbox">
+									<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+									<span><i class="fa fa-heart"></i> 62</span>
+								  </div>
+								</blockquote>
+							</div>
+							<div class="carousel-item">
+								<blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+								  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+								  <div class="flexbox">
+									<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+									<span><i class="fa fa-heart"></i> 45</span>
+								  </div>
+								</blockquote>
+							</div>
+							<div class="carousel-item active">
+								<blockquote class="blockquote blockquote-inverse no-border m-0 py-15">
+								  <p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment.</p>
+								  <div class="flexbox">
+									<time class="text-white" datetime="2017-11-22 20:00">22 November, 2017</time>
+									<span><i class="fa fa-heart"></i> 65</span>
+								  </div>
+								</blockquote>
+							</div>
+						  </div>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-12">
+					<h4 class="page-header">User Header</h4>
+				  </div>
+
+				  <div class="col-12">
+					<div class="box box-inverse bg-img" style="background-image: url(../../images/gallery/full/1.jpg);" data-overlay="2">
+					  <div class="flexbox px-20 pt-20">
+						<label class="toggler toggler-danger text-white">
+						  <input type="checkbox">
+						  <i class="fa fa-heart"></i>
+						</label>
+						<div class="dropdown">
+						  <a data-toggle="dropdown" href="#"><i class="ti-more-alt rotate-90 text-white"></i></a>
+						  <div class="dropdown-menu dropdown-menu-right">
+							<a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
+							<a class="dropdown-item" href="#"><i class="fa fa-picture-o"></i> Shots</a>
+							<a class="dropdown-item" href="#"><i class="ti-check"></i> Follow</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#"><i class="fa fa-ban"></i> Block</a>
+						  </div>
+						</div>
+					  </div>
+
+					  <div class="box-body text-center pb-50">
+						<a href="#">
+						  <img class="avatar avatar-xxl avatar-bordered" src="../../images/avatar/5.jpg" alt="">
+						</a>
+						<h4 class="mt-2 mb-0"><a class="hover-primary text-white" href="#">Roben Parkar</a></h4>
+						<span><i class="fa fa-map-marker w-20"></i> Miami</span>
+					  </div>
+
+					  <ul class="box-body flexbox flex-justified text-center" data-overlay="4">
+						<li>
+						  <span class="opacity-60">Followers</span><br>
+						  <span class="font-size-20">8.6K</span>
+						</li>
+						<li>
+						  <span class="opacity-60">Following</span><br>
+						  <span class="font-size-20">8457</span>
+						</li>
+						<li>
+						  <span class="opacity-60">Tweets</span><br>
+						  <span class="font-size-20">2154</span>
+						</li>
+					  </ul>
+					</div>
+				  </div>
+
+				  <div class="col-12">
+					<div class="box card-inverse bg-img" style="background-image: url(../../images/gallery/full/2.jpg); padding-top: 275px">
+					  <div class="flexbox align-items-center px-20" data-overlay="4">
+						<div class="flexbox align-items-center mr-auto">
+						  <a href="#">
+							<img class="avatar avatar-xl avatar-bordered" src="../../images/avatar/4.jpg" alt="">
+						  </a>
+						  <div class="pl-10 d-none d-md-block">
+							<h5 class="mb-0"><a class="hover-primary text-white" href="#">Roben Clark</a></h5>
+							<span>Designer</span>
+						  </div>
+						</div>
+
+						<ul class="flexbox flex-justified text-center py-20">
+						  <li class="px-10">
+							<span class="opacity-60">Followers</span><br>
+							<span class="font-size-20">9.6K</span>
+						  </li>
+						  <li class="px-10">
+							<span class="opacity-60">Following</span><br>
+							<span class="font-size-20">9845</span>
+						  </li>
+						  <li class="pl-10">
+							<span class="opacity-60">Tweets</span><br>
+							<span class="font-size-20">8456</span>
+						  </li>
+						</ul>
+					  </div>
+
+					</div>
+				  </div>
+
+				  <div class="col-12">
+					<h4 class="page-header">Minimal User Info</h4>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<a class="box box-body box-hover-shadow pull-up" href="#">
+					  <div class="flexbox align-items-center">
+						<div>
+						  <h6 class="mb-0">Natasha Clark</h6>
+						  <small>Web Developrt</small>
+						</div>
+
+						<img class="avatar avatar-lg" src="../../images/avatar/1.jpg" alt="...">
+					  </div>
+					</a>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<a class="box box-body box-hover-shadow pull-up" href="#">
+					  <div class="flexbox align-items-center">
+						<img class="avatar avatar-lg" src="../../images/avatar/2.jpg" alt="...">
+						<div class="text-right">
+						  <h6 class="mb-0">Kevin Black</h6>
+						  <small>Web Designer</small>
+						</div>
+					  </div>
+					</a>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<a class="box box-body box-inverse box-primary pull-up bg-hexagons-white" href="#">
+					  <div class="flexbox align-items-center">
+						<div>
+						  <h6 class="mb-0">Adom Tony</h6>
+						  <small>PHP Designer</small>
+						</div>
+						<img class="avatar avatar-lg avatar-bordered" src="../../images/avatar/4.jpg" alt="...">
+					  </div>
+					</a>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<a class="box box-inverse box-body bg-img pull-up" href="#" style="background-image: url(../../images/gallery/thumb-sm/1.jpg)" data-overlay="4">
+					  <div class="flexbox align-items-center">
+						<img class="avatar avatar-lg avatar-bordered" src="../../images/avatar/3.jpg" alt="...">
+						<div class="text-right">
+						  <h6 class="mb-0">Monty Hulk</h6>
+						  <small>Project Mg.</small>
+						</div>
+					  </div>
+					</a>
+				  </div>
+
+				  <div class="col-12">
+					<h4 class="page-header">Basic User Info</h4>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<div class="box box-body text-center pull-up py-50">
+					  <a href="#">
+						<img class="avatar avatar-xxl" src="../../images/avatar/1.jpg" alt="">
+					  </a>
+					  <h5 class="mt-3 mb-1"><a class="hover-primary" href="#">Mika Khalif</a></h5>
+					  <p class="text-fade">Project Repotar</p>
+					</div>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<div class="box pull-up bg-hexagons-dark">
+					  <div class="flexbox align-items-center px-20 pt-20">
+						<label class="toggler toggler-danger font-size-16">
+						  <input type="checkbox" checked="">
+						  <i class="fa fa-heart"></i>
+						</label>
+						<div class="dropdown">
+						  <a data-toggle="dropdown" href="#"><i class="ti-more-alt rotate-90 text-muted"></i></a>
+						  <div class="dropdown-menu dropdown-menu-right">
+							<a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
+							<a class="dropdown-item" href="#"><i class="fa fa-picture-o"></i> Shots</a>
+							<a class="dropdown-item" href="#"><i class="ti-check"></i> Follow</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#"><i class="fa fa-ban"></i> Block</a>
+						  </div>
+						</div>
+					  </div>
+					  <div class="box-body text-center pt-1 pb-50">
+						<a href="#">
+						  <img class="avatar avatar-xxl" src="../../images/avatar/2.jpg" alt="">
+						</a>
+						<h5 class="mt-3 mb-1"><a class="hover-primary" href="#">Rostar Joy</a></h5>
+						<p class="text-fade">Designer</p>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<div class="box pull-up">
+					  <div class="box-body py-50 text-center">
+						<a href="#">
+						  <img class="avatar avatar-xxl" src="../../images/avatar/4.jpg" alt="">
+						</a>
+						<h5 class="mt-3 mb-1"><a class="hover-primary" href="#">Priya Roy</a></h5>
+						<p class="text-fade">Graphice Designer</p>
+					  </div>
+
+					  <div class="flexbox flex-justified bt-1 border-light bg-dark text-center py-10">
+						<a class="text-muted" href="#">
+						  <i class="ion-ios-camera-outline font-size-30"></i><br>
+						  45 Shots
+						</a>
+						<a class="text-muted" href="#">
+						  <i class="ion-ios-people-outline font-size-30"></i><br>
+						  1457 Followers
+						</a>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-md-6 col-lg-3">
+					<div class="box">
+					  <img src="../../images/gallery/thumb/11.jpg" alt="...">
+					  <div class="box-body text-center pt-0" style="margin-top: -48px">
+						<a href="#">
+						  <img class="avatar avatar-xxl avatar-bordered" src="../../images/avatar/5.jpg" alt="">
+						</a>
+						<h5 class="mt-3 mb-1"><a class="hover-primary" href="#">Amanda Riki</a></h5>
+						<p class="text-fade font-size-12">PHP Developer @<a href="#">Themeforest</a></p>
+						<br>
+						<a class="btn btn-bold btn-primary" href="#">Follow</a>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-12">
+					<h4 class="page-header">Advanced User Info</h4>
+				  </div>
+
+				  <div class="col-md-6 col-lg-4">
+					<div class="box">
+					  <div class="text-white box-body bg-info py-60">
+						<div class="flexbox">
+						  <a href="#">
+							<img class="avatar avatar-xxl avatar-bordered" src="../../images/avatar/6.jpg" alt="">
+						  </a>
+						  <div class="flex-grow pl-20">
+							<h4><a class="text-white" href="#">Harmaini Potter</a></h4>
+							<div><i class="fa fa-fw fa-map-marker w-20px"></i> Florida</div>
+							<div><i class="fa fa-fw fa-twitter w-20px"></i> Themeforest</div>
+							<div><i class="fa fa-fw fa-envelope w-20px"></i> info@themeforest.com</div>
+						  </div>
+						</div>
+					  </div>
+					  <ul class="flexbox flex-justified text-center p-20">
+						<li class="br-1 border-light">
+						  <span class="text-muted">Followers</span><br>
+						  <span class="font-size-20">6.6K</span>
+						</li>
+						<li class="br-1 border-light">
+						  <span class="text-muted">Following</span><br>
+						  <span class="font-size-20">5148</span>
+						</li>
+						<li>
+						  <span class="text-muted">Tweets</span><br>
+						  <span class="font-size-20">2154</span>
+						</li>
+					  </ul>
+					</div>
+				  </div>
+
+				  <div class="col-md-6 col-lg-4">
+					<div class="box">
+
+					  <div class="text-white box-body bg-img text-center py-50" style="background-image: url(../../images/gallery/thumb/10.jpg);">
+						<a href="#">
+						  <img class="avatar avatar-xxl avatar-bordered" src="../../images/avatar/8.jpg" alt="">
+						</a>
+						<h5 class="mt-2 mb-0"><a class="text-white" href="#">Maika Khalif</a></h5>
+						<span>Designer</span>
+					  </div>
+					  <ul class="flexbox flex-justified text-center p-20">
+						<li class="br-1 border-light">
+						  <span class="text-muted">Followers</span><br>
+						  <span class="font-size-20">6.6K</span>
+						</li>
+						<li class="br-1 border-light">
+						  <span class="text-muted">Following</span><br>
+						  <span class="font-size-20">5148</span>
+						</li>
+						<li>
+						  <span class="text-muted">Tweets</span><br>
+						  <span class="font-size-20">2154</span>
+						</li>
+					  </ul>
+					</div>
+				  </div>
+
+				  <div class="col-md-6 col-lg-4">
+					<div class="box">
+					  <div class="bg-img h-150" style="background-image: url(../../images/gallery/thumb/16.jpg)"></div>
+
+					  <div class="box-body flexbox py-0" style="margin-top: -48px">
+						<a href="#">
+						  <img class="avatar avatar-xxl avatar-bordered" src="../../images/avatar/3.jpg" alt="">
+						</a>
+						<h5 class="flex-grow-1 align-self-end pl-2 pb-15"><a class="hover-primary" href="#">Maik Khalif</a></h5>
+					  </div>
+
+					  <div class="box-body">
+						<p>Globally deploy clicks-and-mortar products whereas interoperable e-commerce. Authoritatively e-enable team driven "outside the box" thinking without extensible systems. Dynamically maintain error-free channels whereas exceptional ROI.</p>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-md-6 col-lg-4">
+					<div class="box p-30 pt-50 text-center">
+					  <div>
+						<a class="avatar avatar-xxl status-success mb-3" href="#">
+						  <img src="../../images/avatar/9.jpg" alt="...">
+						</a>
+					  </div>
+					  <h5 class="mt-5 "><a class="text-default hover-primary" href="#">Harmaini Potter</a></h5>
+					  <p><small class="font-size-12">Designer</small></p>
+					  <p class="font-size-12 mb-50">Hello everyone, I am Maryam. My designs are used in several big companies in United State and other countries.</p>
+					  <div class="gap-items font-size-16">
+						<a class="text-facebook" href="#"><i class="fa fa-facebook"></i></a>
+						<a class="text-instagram" href="#"><i class="fa fa-instagram"></i></a>
+						<a class="text-google" href="#"><i class="fa fa-google"></i></a>
+						<a class="text-twitter" href="#"><i class="fa fa-twitter"></i></a>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-md-6 col-lg-8">
+					<div class="media align-items-center py-30 bg-dark">
+					  <img class="avatar avatar-xxl" src="../../images/avatar/7.jpg" alt="...">
+					  <div class="media-body">
+						<h5>Racky Behal</h5>
+						<p class="font-size-12 my-3">Continually underwhelm stand-alone relationships via information. Dramatically productivate extensive process improvements for pandemic niches.</p>
+						<div class="gap-items font-size-16">
+						  <a class="text-dark" href="#"><i class="fa fa-twitter"></i></a>
+						  <a class="text-dark" href="#"><i class="fa fa-instagram"></i></a>
+						  <a class="text-dark" href="#"><i class="fa fa-facebook"></i></a>
+						</div>
+					  </div>
+					</div>
+				  </div>
+
+				  <div class="col-12">
+					<h4 class="page-header">Post Block</h4>
+				  </div>
+
+				  <div class="col-lg-6">
+					<div class="box">
+					  <div class="media bb-1 border-fade">
+						<img class="avatar avatar-lg" src="../../images/avatar/3.jpg" alt="...">
+						<div class="media-body">
+						  <p>
+							<strong>Denial Webar</strong>
+							<time class="float-right" datetime="2017">24 min ago</time>
+						  </p>
+						  <p><small>Designer</small></p>
+						</div>
+					  </div>
+
+					  <div class="box-body bb-1 border-fade">
+						<p class="lead">Authoritatively syndicate goal-oriented leadership skills for clicks-and-mortar outsourcing. Synergistically reconceptualize enabled catalysts for change.</p>
+
+						<div class="gap-items-4 mt-10">
+						  <a href="#">
+							<i class="fa fa-thumbs-up mr-1"></i> 1254
+						  </a>
+						  <a href="#">
+							<i class="fa fa-comment mr-1"></i> 25
+						  </a>
+						  <a href="#">
+							<i class="fa fa-share-alt mr-1"></i> 12
+						  </a>
+						</div>
+					  </div>
+
+
+					  <div class="media-list media-list-divided bg-dark">
+						<div class="media">
+						  <a class="avatar" href="#">
+							<img src="../../images/avatar/6.jpg" alt="...">
+						  </a>
+						  <div class="media-body">
+							<p>
+							  <a href="#"><strong>Rock Tele</strong></a>
+							  <time class="float-right text-fade" datetime="2017-07-14 20:00">Just now</time>
+							</p>
+							<p>Uniquely enhance world-class channels with just in time schemas.</p>
+
+							<div class="media px-0 mt-20">
+							  <a class="avatar" href="#">
+								<img src="../../images/avatar/8.jpg" alt="...">
+							  </a>
+							  <div class="media-body">
+								<p>
+								  <a href="#"><strong>Brock Lensar</strong></a>
+								  <time class="float-right text-fade" datetime="2017-07-14 20:00">26 mins ago</time>
+								</p>
+								<p>Thank you for your nice comment.</p>
+							  </div>
+							</div>
+
+						  </div>
+						</div>
+
+						<div class="media">
+						  <a class="avatar" href="#">
+							<img src="../../images/avatar/9.jpg" alt="...">
+						  </a>
+						  <div class="media-body">
+							<p>
+							  <a href="#"><strong>Tony Stark</strong></a>
+							  <time class="float-right text-fade" datetime="2017-07-14 20:00">2 hours ago</time>
+							</p>
+							<p>Continually drive user friendly solutions through performance based infomediaries.</p>
+						  </div>
+						</div>
+					  </div>
+
+					  <form class="publisher bt-1 border-fade bg-dark">
+						<img class="avatar avatar-sm" src="../../images/avatar/4.jpg" alt="...">
+						<input class="publisher-input" type="text" placeholder="Add Your Comment">
+						<a class="publisher-btn" href="#"><i class="fa fa-smile-o"></i></a>
+						<span class="publisher-btn file-group">
+						  <i class="fa fa-camera file-browser"></i>
+						  <input type="file">
+						</span>
+					  </form>
+
+					</div>
+				  </div>
+
+				  <div class="col-lg-6">
+					<div class="box">
+					  <div class="media bb-1 border-fade">
+						<img class="avatar avatar-lg" src="../../images/avatar/4.jpg" alt="...">
+						<div class="media-body">
+						  <p>
+							<strong>Robin Hood</strong>
+							<time class="float-right" datetime="2017">24 min ago</time>
+						  </p>
+						  <p><small>Designer</small></p>
+						</div>
+					  </div>
+
+					  <a href="#">
+						<img src="../../images/gallery/thumb/11.jpg" alt="..." data-provide="lity">
+					  </a>
+
+					  <div class="card-body py-12">
+						<div class="gap-items-4">
+						  <a href="#">
+							<i class="fa fa-thumbs-up mr-1"></i> 45
+						  </a>
+						  <a href="#">
+							<i class="fa fa-comment mr-1"></i> 14
+						  </a>
+						  <a href="#">
+							<i class="fa fa-share-alt mr-1"></i> 2
+						  </a>
+						</div>
+					  </div>
+
+					  <form class="publisher bg-transparent bt-1 border-fade">
+						<img class="avatar avatar-sm" src="../../images/avatar/2.jpg" alt="...">
+						<input class="publisher-input" type="text" placeholder="Add Comment">
+						<a class="publisher-btn" href="#"><i class="fa fa-smile-o"></i></a>
+						<span class="publisher-btn file-group">
+						  <i class="fa fa-camera file-browser"></i>
+						  <input type="file">
+						</span>
+					  </form>
+
+					</div>
+				  </div>
+
+				  <div class="col-lg-6">
+					<div class="box">
+					  <div class="media bb-1 border-fade">
+						<img class="avatar avatar-lg" src="../../images/avatar/5.jpg" alt="...">
+						<div class="media-body">
+						  <p>
+							<strong>Ronit Roy</strong>
+							<time class="float-right" datetime="2017">24 min ago</time>
+						  </p>
+						  <p><small>Designer</small></p>
+						</div>
+					  </div>
+
+					  <div class="box-body">
+						<p>Best memory from the beach...</p>
+					  </div>
+
+					  <div class="row gap-1" data-provide="photoswipe">
+						<a class="col-6" href="#">
+						  <img src="../../images/gallery/thumb/12.jpg" alt="...">
+						</a>
+
+						<a class="col-6" href="#">
+						  <img src="../../images/gallery/thumb/10.jpg" alt="...">
+						</a>
+					  </div>
+
+					  <div class="box-body py-12">
+						<div class="gap-items-4">
+						  <a href="#">
+							<i class="fa fa-thumbs-up mr-1"></i> 541
+						  </a>
+						  <a href="#">
+							<i class="fa fa-comment mr-1"></i> 254
+						  </a>
+						  <a href="#">
+							<i class="fa fa-share-alt mr-1"></i> 30
+						  </a>
+						</div>
+					  </div>
+
+					  <div class="media-list media-list-divided bg-dark">
+						<div class="media">
+						  <a class="avatar" href="#">
+							<img src="../../images/avatar/7.jpg" alt="...">
+						  </a>
+						  <div class="media-body">
+							<p>
+							  <a href="#"><strong>Tony stark</strong></a>
+							  <time class="float-right text-fade" datetime="2017-07-14 20:00">25 Jan</time>
+							</p>
+							<p>Continually drive user friendly solutions through performance based infomediaries.</p>
+						  </div>
+						</div>
+					  </div>
+
+					  <form class="publisher bg-transparent bt-1 border-fade">
+						<img class="avatar avatar-sm" src="../../images/avatar/5.jpg" alt="...">
+						<input class="publisher-input" type="text" placeholder="Add Comment">
+						<a class="publisher-btn" href="#"><i class="fa fa-smile-o"></i></a>
+						<span class="publisher-btn file-group">
+						  <i class="fa fa-camera file-browser"></i>
+						  <input type="file">
+						</span>
+					  </form>
+
+					</div>
+				  </div>
+
+				  <div class="col-lg-6">
+					<div class="box">
+					  <div class="media bb-1 border-fade">
+						<img class="avatar avatar-lg" src="../../images/avatar/3.jpg" alt="...">
+						<div class="media-body">
+						  <p>
+							<strong>Harmaini</strong>
+							<time class="float-right" datetime="2017">24 min ago</time>
+						  </p>
+						  <p><small>Designer</small></p>
+						</div>
+					  </div>
+
+					  <div class="box-body">
+						<p class="lead">Check this out. It is the next big thing!!</p>
+					  </div>
+
+					  <div class="embed-responsive embed-responsive-16by9">
+						  <iframe src="https://www.youtube.com/embed/TKnufs85hXk" class="b-0" allowfullscreen=""></iframe>
+					  </div>
+
+					  <div class="box-body py-12">
+						<div class="gap-items-4">
+						  <a href="#">
+							<i class="fa fa-thumbs-up mr-1"></i> 145
+						  </a>
+						  <a href="#">
+							<i class="fa fa-comment mr-1"></i> 512
+						  </a>
+						  <a href="#">
+							<i class="fa fa-share-alt mr-1"></i> 42
+						  </a>
+						</div>
+					  </div>
+
+					  <form class="publisher bg-transparent bt-1 border-fade">
+						<img class="avatar avatar-sm" src="../../images/avatar/4.jpg" alt="...">
+						<input class="publisher-input" type="text" placeholder="Add Comment">
+						<a class="publisher-btn" href="#"><i class="fa fa-smile-o"></i></a>
+						<span class="publisher-btn file-group">
+						  <i class="fa fa-camera file-browser"></i>
+						  <input type="file">
+						</span>
+					  </form>
+
+					</div>
+				  </div>
+			  </div>
+		</section>
+
+
+ {% endif %}
+
+	<!-- jQuery 3 -->
+	<script src="{% static 'assets/vendor_components/jquery-3.3.1/jquery-3.3.1.js' %}"></script>
+
+	<!-- fullscreen -->
+	<script src="{% static 'assets/vendor_components/screenfull/screenfull.js' %}"></script>
+
+	<!-- popper -->
+	<script src="{% static 'assets/vendor_components/popper/dist/popper.min.js' %}"></script>
+
+	<!-- Bootstrap 4.0-->
+	<script src="{% static 'assets/vendor_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+   <script src="{% static 'assets/vendor_components/jquery-toast-plugin-master/src/jquery.toast.js' %}"></script>
+
+
+{% block script %}
+<script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+<script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+
+<script>
+            $(document).ready(function() {
+              
+             $('.select2').select2();
+
+
+
+
+              });
+
+             </script>
+
+    {% endblock %}
+
+ {% block scriptone %}
+     <script>
+      $(document).ready(function() {
+
+
+
+
+     });
+      </script>
+
+ {% endblock %}
+
+
+        <!-- SlimScroll -->
+	<script src="{% static 'assets/vendor_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+	<!-- FastClick -->
+	<script src="{% static 'assets/vendor_components/fastclick/lib/fastclick.js' %}"></script>
+
+	<!-- Crypto Admin App -->
+	<script src="{% static 'js/template.js' %}"></script>
+
+	<!-- Crypto Admin for demo purposes -->
+	<script src="{% static 'js/demo.js' %}"></script>
+   
+
+
+</body>
+ </html>

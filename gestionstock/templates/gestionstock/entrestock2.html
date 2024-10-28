@@ -1,0 +1,742 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+      <button style="display:none;" id="btnmodal" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-right">
+
+				  </button>
+      <!-- Modal -->
+  <div class="modal modal-right fade" id="modal-right" tabindex="-1">
+	  <div class="modal-dialog">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="titre"></h5>
+			<button type="button" class="close" data-dismiss="modal">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+
+            <p>Unité <select name="emballage" id="emballage" class="form-control select2"></select></p>
+            <p>Taux <input type="text" name="taux" id="taux" class="form-control" value="{{ taux }}"></p>
+            <p>Devise  <select name="devise" id="devise" class="form-control select2"><option value="USD">USD</option><option value="CDF">CDF</option></select></p>
+            <p>Qte Cmd <input type="text" name="qtecmd" id="qtecmd" class="form-control" placeholder=""></p>
+            <p>Qte livrée <input type="text" name="qte" id="qte" class="form-control" placeholder=""></p>
+            <p>PAU <input type="text" name="pa" value="0" id="pa" class="form-control" placeholder=""></p>
+{#            <p>Prix Vente<input type="text" name="privente" value="0" id="privente" class="form-control" placeholder=""></p>#}
+              <input type="hidden" name="privente" value="0" id="privente" class="form-control" placeholder="">
+
+                        <p style="color: red">Entree Prix Total(Facultatif Zigida) pour générer Prix Achat
+                        <input type="text"  name="prixtotal" id="prixtotal" class="form-control"></p>
+
+              <p><button id="ajoutarticle" type="button" class="btn btn-outline btn-info mb-5">Ajouter Produit</button></p>
+		  </div>
+
+		</div>
+	  </div>
+	</div>
+  <!-- /.modal -->
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Entrer Stock
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Stock</li>
+            <li class="breadcrumb-item active">Entrer Stock</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                  <div class="col-sm-2">
+                <label>Date Opération</label>
+                <input type="date"  id="dateop" name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+
+          
+
+				  	<div class="col-sm-3">
+								<label>N° bon commande</label>
+                        <select name="numbon" id="numbon" class="form-control select2" >
+                        
+									{% for i in bon  %}
+										<option value="{{i.commande}}" >{{ i.observation}} - {{ i.location.designation }} - {{ i.datejour }}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+ <div class="col-sm-2">
+                          <label>Fournisseur</label>
+                          								<select name="fournisseur" id="fournisseur" required class="form-control select2" >
+                                    {% for i in fournisseur  %}
+										<option value="{{i.tiers}}" >{{ i.nompostnom}}</option>
+									{% endfor %}
+								</select>
+                      </div>
+                      <div class="col-sm-2">
+                          <label>N° bon Livraison</label>
+
+                          <input type="text"  id="numbonlivre" name="numbonlivre" class="form-control">
+
+                      </div> <div class="col-sm-3">
+                          <label>List Bon Livraison</label>
+                          <select name="listnumbonlivre" id="listnumbonlivre" class="form-control select2" >
+
+                          </select>
+                      </div>
+
+
+
+				  </div>
+
+          <div class="form-group row">
+{#              <div class="col-sm-3">#}
+{#                <label>Taux</label>#}
+{#                <input type="text"  id="taux" name="taux" class="form-control" value="{{ taux.taux }}">#}
+{##}
+{#          </div>#}
+{#              <div class="col-sm-3">#}
+{#                <label>Devise</label>#}
+{#                <select name="devise" id="devise" class="form-control select2" >#}
+{##}
+{##}
+{#										<option value="USD" >USD</option>#}
+{#										<option value="CDF" >CDF</option>#}
+{##}
+{##}
+{#								</select>#}
+{##}
+{#          </div>#}
+{#              <div class="col-sm-3">#}
+{#								<label>Mode</label>#}
+{#								<select name="mode" required id="mode" class="form-control select2" >#}
+{#									<option value="1" >Comptant</option>#}
+{#									<option value="2" >Crédit</option>#}
+{#									<option value="3" >Comptant</option>#}
+{#								</select>#}
+{#					</div>#}
+            <div class="col-sm-3">
+                <label>Observation</label>
+                 <textarea id="commentaire" name="commentaire" class="form-control form-control-lg form-control-success"></textarea>
+
+
+          </div>
+              {% if request.user.is_superuser %}
+
+                  <div class="col-sm-5" style="margin-top:22px">
+                      <button id="delarticle" type="button" class="btn btn-outline btn-warning mb-5">Supprimer commande</button>
+
+                  </div>
+
+
+              {% endif %}
+              <button id="vallivrai" type="button" class="btn btn-outline btn-danger mb-5" onclick="vallivr()">Valider livraison</button>
+              <button id="valcmd" type="button" class="btn btn-outline btn-info mb-5" onclick="valcmdd()">Clôture Commande</button>
+
+            
+
+          </div>
+
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table editable-table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+									<th width="70px">Qte cmd</th>
+									<th width="70px" >Emb</th>
+                                    <th width="70px">PU</th>
+									<th>Qte livrée.</th>
+{#									<th>Liv.Actuel.</th>#}
+                                    <th width="70px">Ecart</th>
+									<th>Fournisseur</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th width="50px">#</th>
+									<th>Article</th>
+									<th  width="70px">Qte cmd</th>
+                                    <th width="70px">Emb</th>
+                                    <th width="70px">PU</th>
+
+                                    <th>Qte livrée.</th>
+{#                                    <th>Liv.Actuel.</th>#}
+                                    <th width="70px">Ecart</th>
+									<th>Fournisseur</th>
+									<th>Date</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+                     var qte=0;
+                     var idpro=0;
+                     var controleur=0;
+            $(document).ready(function() {
+
+            	var idass=0;
+            	  $('#prixtotal').change(function (e) {
+			     try{
+                     $('#pa').val(parseFloat($('#prixtotal').val())/parseFloat($('#qte').val()));
+             }catch (e) {
+
+                 }
+
+
+				});
+
+
+                $('.select2').select2();
+ affiche();
+
+                chargerlist();
+
+                 $('#numbon').change(function (e) {
+
+                     chargerlist();
+                     affiche();
+
+           });
+                $('#listnumbonlivre').change(function (e) {
+                    $('#numbonlivre').val($('#listnumbonlivre  option:selected').html());
+
+                });
+
+
+
+                $('#ajoutarticle').click(function (e) {
+
+                    livree(idass);
+
+           });
+
+                $('#delarticle').click(function (e) {
+
+                    if (confirm("Voulez-vous vraiment supprimer cette commande ?")){
+
+
+                        $.ajax({
+                            url: '{% url 'gestionstock:boncommandevalidesup' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                "id":$('#numbon').val(),
+                                "veri":"2"
+                            },
+                            async: false,
+                            success: function (data) {
+                                $('#msx').show();
+                                if(data.id=="0"){
+
+                                    $.toast({
+                                        heading: 'Gestion de stock',
+                                        text: data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'error',
+                                        hideAfter: 3500
+
+                                    });
+                                }else{
+
+
+                                    $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                    $('#numbon option[value="'+$('#numbon').val()+'"]').remove();
+                                    $('#qte').val('');
+                                    $('#privente').val('0');
+                                    $('#pa').val('0');
+                                    affiche();
+                                }
+
+                            }
+                        });
+
+
+                    }
+
+                });
+                $('#example1').DataTable();
+
+                $('#example1111 tbody').on('click','tr',function(){
+                    idass=this.cells[0].textContent;
+                    $('#titre').html(this.cells[1].textContent);
+                    $('#qtecmd').val(this.cells[2].textContent);
+                    $('#emballage').children().remove();
+
+                     $('#emballage').append($('<option>',{
+                                              value:this.cells[3].textContent,
+                                              text:this.cells[3].textContent
+                                          }));
+
+
+                    //$('#qte').val(this.cells[5].textContent);
+                    $('#qte').val('');
+                    $('#pa').val(this.cells[4].textContent);
+
+                    //get prix produit
+
+
+                  {#$.ajax({#}
+                  {#  url:  "{% url 'gestionstock:getprixemballage' %}",#}
+                  {#  data: {#}
+                  {#      "produit":this.cells[1].textContent,#}
+                  {#      "emballage":$('#emballage').val(),#}
+                  {#       'csrfmiddlewaretoken': '{{ csrf_token }}'#}
+                  {#            },#}
+                  {#  type: 'POST',#}
+                  {#  success: function (data) {#}
+                  {##}
+                  {#                $('#pa').val(data.prix);#}
+                  {##}
+                  {##}
+                  {#   },#}
+                  {#       error: function (data) {#}
+                  {##}
+                  {#       }#}
+                  {#  });#}
+
+                    //--------------------
+
+                     
+                     $('#btnmodal').click();
+                      window.setTimeout(function () {
+                                $('#qte').select();
+
+                            },1000);
+
+
+
+
+
+
+                });
+
+
+                // $('#qte').keydown(function (e) {
+                //
+                //        if(e.keyCode==13){
+                //             livree(idass);
+                //        }
+                // });
+
+                // $('#pa').keydown(function (e) {
+                //
+                //        if(e.keyCode==13){
+                //             livree(idass);
+                //        }
+                // });
+
+
+
+                $(document).on("change", ".qte,.pa", function () {
+
+                    var idcode=$(this).closest('tr').find('.idcode').text()
+                    var qte=$(this).closest('tr').find('.qte')
+                    var pa=$(this).closest('tr').find('.pa').val()
+                    var qtecmd=$(this).closest('tr').find('.qtecmd').text()
+                    var d=parseFloat(qtecmd)-parseFloat(qte.val())
+                    $(this).closest('tr').find('.difference').html(d)
+                    if (controleur==0){
+                        livree(idcode,qte,qtecmd,pa);
+                        controleur=0
+                    }else{
+                        controleur=0
+                    }
+
+
+
+
+				});
+
+
+
+
+
+
+
+
+
+              });
+
+            function livree(idass,qte,qtecmd,pa) {
+
+                 if (qte.val()=="" || qtecmd==""){
+                                     $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier la quantitée",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+                 if ($('#numbonlivre').val()==""){
+
+                     $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier le numéro bon livraison",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+                 if (pa==""){
+
+                         $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier le prix d'achat",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:saveqte' %}",
+                    data: {
+                        "id":idass,
+                        "qte":qte.val(),
+                        "qtecmd":qtecmd,
+                        "cmp":1,
+                       // "privente":$('#privente').val(),
+                        "pa":pa,
+                        // "taux":$('#taux').val(),
+                        // "devise":$('#devise').val(),
+                        "commentaire":$('#commentaire').val(),
+                        "fournisseur":$('#fournisseur').val(),
+                       // "mode":$('#mode').val(),
+                       // "numbonentre":$('#numbonentre').val(),
+                        "numbonlivre":$('#numbonlivre').val(),
+                        "dateop":$('#dateop').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+
+                                   // $('#privente').val('0');
+                                   // $('#pa').val('0');
+                                   // qte=$('#qte').val();
+                                   // idpro=idass;
+                                   //     $('#qte').val('');
+                                   //     $('#prixtotal').val('');
+                                //affiche();
+                                controleur=1
+                                qte.val(data.qte).change()
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+            function affiche()
+    {
+
+    try{
+
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getboncommande' %}?livraison="+$('#numbon').val(),
+    "columns":[
+
+    {"data":'id','render':function (data) {
+
+                    return '<span class="idcode">'+data+'</span>'
+                }},
+    {"data":'article__designation'},
+    {"data":'quantite','render':function (data) {
+
+                    return '<span class="qtecmd">'+data+'</span>'
+                }},
+    {"data":'emballage__emballage'},
+    {"data":'prix_unitaire','render':function (data, type, row, meta) {
+                    return '<input class="form-control pa" style="background-color: white;color: black" type="text" name="paliv" id="paliv" value="'+row.prix_unitaire+'">'
+                }},
+    {"data":'qte_livree','render':function (data, type, row, meta) {
+                    if (data=="0")
+                        return '<input class="form-control qte" style="background-color: white;color: red" type="text" name="qteliv" id="qteliv" value="'+row.quantite+'">'
+                    else
+                        return '<input class="form-control qte" style="background-color: white;color: red" type="text" name="qteliv" id="qteliv" value="'+row.qte_livree+'">'
+                }},
+        {#{"data":'qte_livree',"autoWidth":true,"render":function (data){#}
+        {#        if(idpro==idprop){#}
+        {#            return parseFloat(qte);#}
+        {#        }else{#}
+        {#            return 0;#}
+        {#        }#}
+        {#    }},#}
+    {"data":'difference','render':function (data, type, row, meta) {
+                     if (data==row.quantite)
+                         return '<span class="difference">0</span>'
+                     else
+                         return '<span class="difference">'+data+'</span>'
+                }},
+    {"data":'commande__tiers__nompostnom'},
+    {"data":'commande__datejour'},
+
+
+    ],
+
+    "bDestroy":true
+    });
+    }catch(e){
+
+    }
+    }
+    function chargerlist(){
+        $.ajax({
+            url:  "{% url 'gestionstock:getlistlivraison' %}",
+            data: {
+                "numbon":$('#numbon').val(),
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            type: 'POST',
+            success: function (data) {
+
+                $('#listnumbonlivre').children().remove();
+                $('#listnumbonlivre').append($('<option>',{
+                    value:"",
+                    text:""
+                }));
+                $.each(data.data,function(key,value){
+
+                    $('#listnumbonlivre').append($('<option>',{
+                        value:value.serielivraison,
+                        text:value.document
+                    }));
+
+                });
+
+
+
+            },
+            error: function (data) {
+
+            }
+        });
+    }
+
+
+                     function valcmdd()
+                     {
+
+                         if(confirm('Voulez-vous vraiment clôturer cette commande ?')){
+                             $.ajax({
+                                 url: '{% url 'gestionstock:cloturecommande2' %}',
+                                 type: 'POST',
+                                 data:{
+                                     'numbon':$('#numbon').val(),
+                                     'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                 },
+                                 async: false,
+                                 success: function (data) {
+                                     $('#msx').show();
+                                     if(data.id=="0"){
+
+                                         $.toast({
+                                             heading: 'Gestion de stock',
+                                             text: data.msg,
+                                             position: 'top-right',
+                                             loaderBg: '#ff6849',
+                                             icon: 'error',
+                                             hideAfter: 3500
+
+                                         });
+                                     }else{
+
+                                         $.toast({
+                                             heading: 'Gestion de stock',
+                                             text:data.msg,
+                                             position: 'top-right',
+                                             loaderBg: '#ff6849',
+                                             icon: 'success',
+                                             hideAfter: 3500,
+                                             stack: 6
+                                         });
+                                        location.reload();
+                                     }
+
+                                 },error:function (data) {
+
+                                 }
+                             });
+                         }else{
+                             return false;
+                         }
+
+
+                     }
+
+
+                     function vallivr()
+                     {
+
+                         if(confirm('Voulez-vous vraiment valider cette livraison ?')){
+                             $.ajax({
+                                 url: '{% url 'gestionstock:validerlivraison' %}',
+                                 type: 'POST',
+                                 data:{
+                                     'numliv':$('#numbonlivre').val(),
+                                     'numbon':$('#numbon').val(),
+                                     'dateop':$('#dateop').val(),
+                                     'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                 },
+                                 async: true,
+                                 success: function (data) {
+                                     $('#msx').show();
+                                     if(data.id=="0"){
+
+                                         $.toast({
+                                             heading: 'Gestion de stock',
+                                             text: data.msg,
+                                             position: 'top-right',
+                                             loaderBg: '#ff6849',
+                                             icon: 'error',
+                                             hideAfter: 3500
+
+                                         });
+                                     }else{
+
+                                         $.toast({
+                                             heading: 'Gestion de stock',
+                                             text:data.msg,
+                                             position: 'top-right',
+                                             loaderBg: '#ff6849',
+                                             icon: 'success',
+                                             hideAfter: 3500,
+                                             stack: 6
+                                         });
+                                         $('#numbonlivre').val('')
+                                         //location.reload();
+                                     }
+
+                                 },error:function (data) {
+
+                                 }
+                             });
+                         }else{
+                             return false;
+                         }
+
+
+                     }
+ </script>
+
+ {% endblock %}

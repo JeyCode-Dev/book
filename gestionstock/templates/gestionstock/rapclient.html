@@ -1,0 +1,500 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Rapport Client
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Rapport</li>
+            <li class="breadcrumb-item active">Rapport Client</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+ <div id="my-boxx"> </div>
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                      <div class="col-sm-3">
+								<label>Client</label>
+								<select name="client" required id="client" class="form-control select2" onchange="affiche()" >
+									<option value="0"></option>
+                                    {% for i in client  %}
+										<option value="{{i.tiers}}" >{{ i.nompostnom}}</option>
+									{% endfor %}
+								</select>
+					</div>
+{#                  <div class="col-sm-3">#}
+{#								<label>Taxes</label>#}
+{#								<select name="taxe" required id="taxe" class="form-control select2" multiple >#}
+{#									{% for i in taxe  %}#}
+{#										<option value="{{i.taxe}}" >{{ i.designation}}</option>#}
+{#									{% endfor %}#}
+{##}
+{#								</select>#}
+{#					</div>#}
+                                     <div class="col-sm-3">
+                <label>Date Début</label>
+
+								<input type="date" required name="datedebut" id="datedebut" value="{% now 'Y-m-d' %}" class="form-control">
+                  </div>
+                      <div class="col-sm-3">
+                <label>Date Fin</label>
+
+								<input type="date" required name="datefin" id="datefin" value="{% now 'Y-m-d' %}" class="form-control">
+                  </div>
+                      <div class="col-sm-4" style="margin-top:22px">
+								<button id="priseinventaire" type="button" class="btn btn-outline btn-info mb-5">Rapport Mouvement</button>
+								<button onclick="affiche()" type="button" class="btn btn-outline btn-info mb-5">Afficher</button>
+					</div>
+				  </div>
+
+
+                 </form>
+
+                <div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+                                    <th>Date</th>
+									<th>Total Payé</th>
+									<th>Total à Payer</th>
+									<th>Reste</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+
+
+							</tbody>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+
+				</div>
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+
+                $('.select2').select2();
+                const table= $('#example1').DataTable()
+                 $(document).on("click", ".paye", function () {
+                             var numero=$(this).data('id');
+                             var mtn=prompt("Entrez le montant.")
+                            try{
+
+                                if(isNaN(mtn)) {
+                                    return false
+                                }
+
+                                 $.ajax({
+                                        url: '{% url 'gestionstock:rapclient' %}',
+                                        type: 'POST',
+                                         data: {
+                                            'numero':numero,
+                                            'mtn':mtn,
+                                             'csrfmiddlewaretoken':'{{ csrf_token }}'
+                                      },
+                                        async: true,
+                                        success: function (data) {
+
+                                            if(data.id=="0"){
+                                               $.toast({
+                                                    heading: 'Message',
+                                                    text: data.msg,
+                                                    position: 'top-right',
+                                                    loaderBg: '#ff6849',
+                                                    icon: 'error',
+                                                    hideAfter: 3500
+
+                                                });
+                                            }else{
+                                            $.toast({
+                                                    heading: 'Message',
+                                                    text:data.msg,
+                                                    position: 'top-right',
+                                                    loaderBg: '#ff6849',
+                                                    icon: 'success',
+                                                    hideAfter: 3500,
+                                                    stack: 6
+                                                });
+
+                                              affiche();
+                                              swal("Mise à jour !", "L'opération effectuée", "success");
+
+
+                                        }
+
+
+
+
+                            },error:function (data) {
+
+                                }
+                            });
+
+                            }catch (e) {
+
+                            }
+
+
+
+
+                        });
+
+                 $(document).on("click", ".voir", function () {
+
+                              $('#idrecette').val($(this).data('id'));
+                                $('#img').attr('src',$(this).data('image'));
+                              $('#designation').val($(this).data('libelle'));
+                              $('#categorie').val($(this).data('categorie'));
+                              $('#categorie').change();
+                              $('#prix').val($(this).attr('data-prix'));
+
+
+                        });
+
+
+
+
+                {#$('#example1').DataTable();#}
+                {#$('#example1 tbody').on('dblclick','tr',function(){#}
+                {#    idpro=this.cells[0].textContent;#}
+                {#    if(confirm("Voulez-vous vraiment supprimer cette ligne ? "+idpro)){#}
+                {#        $.ajax({#}
+                {#    url:  "{% url 'gestionstock:rapclient' %}",#}
+                {#    data: {#}
+                {#        "delete":"1",#}
+                {#        "mvt":idpro,#}
+                {#         'csrfmiddlewaretoken': '{{ csrf_token }}'#}
+                {#              },#}
+                {#    type: 'POST',#}
+                {#    success: function (data) {#}
+                {##}
+                {##}
+                {#                   if(data.id=="0"){#}
+                {##}
+                {#                 $.toast({#}
+                {#                    heading: 'Gestion de stock',#}
+                {#                    text: data.msg,#}
+                {#                    position: 'top-right',#}
+                {#                    loaderBg: '#ff6849',#}
+                {#                    icon: 'error',#}
+                {#                    hideAfter: 3500#}
+                {##}
+                {#                });#}
+                {#            }else{#}
+                {##}
+                {##}
+                {#                  $.toast({#}
+                {#                        heading: 'Gestion de stock',#}
+                {#                        text:data.msg,#}
+                {#                        position: 'top-right',#}
+                {#                        loaderBg: '#ff6849',#}
+                {#                        icon: 'success',#}
+                {#                        hideAfter: 3500,#}
+                {#                        stack: 6#}
+                {#                    });#}
+                {#                    affiche();#}
+                {##}
+                {#            }#}
+                {##}
+                {#     },#}
+                {#         error: function (data) {#}
+                {##}
+                {#         }#}
+                {#    });#}
+                {#    }#}
+                {##}
+                {##}
+                {##}
+                {#});#}
+
+
+                $('#priseinventaire2').click(function (e) {
+
+                        $('#my-boxx').html('');
+                           $('#my-boxx').show();
+    var cmp=0;
+
+    $.ajax({
+     url: '{% url 'gestionstock:rapclient' %}',
+    type: 'POST',
+     data:{
+         'csrfmiddlewaretoken': '{{ csrf_token }}',
+         'date1': $('#datedebut').val(),
+         'date2': $('#datefin').val(),
+         'client': $('#client').val(),
+         'incremat': "1",
+         'taxe': $('#taxe').val()
+     },
+    beforeSend: function(){
+        $('#my-boxx').html('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+        $('.progress-bar').animate({width: "30%"}, 100);
+
+        setTimeout(function(argument) {
+          $('.progress-bar').animate({width: "55%"}, 100);
+        }, 10000);
+
+    },
+
+       xhr: function(){
+       var xhr = new window.XMLHttpRequest();
+       //Upload progress
+       xhr.upload.addEventListener("progress", function(evt){
+       if (evt.lengthComputable) {
+         //var percentComplete = evt.loaded / evt.total;
+          var percent = Math.round((evt.loaded / evt.total) * 100);
+         //  if (percent == 100)
+         //     {
+         //        console.log("complet");
+
+         //     }
+         // //Do something with upload progress
+         // console.log(percent);
+         }
+       }, false);
+     //Download progress
+       xhr.addEventListener("progress", function(evt){
+         if (evt.lengthComputable) {
+         }
+       }, false);
+       return xhr;
+     },
+    success: function(d){
+       if(d=="true"){
+         $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-boxx').hide();
+                }, 100);
+            }, 500);
+          window.open('{{ MEDIA_URL }}rapclient.pdf');
+
+
+         }else{
+           $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: d,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+            $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-boxx').hide();
+                }, 100);
+            }, 500);
+        }
+
+    },
+    error: function(request, status, err) {
+        alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+    }
+});
+                });
+                $('#priseinventaire').click(function (e) {
+
+                        $('#my-boxx').html('');
+                           $('#my-boxx').show();
+    var cmp=0;
+
+    $.ajax({
+     url: '{% url 'gestionstock:rapclient' %}',
+    type: 'POST',
+     data:{
+         'csrfmiddlewaretoken': '{{ csrf_token }}',
+         'date1': $('#datedebut').val(),
+         'date2': $('#datefin').val(),
+         'client': $('#client').val(),
+         'taxe': $('#taxe').val()
+     },
+    beforeSend: function(){
+        $('#my-boxx').html('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+        $('.progress-bar').animate({width: "30%"}, 100);
+
+        setTimeout(function(argument) {
+          $('.progress-bar').animate({width: "55%"}, 100);
+        }, 10000);
+
+    },
+
+       xhr: function(){
+       var xhr = new window.XMLHttpRequest();
+       //Upload progress
+       xhr.upload.addEventListener("progress", function(evt){
+       if (evt.lengthComputable) {
+         //var percentComplete = evt.loaded / evt.total;
+          var percent = Math.round((evt.loaded / evt.total) * 100);
+         //  if (percent == 100)
+         //     {
+         //        console.log("complet");
+
+         //     }
+         // //Do something with upload progress
+         // console.log(percent);
+         }
+       }, false);
+     //Download progress
+       xhr.addEventListener("progress", function(evt){
+         if (evt.lengthComputable) {
+         }
+       }, false);
+       return xhr;
+     },
+    success: function(d){
+       if(d=="true"){
+         $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-boxx').hide();
+                }, 100);
+            }, 500);
+          window.open('{{ MEDIA_URL }}rapclient.pdf');
+
+
+         }else{
+           $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: d,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+            $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-boxx').hide();
+                }, 100);
+            }, 500);
+        }
+
+    },
+    error: function(request, status, err) {
+        alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+    }
+});
+                });
+
+
+
+
+
+              });
+
+
+
+            function affiche()
+                    {
+
+                    try{
+                        var oTABLE=$('#example1').DataTable({
+                        "bProcessing":true,
+                        "sAjaxSource":"{% url 'gestionstock:rapclient' %}?affiche=1&dtd="+$('#datedebut').val()+"&client="+$('#client').val()+"&dtf="+$('#datefin').val(),
+                        "columns":[
+
+                        {"data":'numero'},
+                            {"data":'date'},
+                        {"data":'totalgen'},
+                        {"data":'paye'},
+                        {"data":'reste'},
+                            {
+                                "class": 'dt-control',
+                                "data":'numero',"render":function (data, type, row, meta){
+
+                                if (row.reste==0){
+                                    return ''
+                                    //return '<button type="button" class="voir btn btn-outline btn-rounded btn-primary mb-5" data-id="'+row.numero+'" >Voir</button>'
+                                }
+
+                                else{
+
+                                    return '<button type="button" class="paye btn btn-outline btn-rounded btn-danger mb-5" data-id="'+row.numero+'">Payer</button>'
+                                    //return '<button type="button" class="voir btn btn-outline btn-rounded btn-primary mb-5" data-id="'+row.numero+'" >Voir</button><button type="button" class="paye btn btn-outline btn-rounded btn-danger mb-5" data-id="'+row.numero+'">Payer</button>'
+                                     }
+
+    }}
+
+                        ],
+
+                        "bDestroy":true
+                        });
+                    //alert(data);
+                    }catch(e){
+                        alert(e)
+                    }
+                    }
+
+
+
+ </script>
+
+ {% endblock %}

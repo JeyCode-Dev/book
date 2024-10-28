@@ -1,0 +1,455 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+<style>
+{#input[type=text],input[type=button], input[type=file], input[type=number],select {#}
+{#    font-size: 30px;#}
+{#  padding: 12px 20px;#}
+{#  margin: 8px 0;#}
+{#  box-sizing: border-box;#}
+{#}#}
+{##}
+{#button{#}
+{#    font-size: 30px;#}
+{#  padding: 12px 20px;#}
+{#  margin: 8px 0;#}
+{#  box-sizing: border-box;#}
+{#}#}
+{#label{#}
+{#    font-size: 30px;#}
+{#}#}
+</style>
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Fabrication
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+            <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li class="breadcrumb-item" aria-current="page">Article</li>
+            <li class="breadcrumb-item active">Fabrication</li>
+       
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+                <form  id="fprm2" method="post"  enctype="multipart/form-data">
+
+				  <!-- Color Picker -->
+				  <div class="form-group row"  >
+
+
+
+                      <div class="col-sm-12">
+                        <label>Article</label>
+                        <select  name="recette" id="recette" class="form-control select2" >
+                         <option value="">_________</option>
+                         {% for i in recettes  %}
+                             <option value="{{i.id}}" >{{ i.libelle}}</option>
+                         {% endfor %}
+
+                     </select>
+
+
+					</div>
+
+
+				  </div>
+                  <hr>
+                 <div class="form-group row"  >
+                     <div class="col-sm-12">
+                        <div class="box box-solid box-inverse box-info">
+                          <div class="box-header with-border">
+                            <h4 class="box-title">Fiche <strong>Technique</strong></h4>
+
+                          </div>
+
+                          <div class="box-body">
+                              <div class="form-group row"  >
+                                  <div class="col-sm-3">
+                                    <label>Matières Premières</label>
+                                     <select name="produit" id="produit" class="form-control select2">
+                                         {% for i in produit  %}
+                                             <option value="{{i.article}}" >{{ i.designation}}</option>
+                                         {% endfor %}
+
+                                     </select>
+                                 </div>
+                                  <div class="col-sm-3">
+                                     <label>Unit.</label>
+                                     <select name="emballage" id="emballage" class="form-control" style="background-color: #0b0b0b" >
+
+
+                                     </select>
+                                 </div>
+                                 <div class="col-sm-3">
+                                     <label>Qte</label>
+                                     <input type="text" name="qte" value="0" id="qte" class="form-control" placeholder="">
+                                 </div>
+                                 <div class="col-sm-3">
+                                     <button onclick="ajoutrecette('non');" type="button" class="btn btn-warning  mb-5" style="margin-top: 20px">Ajouter Matière</button>
+                                 </div>
+                              </div>
+                          </div>
+                        </div>
+			         </div>
+
+                 </div>
+
+                 </form>
+
+
+                     <div class="row">
+
+                         <div class="col-sm-12">
+
+                         </div>
+
+
+                     </div>
+
+
+                     <p></p>
+                     <div class="form-group row">
+                         <div class="col-sm-9">
+                     <p>&nbsp; &nbsp;<label id="tot" style="font-size:35px">Total. 0</label></p>
+                         </div>
+                     </div>
+
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example2" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									  <th>Article</th>
+									  <th>Matière</th>
+                                     <th>Unit.</th>
+                                     <th>Qte</th>
+                                     <th>P.U</th>
+									<th width="100px">Action</th>
+
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+             
+
+             $('#example2').DataTable();
+
+
+
+
+
+
+                $(document).on("click", ".delete", function () {
+                             var pro=$(this).data('id');
+                            swal({
+                                    title: "Confirmation ?",
+                                    text: "Voulez-vous vriament supprimer "+$(this).data('libelle'),
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "Supprimer",
+                                    cancelButtonText: "Annuler",
+                                    closeOnConfirm: false
+                                }, function(isConfirm){
+                                            if(isConfirm==true){
+                                                         $.ajax({
+                    url:  "{% url 'gestionstock:fichetechnique' %}",
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'recette': $('#recette').val(),
+                        'produit': pro,
+                        'suppression': "oui"
+                    },
+                    type: 'POST',
+                    success: function (data) {
+
+                        $('#msx').show();
+                        if(data.id=="0"){
+
+                            $.toast({
+                                heading: 'Gestion de stock',
+                                text: data.msg,
+                                position: 'top-right',
+                                loaderBg: '#ff6849',
+                                icon: 'error',
+                                hideAfter: 3500
+
+                            });
+                        }else{
+
+
+                            $.toast({
+                                heading: 'Gestion de stock',
+                                text:data.msg,
+                                position: 'top-right',
+                                loaderBg: '#ff6849',
+                                icon: 'success',
+                                hideAfter: 3500,
+                                stack: 6
+                            });
+                            $('#pu').val('0');
+                            $('#qte').val('0');
+                            swal("Supprimer !", "L'opération effectuée", "success");
+                            affiche2();
+                        }
+
+
+                    },
+                    error: function (data) {
+
+                    }
+                });
+
+
+                                            }
+
+
+                                });
+
+
+
+                        });
+
+                {#$(document).on("click", ".modify", function () {#}
+                {##}
+                {#              $('#idrecette').val($(this).data('id'));#}
+                {#                $('#img').attr('src',$(this).data('image'));#}
+                {#              $('#designation').val($(this).data('libelle'));#}
+                {#              $('#categorie').val($(this).data('categorie'));#}
+                {#              $('#categorie').change();#}
+                {#              $('#prix').val($(this).attr('data-prix'));#}
+                {##}
+                {##}
+                {#        });#}
+
+                $('#example2 tbody').on('dblclick','tr',function(){
+
+
+
+
+                    $("#produit option:contains("+this.cells[0].textContent+")").attr('selected', 'selected');
+                    $('#produit').change();
+                    $('#emballage').val(this.cells[1].textContent);
+                    $('#emballage').change();
+                    $('#qte').val(this.cells[2].textContent); 
+
+
+
+                });
+                $('#recette').change(function (e) {
+                     $('#tot').html("Total. : 0");
+                    affiche2();
+
+                });
+
+
+                $('#produit').change(function (e) {
+
+                    getemb();
+
+                });
+
+
+ getemb();
+
+
+
+
+
+
+
+
+
+
+
+              });
+
+
+
+            function getemb(){
+                $('#emballage').children().remove();
+                $.ajax({
+                    url: '{% url 'gestionstock:getlibemballage' %}',
+                    type: 'POST',
+                    data:{
+                        "produit":$('#produit').val(),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+
+                    },
+                    async: false,
+                    success: function (data) {
+
+
+                        $('#emballage').append($('<option>',{
+                            value:data.emb1,
+                            text:data.emb1
+                        }));
+
+                        {#$('#emballage').append($('<option>',{#}
+                        {#    value:data.emb2,#}
+                        {#    text:data.emb2#}
+                        {#}));#}
+
+
+
+
+                    },error:function (data) {
+
+                    }
+                });
+            }
+
+            function ajoutrecette(sup){
+
+                if($('#qte').val()<=0){
+                    return false;
+                }
+                $.ajax({
+                    url:  "{% url 'gestionstock:fichetechnique' %}",
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'recette': $('#recette').val(),
+                        'produit': $('#produit').val(),
+
+                        'qte': $('#qte').val(),
+                        'emballage': $('#emballage').val(),
+                        'suppression': sup
+                    },
+                    type: 'POST',
+                    success: function (data) {
+
+                        $('#msx').show();
+                        if(data.id=="0"){
+
+                            $.toast({
+                                heading: 'Gestion de stock',
+                                text: data.msg,
+                                position: 'top-right',
+                                loaderBg: '#ff6849',
+                                icon: 'error',
+                                hideAfter: 3500
+
+                            });
+                        }else{
+
+
+                            $.toast({
+                                heading: 'Gestion de stock',
+                                text:data.msg,
+                                position: 'top-right',
+                                loaderBg: '#ff6849',
+                                icon: 'success',
+                                hideAfter: 3500,
+                                stack: 6
+                            });
+                            $('#pu').val('0');
+                            $('#qte').val('0');
+
+                            affiche2();
+                        }
+
+
+                    },
+                    error: function (data) {
+
+                    }
+                });
+            }
+
+
+
+
+
+
+            function affiche2()
+    {
+
+    try{
+    var oTABLE=$('#example2').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getrecettesdetail' %}?recette="+$('#recette').val(),
+    "columns":[
+
+    {"data":'article'},
+    {"data":'produit__designation'},
+    {"data":'emballage__emballage'},
+    {"data":'qte'},
+    {"data":'produit__pa'}
+        ,
+         {"data":'total',"render":function (data, type, row, meta){
+                                    $('#tot').html("Total : "+data);
+                                {#return '{% if perms.gestionstock.change_detailrecettes %}<button type="button" class="modify btn btn-outline btn-rounded btn-primary mb-5" data-id="'+row.id+'" data-libelle="'+row.libelle+'" data-categorie="'+row.categorie_id+'" data-prix="'+row.prix+'" data-image="{{ MEDIA_URL }}'+row.image+'">Modifier</button>{% endif %}{% if perms.gestionstock.delete_detailrecettes %}<button type="button" class="delete btn btn-outline btn-rounded btn-danger mb-5" data-id="'+row.produit__id+'" data-libelle="'+row.produit__designation+'">Supprimer</button>{% endif %}'#}
+                                return '{% if perms.gestionstock.delete_detailrecettes %}<button type="button" class="delete btn btn-outline btn-rounded btn-danger mb-5" data-id="'+row.produit__id+'" data-libelle="'+row.produit__designation+'">Supprimer</button>{% endif %}'
+
+
+    }}
+    ],
+
+    "bDestroy":true
+    });
+    }catch(e){}
+    }
+ </script>
+
+ {% endblock %}

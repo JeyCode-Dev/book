@@ -1,0 +1,768 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+/* Style The Dropdown Button */
+.dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+</style>
+
+{% endblock %}
+ {% block title %}
+{#     <button style="display:none;" id="btnmodal" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-fill">#}
+{##}
+{#     </button>#}
+{#     <!-- Modal -->#}
+{#     <div class="modal modal-fill fade" id="modal-fill" tabindex="-1">#}
+{#         <div class="modal-dialog">#}
+{#             <div class="modal-content">#}
+{#                 <div class="modal-header">#}
+{#                     <h5 class="modal-title" id="titre"></h5>#}
+{#                     <button type="button" class="close" data-dismiss="modal">#}
+{#                         <span aria-hidden="true">&times;</span>#}
+{#                     </button>#}
+{#                 </div>#}
+{#                 <div class="modal-body">#}
+{#                     <p>Produit : <b id="titrepro"></b></p>#}
+{#                     <p>Qte <input type="text" name="qte" id="qte" class="form-control" value="1"></p>#}
+{#                     <p>PAU <input type="text" name="pa" id="pa" class="form-control"></p>#}
+{#                     <input type="hidden" name="idpro" value="" id="idpro" class="form-control">#}
+{#                     <p><button id="ajoutarticle" type="button" class="btn btn-outline btn-info mb-5">Ajouter</button>#}
+{#                     <button type="button" class="btn btn-danger btn-info mb-5" data-dismiss="modal">Fermer</button></p>#}
+{#                 </div>#}
+{##}
+{#             </div>#}
+{#         </div>#}
+{#     </div>#}
+{#     <!-- /.modal -->#}
+
+         
+            <h3>
+                Facturation N° : <strong id="autoid"></strong>
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Point de vente</li>
+            <li class="breadcrumb-item active">Facturation</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+        <div class="row">
+            <div class="col-12">
+                <div class="box">
+                 <div id="my-boxx"> </div>
+                    <div class="box-body p-0">
+                        <div class="row align-items-center">
+                            <div class="col-lg-3">
+                                <div>
+                                    <input class="form-control p-20 bg-dark" type="text" id="idrech" data-ref="input-search" placeholder="Recherche...">
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <ul class="list-inline text-center mb-0">
+                                    <li data-filter="all" id="tous"><a href="#" class="text-bold list-link hover-warning p-15" >Tous</a></li>
+                                    {% for cat in categories %}
+                                        <li data-filter=".{{ cat.designation|to_and }}"><a href="#" class="text-bold list-link hover-warning p-15">{{ cat.designation }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-12" >
+
+{#                <div class="box" id="btnmodal" style="display: none">#}
+{#                    <div class="box-header with-border">#}
+{#                        <p>Produit : <b id="titrepro"></b></p>#}
+{#                        <p>Qte <input type="text" name="qte" id="qte" class="form-control" value="1"></p>#}
+{#                        <p>PAU <input type="text" name="pa" id="pa" class="form-control"></p>#}
+{#                        <p>#}
+{#                        {% for foo in commentaire %}#}
+{#                                <div class="form-check form-check-inline">#}
+{#                                  <input class="form-check-input commentaire" type="checkbox" name="commentaire" id="inlineCheckbox{{ foo.id }}" value="{{ foo.libelle }}">#}
+{#                                  <label class="form-check-label" for="inlineCheckbox{{ foo.id }}">{{ foo.libelle }}</label>#}
+{#                                </div>#}
+{#                        {% endfor %}#}
+{##}
+{#                        </p>#}
+{#                        <p>#}
+{#                            <div class="text-center bt-1 border-light p-2">#}
+{#                         <div class="form-check form-check-inline">#}
+{#                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2"  value="TA" checked>#}
+{#                          <label class="form-check-label" for="flexRadioDefault2">#}
+{#                            EMPORTER#}
+{#                          </label>#}
+{#                        </div>#}
+{#                         <div class="form-check form-check-inline">#}
+{#                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="SP" >#}
+{#                          <label class="form-check-label" for="flexRadioDefault1">#}
+{#                            SUR PLACE#}
+{#                          </label>#}
+{#                         </div>#}
+{##}
+{#                         <div class="form-check form-check-inline">#}
+{#                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" value="LIV">#}
+{#                          <label class="form-check-label" for="flexRadioDefault3">#}
+{#                            LIVRER#}
+{#                          </label>#}
+{#                        </div>#}
+{#                            </div>#}
+{##}
+{#                        </p>#}
+{#                        <input type="hidden" name="idpro" value="" id="idpro" class="form-control">#}
+{#                        <input type="hidden" name="autonum"  id="autonum" class="form-control">#}
+{#                        <p><button id="ajoutarticle" type="button" class="btn btn-outline btn-info mb-5">Ajouter</button>#}
+{#                            <button type="button" class="btn btn-danger btn-info mb-5" id="fermer">Fermer</button></p>#}
+{#                    </div>#}
+{##}
+{##}
+{##}
+{#                </div>#}
+{#                <div class="box">#}
+{#                    <div class="box-header with-border">#}
+{#                        <h4 class="box-title">Liste vente</h4>#}
+{#                    </div>#}
+{#                    <div class="box-body p-0">#}
+{#                        <div id="tempo" class="media-list media-list-hover media-list-divided inner-user-div" style="height: 345px">#}
+{##}
+{##}
+{##}
+{#                        </div>#}
+{#                    </div>#}
+{##}
+{##}
+{#                     <div class="text-center bt-1 border-light p-2">#}
+{#                        <a class="text-uppercase d-block font-size-12" href="#" ><strong id="tempotot" style="font-size: 20px"></strong></a>#}
+{#                    </div>#}
+{#                    <div class="text-center bt-1 border-light p-2">#}
+{#                        <button id="btnvalidercmd" onclick="valider()" type="button" class="btn btn-outline btn-warning mb-5">valider vente</button>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+
+                <form action="#" method="POST" id="fprm2">
+                    {% csrf_token %}
+                    <div id="smartcart"></div>
+                    <input type="hidden" name="autonum" id="autonum" >
+                </form>
+            </div>
+            <div class="col-lg-9 col-12">
+                <div class="row ico-filter" data-ref="ico-filter">
+                    {% for recette in recettes %}
+                        <div class="col-12 col-md-6 col-lg-4 mix {{ recette.famille|to_and }} {{ recette.libelle|lower }} modamoda sc-product-item" >
+                            <div class="box box-body bg-hexagons-dark pull-up sc-add-to-cart">
+                                <div class="media align-items-center p-0">
+                                    <div class="text-center">
+                                        <a href="#"><i class="cc {{ recette.famille|to_and_icon }} mr-5" title="{{ recette.famille|to_and_icon }}"></i></a>
+                                    </div>
+                                    <div>
+                                        <h3 class="no-margin text-bold" data-name="product_name">{{ recette.libelle|lower }}</h3>
+                                        <span>{{ recette.famille }}</span>
+                                    </div>
+                                </div>
+                                <div class="flexbox align-items-center mt-25" >
+                                    <div>
+                                        <p class="no-margin font-weight-600"><span class="text-warning">CDF {{ recette.pu }}</span></p>
+                                        <p class="no-margin">Hotel Léon</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="no-margin font-weight-600"><span class="text-warning"></span></p>
+                                        <p class="no-margin"></p>
+                                        <input name = "product_price_2" value = "{{ recette.pu|to_and_prix }}" type = "hidden" />
+                                        <input name = "product_price" value = "{{ recette.pu|to_and_prix }}" type = "hidden" />
+                                        <input name = "product_id" value = "{{ recette.id }}" type = "hidden" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+{#                <nav>#}
+{#                    <ul class="pagination justify-content-center">#}
+{#                        <li class="page-item disabled">#}
+{#                            <a class="page-link" href="#">#}
+{#                                <span class="ion-ios-arrow-thin-left"></span>#}
+{#                            </a>#}
+{#                        </li>#}
+{#                        <li class="page-item active"><a class="page-link" href="#">1</a></li>#}
+{#                        <li class="page-item"><a class="page-link" href="#">2</a></li>#}
+{#                        <li class="page-item"><a class="page-link" href="#">3</a></li>#}
+{#                        <li class="page-item"><a class="page-link" href="#">4</a></li>#}
+{#                        <li class="page-item"><a class="page-link" href="#">5</a></li>#}
+{#                        <li class="page-item">#}
+{#                            <a class="page-link" href="#">#}
+{#                                <span class="ion-ios-arrow-thin-right"></span>#}
+{#                            </a>#}
+{#                        </li>#}
+{#                    </ul>#}
+{#                </nav>#}
+            </div>
+        </div>
+
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+     <script src="{% static 'assets/vendor_components/mixitup-v3/dist/mixitup.js' %}"></script>
+     <script src="{% static 'js/pages/ico-filter.js' %}"></script>
+     <script src="{% static '/js/pages/list.js' %}"></script>
+     <script>
+ $(document).ready(function() {
+                        //init panier
+                        $('#smartcart').smartCart();
+                        //init panier
+
+                        //
+                        affiche();
+
+
+                        //get numero commande
+                        autonum();
+                        //get numero commande
+                         $('#idrech').select();
+
+                         $('.ti-align-left,.mixitup-control-active').click();
+
+
+
+
+                        $('#ajoutarticle').click(function (e) {
+
+                    livree();
+
+           });
+
+                        $('.modamoda').click(function (e) {
+
+                        $('#titrepro').html($(this).attr("data-titre"));
+                        $('#idpro').val($(this).attr("data-id"));
+                        $('#pa').val($(this).attr("data-prix"));
+                        //$('#btnmodal').show();
+v(1);
+
+
+
+
+
+                         $('#qte').select();
+                       //$('#tous').click();
+
+
+
+                       });
+
+                        $('#fermer').click(function (e) {
+
+                        v(0);
+                                         });
+
+                        $('#qte').keypress(function (e) {
+                         var key = e.which;
+                         if(key == 13)  // the enter key code
+                          {
+                             livree();
+                          }
+                        });
+
+                        $('#pa').keypress(function (e) {
+                         var key = e.which;
+                         if(key == 13)  // the enter key code
+                          {
+                            livree();
+                          }
+                        });
+
+               });
+
+
+                function livree() {
+                 if ($('#qte').val()==""){
+                                     $.toast({
+                                    heading: 'Point de vente',
+                                    text: "Vérifier la quantitée",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }if ($('#pa').val()==""){
+
+                     $.toast({
+                                    heading: 'Point de vente',
+                                    text: "Vérifier le prix",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+
+                 var fruitArray = [];
+                 $.each($("input[name='commentaire']:checked"), function (K, V) {
+                    fruitArray.push(V.value);
+                });
+
+
+
+
+               $.ajax({
+                    url:  "{% url 'pointvente:addrectempo' %}",
+                    data: {
+                        "id":$('#idpro').val(),
+                        "qte":$('#qte').val(),
+                        "designation":$('#titrepro').html(),
+                        "pa":$('#pa').val(),
+                        "commentaire":fruitArray,
+                        "categorie":$("input[name=flexRadioDefault]:checked").val(),
+                        "autonum":$('#autonum').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                 v(0);
+
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Point de vente',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Point de vente',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                   $('#qte').val('1');
+                                   $('#idpro').val('');
+                                   $('#pa').val('');
+                                   $('#idrech').val('');
+
+                                   $("input:checkbox").prop('checked', false);
+
+                                affiche();
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+                function affiche()
+                {
+
+                $.ajax({
+                    url:  "{% url 'pointvente:addrectempoaff' %}",
+                    type: 'GET',
+                    success: function (data) {
+
+            $('#tempo').html(data.data);
+            $('#tempotot').html(data.tot);
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+
+                }
+
+                function supprimer(produit,id) {
+
+
+
+                        $.ajax({
+                            url: '{% url 'pointvente:addrectempodel' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                "produit":produit,
+                                "id":id
+                            },
+                            async: false,
+                            success: function (data) {
+                                $('#msx').show();
+                                if(data.id=="0"){
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text: data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'error',
+                                        hideAfter: 3500
+
+                                    });
+                                }else{
+
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                      $('#qte').val('1');
+                                   $('#idpro').val('');
+                                   $('#pa').val('');
+
+                                    affiche();
+                                }
+
+                            }
+                        });
+
+
+
+
+                }
+                function autonum() {
+
+
+
+                        $.ajax({
+                            url: '{% url 'pointvente:numerorectempodel' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}'
+                            },
+                            async: false,
+                            success: function (data) {
+
+
+                                      $('#autonum').val(data.tot);
+                                      $('#autoid').html(data.tot);
+
+
+
+
+
+                            }
+                        });
+
+
+
+
+                }
+
+                function valider() {
+
+                        $.ajax({
+                            url: '{% url 'pointvente:validerrec' %}',
+                            type: 'POST',
+                            data:{
+                                "csrfmiddlewaretoken":'{{ csrf_token }}'
+
+                            },
+                            async: false,
+                            success: function (data) {
+                                $('#msx').show();
+                                if(data.id=="0"){
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text: data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'error',
+                                        hideAfter: 3500
+
+                                    });
+                                }else{
+
+
+                                    $.toast({
+                                        heading: 'Point de vente',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                      $('#qte').val('1');
+                                   $('#idpro').val('');
+                                   $('#pa').val('');
+                                   $('#commentaire').text('');
+                                    //imprimer(data.autonum,data.bon);
+
+
+                                    //imprimer
+                                    var iframe = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframe.className='pdfIframe'
+                                    document.body.appendChild(iframe);
+                                    iframe.style.display = 'none';
+                                    iframe.onload = function () {
+                                        setTimeout(function () {
+                                            iframe.focus();
+                                            iframe.contentWindow.print(0);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    //add --kiosk-printing icone chrome
+                                    iframe.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+                                    //imprimer
+
+                                   //imprimer
+                                    var iframee = document.createElement('iframe');
+                                    // iframe.id = 'pdfIframe'
+                                    iframee.className='pdfIframe'
+                                    document.body.appendChild(iframee);
+                                    iframee.style.display = 'none';
+                                    iframee.onload = function () {
+                                        setTimeout(function () {
+                                            iframee.focus();
+                                            iframee.contentWindow.print(1);
+                                            // document.body.removeChild(iframe)
+                                        }, 1);
+                                    };
+                                    //add --kiosk --kiosk-printing icone chrome
+                                    iframee.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+
+
+
+
+                                    autonum();
+                                    affiche();
+                                }
+
+                            }
+                        });
+
+                }
+                function v(id){
+                 if (id==0) {
+                            // Slide away
+                            $('#btnmodal').animate({left: -($('#btnmodal').outerWidth() + 20)}, function() {
+                                $('#btnmodal').hide();
+                            });
+                        }
+                        else {
+                            // Slide in
+                            $('#btnmodal').show().css("left", -($('#btnmodal').outerWidth() + 20)).animate({left: 0});
+                        }
+
+
+                }
+
+                function imprimer(id,bon) {
+
+                        $('#my-boxx').html('');
+                           $('#my-boxx').show();
+    var cmp=0;
+
+    $.ajax({
+     url: '{% url 'pointvente:validerrec' %}',
+    type: 'POST',
+     data:{
+         'csrfmiddlewaretoken': '{{ csrf_token }}',
+         'imprimer': id,
+         'bon': bon
+     },
+    beforeSend: function(){
+        $('#my-boxx').html('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+        $('.progress-bar').animate({width: "30%"}, 100);
+
+        setTimeout(function(argument) {
+          $('.progress-bar').animate({width: "55%"}, 100);
+        }, 10000);
+
+    },
+
+       xhr: function(){
+       var xhr = new window.XMLHttpRequest();
+       //Upload progress
+       xhr.upload.addEventListener("progress", function(evt){
+       if (evt.lengthComputable) {
+         //var percentComplete = evt.loaded / evt.total;
+          var percent = Math.round((evt.loaded / evt.total) * 100);
+         //  if (percent == 100)
+         //     {
+         //        console.log("complet");
+
+         //     }
+         // //Do something with upload progress
+         // console.log(percent);
+         }
+       }, false);
+     //Download progress
+       xhr.addEventListener("progress", function(evt){
+         if (evt.lengthComputable) {
+         }
+       }, false);
+       return xhr;
+     },
+    success: function(d){
+
+       if(d=="true"){
+         $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-boxx').hide();
+                }, 100);
+            }, 500);
+
+            //imprimer
+            var iframe = document.createElement('iframe');
+            // iframe.id = 'pdfIframe'
+            iframe.className='pdfIframe'
+            document.body.appendChild(iframe);
+            iframe.style.display = 'none';
+            iframe.onload = function () {
+                setTimeout(function () {
+                    iframe.focus();
+                    iframe.contentWindow.print(0);
+                    // document.body.removeChild(iframe)
+                }, 1);
+            };
+            //add --kiosk --kiosk-printing icone chrome
+            //add --kiosk-printing icone chrome
+            iframe.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+            //imprimer
+
+           //imprimer
+            var iframee = document.createElement('iframe');
+            // iframe.id = 'pdfIframe'
+            iframee.className='pdfIframe'
+            document.body.appendChild(iframee);
+            iframee.style.display = 'none';
+            iframee.onload = function () {
+                setTimeout(function () {
+                    iframee.focus();
+                    iframee.contentWindow.print(1);
+                    // document.body.removeChild(iframe)
+                }, 1);
+            };
+            //add --kiosk --kiosk-printing icone chrome
+            iframee.src = "{{ MEDIA_URL }}fac.pdf";
+
+            //imprimer
+            var iframee1 = document.createElement('iframe');
+            // iframe.id = 'pdfIframe'
+            iframee1.className='pdfIframe'
+            document.body.appendChild(iframee1);
+            iframee1.style.display = 'none';
+            iframee1.onload = function () {
+                setTimeout(function () {
+                    iframee1.focus();
+                    iframee1.contentWindow.print(1);
+                    // document.body.removeChild(iframe)
+                }, 1);
+            };
+            //add --kiosk --kiosk-printing icone chrome
+            iframee1.src = "{{ MEDIA_URL }}fac.pdf";
+
+
+         }else{
+           {#$.toast({#}
+           {#                         heading: 'Point de vente',#}
+           {#                         text: d,#}
+           {#                         position: 'top-right',#}
+           {#                         loaderBg: '#ff6849',#}
+           {#                         icon: 'error',#}
+           {#                         hideAfter: 3500#}
+           {##}
+           {#                     });#}
+            $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-boxx').hide();
+                }, 100);
+            }, 500);
+        }
+
+    },
+    error: function(request, status, err) {
+        alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+    }
+});
+                }
+     </script>
+
+ {% endblock %}

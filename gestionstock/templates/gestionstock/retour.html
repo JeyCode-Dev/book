@@ -1,0 +1,367 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Retour stock
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Stock</li>
+            <li class="breadcrumb-item active">Retour Stock</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}				  <div class="form-group row">
+                  <div class="col-sm-3">
+                <label>Date Opération</label>
+                <input type="date"  id="dateop" required name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+ <div class="col-sm-2">
+                <label>N° Retour</label>
+                <input type="text"  id="numretourt" name="numretourt" disabled class="form-control" value="{{ numretour }}">
+                <input type="hidden" id="numretour" name="numretour" value="{{ numretour }}" class="form-control">
+          </div>
+				    <div class="col-sm-3">
+								<label>Location provenance</label>
+								<select name="location" required id="location" class="form-control select2" >
+									{% for i in location  %}
+										<option value={{i.location}} >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                   <div class="col-sm-2">
+								<label>Location destionation</label>
+								<select name="locationb" id="locationb" required class="form-control select2" >
+                                    <option value="" ></option>
+									{% for i in locationb  %}
+										<option value={{i.location}} >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                  <div class="col-sm-2">
+								<label>Client</label>
+								<select name="client" id="client" required class="form-control select2" >
+{% for i in fournisseur  %}
+										<option value="{{i.tiers}}" >{{ i.nompostnom}}</option>
+									{% endfor %}
+								</select>
+					</div>
+
+
+
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+					<div class="col-sm-4">
+								<label>Produit</label>
+								<select name="produit"  required id="produit" class="form-control select2">
+                                    <option value="" ></option>
+								 {% for i in article  %}
+										<option value={{i.article}} >{{ i.designation}}</option>
+									{% endfor %}
+								</select>
+					</div>
+                    <div class="col-sm-2">
+								<label>Unit.</label>
+								<select name="emballage"  required id="emballage" class="form-control select2">
+
+
+								</select>
+					</div>
+
+					<div class="col-sm-1">
+								<label>Q.Stock</label>
+								<input type="text" name="qtes" required id="qtes" class="form-control">
+					</div>
+
+                  <div class="col-sm-1">
+								<label>Q.Retour</label>
+								<input type="text" name="qtet" required id="qtet" class="form-control">
+								<input type="hidden" name="locationbis" id="locationbis" class="form-control">
+					</div>
+
+                  <div class="col-sm-2" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Retour</button>
+					</div>
+                   <div class="col-sm-2" style="margin-top:22px">
+								<button id="newajoutarticle" type="button" class="btn btn-outline btn-primary mb-5">Nouveau</button>
+					</div>
+
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Qte</th>
+									<th>Date</th>
+                                    <th>Location</th>
+								</tr>
+							</thead>
+							<tbody>
+
+
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Qte</th>
+									<th>Date</th>
+									<th>Location</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+            	
+                $('.select2').select2();
+                $('#emballage').change(function (e) {
+                    charger();
+                });
+
+                $('#location').change(function (e) {
+                    charger();
+                });
+
+
+                $('#locationb').change(function (e) {
+                    $('#locationbis').val($('#locationb').val());
+                    $('#locationb').prop("disabled",true);
+                });
+                $('#newajoutarticle').click(function (e) {
+                    location.reload();
+                });
+                $('#qtet').change(function (e) {
+                    try {
+                        if(parseFloat($('#qtes').val().replace(',','.'))<=0){
+                            $('#qtet').val('');
+                            return false;
+                        }
+                       $('#qtes').val(parseFloat($('#qtes').val().replace(',','.'))-parseFloat($('#qtet').val()));
+
+                    }catch (e) {
+
+                    }
+                });
+
+             
+                $('#example1').DataTable();
+
+
+                $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+ if(parseFloat($('#qtes').val().replace(',','.'))<0){
+
+                            return false;
+                        }
+  if(parseFloat($('#qtet').val().replace(',','.'))==0){
+
+                            return false;
+                        }
+                         $.ajax({
+                        url: '{% url 'gestionstock:retour' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+
+                                   $('#qtet').val('');
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+
+                 $('#produit').change(function (e) {
+
+             $('#emballage').children().remove();
+             $('#qtes').val("");
+             $('#qtet').val("");
+                $.ajax({
+                    url:  "{% url 'gestionstock:getlibemballage' %}",
+                    data: {
+                        "produit":$('#produit').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                  $('#emballage').append($('<option>',{
+                                              value:data.emb1,
+                                              text:data.emb1
+                                          }));
+                                  $('#emballage').append($('<option>',{
+                                              value:data.emb2,
+                                              text:data.emb2
+                                          }));
+                                  $('#emballage').val(data.emb1);
+                                  $('#emballage').change();
+                                         $('#qtet').select();
+
+
+
+
+                     },
+                         error: function (data) {
+                                                     $('#qtet').val("");
+                                                     $('#qtes').val("");
+                         }
+                    });
+
+            	});
+
+
+
+
+
+
+              });
+
+            function charger() {
+                if ($('#produit').val()==''){
+                     $('#qtes').val("");
+                   return false;
+                }
+                $.ajax({
+                    url:  "{% url 'gestionstock:getqte' %}",
+                    data: {
+                        "location":$('#location').val(),
+                        "produit":$('#produit').val(),
+                        "emballage":$('#emballage').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                 $('#qtes').val(data.tot);
+                     },
+                         error: function (data) {
+                                                     $('#qtes').val("");
+                         }
+                    });
+            }
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getfacture2' %}?numretour="+$('#numretour').val()+"&locationbis="+$('#locationbis').val()+"&dateop="+$('#dateop').val(),
+    "columns":[
+
+    {"data":'mvt'},
+    {"data":'article__designation'},
+
+    {"data":'qte_entree'},
+            {"data":'datemvt'},
+    {"data":'location__designation'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+ </script>
+
+ {% endblock %}

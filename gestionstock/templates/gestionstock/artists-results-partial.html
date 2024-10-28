@@ -1,0 +1,7 @@
+{% if artists %}
+        {% for artist in artists %}
+        <li>{{ artist.designation }}</li>
+        {% endfor %}
+{% else %}
+    <p>article non trouvé.</p>
+{% endif %}

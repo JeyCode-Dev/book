@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rapportentreestock" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="59d2d467-ac6a-48bb-a124-3ef7faa4290f">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="adaptersqlserver"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="240"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="749"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="taux" class="java.lang.Integer"/>
+	<parameter name="location" class="java.lang.String"/>
+	<parameter name="ddl" class="java.lang.String"/>
+	<parameter name="dfl" class="java.lang.String"/>
+	<parameter name="dd" class="java.lang.String"/>
+	<parameter name="df" class="java.lang.String"/>
+	<parameter name="liblocation" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select $P{taux} as taux, (select moyen_pu from(
+select sum(moyen_pu) as moyen_pu,sum(valori) as valori,sum(qte) as qte,sum(cmp) as cmp,sum(qteS) as qteS,FMVTS.ARTICLE,FARTICLE.DESIGNATION,QUANTITEE from(
+
+
+select  moyen_pu,0 as valori,qte,cmp,'' as qteS,ARTICLE from(
+select sum(qte) as qte,sum(pu) as pu,sum(pu)/COUNT(*) as moyen_pu,COUNT(*) as cmp,ARTICLE 
+
+from(
+select AJUSTEMENT,ARTICLE,FMVTS.QTEUNIT_ENTREE as qte,FMVTS.PRIX_ACHAT as pu,NDATEMVT,DATEMVT,FMVTS.MVT,'' as qteS 
+from FMVTS  
+where convert(Float,NDATEMVT)<convert(Float,$P{ddl})
+and LOCATION =$P{location}
+and FMVTS.AJUSTEMENT='ACH'
+
+
+)as FMVTS group by ARTICLE 
+)as FMVTS
+
+-- --union
+union
+
+select 0 as totpu ,0 as valori,0 as qte,0 as cmp,sum(qteS) as qteS,ARTICLE
+
+from(
+select FMVTS.QTEUNIT_SORTIE as qteS,ARTICLE 
+from FMVTS   
+where convert(Float,NDATEMVT)<convert(Float,$P{ddl})
+and LOCATION =$P{location}
+and AJUSTEMENT ='TRTO' 
+
+union 
+
+select FMVTS.QTEUNIT_SORTIE as qteS,ARTICLE
+from FMVTS 
+where convert(Float,NDATEMVT)<convert(Float,$P{ddl})
+and LOCATION =$P{location}
+and FMVTS.AJUSTEMENT='INV' and FMVTS.QTEUNIT_SORTIE >0
+
+
+)as FMVTS group by ARTICLE
+
+
+
+
+)as FMVTS inner join FARTICLE on FARTICLE.ARTICLE=FMVTS.ARTICLE group by FMVTS.ARTICLE,FARTICLE.DESIGNATION,QUANTITEE
+)as FMVTS_PUR where ARTICLE=FMVTS.ARTICLE) as PUR,(select ((qte-qteS)/QUANTITEE) as qte_E from(
+select sum(moyen_pu) as moyen_pu,sum(valori) as valori,sum(qte) as qte,sum(cmp) as cmp,sum(qteS) as qteS,FMVTS.ARTICLE,FARTICLE.DESIGNATION,QUANTITEE from(
+
+
+select  moyen_pu,0 as valori,qte,cmp,'' as qteS,ARTICLE from(
+select sum(qte) as qte,sum(pu) as pu,sum(pu)/COUNT(*) as moyen_pu,COUNT(*) as cmp,ARTICLE 
+
+from(
+select AJUSTEMENT,ARTICLE,FMVTS.QTEUNIT_ENTREE as qte,FMVTS.PRIX_ACHAT as pu,NDATEMVT,DATEMVT,FMVTS.MVT,'' as qteS 
+from FMVTS  
+where convert(Float,NDATEMVT)<convert(Float,$P{ddl})
+and LOCATION =$P{location}
+and FMVTS.AJUSTEMENT='ACH'
+
+
+)as FMVTS group by ARTICLE 
+)as FMVTS
+
+-- --union
+union
+
+select 0 as totpu ,0 as valori,0 as qte,0 as cmp,sum(qteS) as qteS,ARTICLE
+
+from(
+select FMVTS.QTEUNIT_SORTIE as qteS,ARTICLE 
+from FMVTS   
+where convert(Float,NDATEMVT)<convert(Float,$P{ddl})
+and LOCATION =$P{location}
+and AJUSTEMENT ='TRTO' 
+
+union 
+
+select FMVTS.QTEUNIT_SORTIE as qteS,ARTICLE
+from FMVTS 
+where convert(Float,NDATEMVT)<convert(Float,$P{ddl})
+and LOCATION =$P{location}
+and FMVTS.AJUSTEMENT='INV' and FMVTS.QTEUNIT_SORTIE >0
+
+
+)as FMVTS group by ARTICLE
+
+
+
+
+)as FMVTS inner join FARTICLE on FARTICLE.ARTICLE=FMVTS.ARTICLE group by FMVTS.ARTICLE,FARTICLE.DESIGNATION,QUANTITEE
+)as FMVTS_QTR where ARTICLE=FMVTS.ARTICLE) as QTR,moyen_pu,qte/QUANTITEE as qte_E,qteS/QUANTITEE as qte_S,cmp, ((qte-qteS)/QUANTITEE) as qte_I,(moyen_pu*(qte/QUANTITEE)) as valori_E,(moyen_pu*(qteS/QUANTITEE)) as valori_S,(moyen_pu*((qte-qteS)/QUANTITEE)) as valori_I,ARTICLE,DESIGNATION from(
+select sum(moyen_pu) as moyen_pu,sum(valori) as valori,sum(qte) as qte,sum(cmp) as cmp,sum(qteS) as qteS,FMVTS.ARTICLE,FARTICLE.DESIGNATION,QUANTITEE from(
+
+
+select  moyen_pu,0 as valori,qte,cmp,'' as qteS,ARTICLE from(
+select sum(qte) as qte,sum(pu) as pu,sum(pu)/COUNT(*) as moyen_pu,COUNT(*) as cmp,ARTICLE 
+
+from(
+select AJUSTEMENT,ARTICLE,FMVTS.QTEUNIT_ENTREE as qte,FMVTS.PRIX_ACHAT as pu,NDATEMVT,DATEMVT,FMVTS.MVT,'' as qteS 
+from FMVTS  
+where convert(Float,NDATEMVT)>=convert(Float,$P{ddl})  and convert(Float,NDATEMVT)<=convert(Float,$P{dfl})
+and LOCATION =$P{location}
+and FMVTS.AJUSTEMENT='ACH'
+
+
+)as FMVTS group by ARTICLE 
+)as FMVTS
+
+-- --union
+union
+
+select 0 as totpu ,0 as valori,0 as qte,0 as cmp,sum(qteS) as qteS,ARTICLE
+
+from(
+select FMVTS.QTEUNIT_SORTIE as qteS,ARTICLE 
+from FMVTS   
+where convert(Float,NDATEMVT)>=convert(Float,$P{ddl})  and convert(Float,NDATEMVT)<=convert(Float,$P{dfl})
+and LOCATION =$P{location}
+and AJUSTEMENT ='TRTO' 
+
+union 
+
+select FMVTS.QTEUNIT_SORTIE as qteS,ARTICLE
+from FMVTS 
+where convert(Float,NDATEMVT)>=convert(Float,$P{ddl})  and convert(Float,NDATEMVT)<=convert(Float,$P{dfl})
+and LOCATION =$P{location}
+and FMVTS.AJUSTEMENT='INV' and FMVTS.QTEUNIT_SORTIE >0
+
+
+)as FMVTS group by ARTICLE
+
+
+
+
+)as FMVTS inner join FARTICLE on FARTICLE.ARTICLE=FMVTS.ARTICLE group by FMVTS.ARTICLE,FARTICLE.DESIGNATION,QUANTITEE
+)as FMVTS where qte>0]]>
+	</queryString>
+	<field name="taux" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="taux"/>
+	</field>
+	<field name="PUR" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="PUR"/>
+	</field>
+	<field name="QTR" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="QTR"/>
+	</field>
+	<field name="moyen_pu" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="moyen_pu"/>
+	</field>
+	<field name="qte_E" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="qte_E"/>
+	</field>
+	<field name="qte_S" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="qte_S"/>
+	</field>
+	<field name="cmp" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="cmp"/>
+	</field>
+	<field name="qte_I" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="qte_I"/>
+	</field>
+	<field name="valori_E" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="valori_E"/>
+	</field>
+	<field name="valori_S" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="valori_S"/>
+	</field>
+	<field name="valori_I" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="valori_I"/>
+	</field>
+	<field name="ARTICLE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ARTICLE"/>
+	</field>
+	<field name="DESIGNATION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESIGNATION"/>
+	</field>
+	<variable name="valcdf" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{valori_E}* new Double(Double.parseDouble($F{taux}))]]></variableExpression>
+	</variable>
+	<variable name="tot5" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{valori_E}]]></variableExpression>
+	</variable>
+	<variable name="tot6" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{valcdf}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="74" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="20" uuid="bcd1f5bb-bc7c-4585-925c-a543aaf2e3ea"/>
+				<text><![CDATA[Miltext SARLU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="13" width="100" height="18" uuid="3e0414c6-7620-4c50-92cb-9809132c2b5c"/>
+				<text><![CDATA[Gestion de Stock]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="238" y="12" width="223" height="18" uuid="006ca4bf-5789-4159-a2ab-ae8d84c6ed77"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rapport des Entrées Stock au CMP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="47" width="68" height="13" uuid="3032bada-5657-4893-b391-0337dc62e45c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Période :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="296" y="47" width="54" height="13" uuid="bd0fc721-c822-4dd1-96ee-4fbd610d1b54"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dd}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="351" y="47" width="16" height="13" uuid="0df75fb4-8132-4b65-b9d3-3fb9443e8883"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Au]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="369" y="47" width="56" height="13" uuid="90640c29-bda2-4cb5-a97e-7ec630584fa5"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{df}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="301" y="30" width="160" height="15" uuid="4aff5f5a-d189-4e29-94f8-9fdedbe4982f"/>
+				<textFieldExpression><![CDATA[$P{liblocation}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="239" y="31" width="60" height="14" uuid="300f70c6-1646-4df4-a744-0157940146ca"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Location :]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="30" y="6" width="330" height="22" backcolor="#E3DCDC" uuid="9aaf560d-4750-495b-899a-fecbcf345295">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72e0d013-9350-4b00-8d08-6a9b16a3ab4b"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Désignation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="6" width="30" height="22" backcolor="#E3DCDC" uuid="85d10b82-ebc2-4b7f-85ca-511ab1fb47c9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72e0d013-9350-4b00-8d08-6a9b16a3ab4b"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="360" y="6" width="53" height="22" backcolor="#E3DCDC" uuid="1204a8d2-3a2d-4c2b-9a6e-fbf9043b4166">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="60b86671-82ef-407d-af86-f115ced0db08"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qte_R]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="413" y="6" width="48" height="22" backcolor="#E3DCDC" uuid="1803fa1d-ef39-488a-b4f2-7ec5851e2648">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="76451648-10c7-41ba-8ec7-ccc273f6b215"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pu_R]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="461" y="6" width="52" height="22" backcolor="#E3DCDC" uuid="62e5cca0-9ef1-4a2c-9278-7c2107743ddc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72c671c8-2645-45cf-8801-1e8bf0c94761"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="513" y="6" width="67" height="22" backcolor="#E3DCDC" uuid="1caa557a-fe58-4e55-b303-7295aa03ae75">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e73273a1-7b9b-4aea-af1f-307d0002e2de"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pu_E]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="580" y="6" width="80" height="22" backcolor="#E3DCDC" uuid="74ca3289-55b6-4097-8cec-6d64615d8e40">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6a4fb7eb-a80e-4861-9b18-a92acdd5ab05"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Val_USD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="660" y="6" width="71" height="22" backcolor="#E3DCDC" uuid="4e268f3f-2124-4cc5-9a7a-01f6ded9b4bb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d8199208-97d2-439e-bb1d-39a21a97c162"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Taux]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="731" y="6" width="70" height="22" backcolor="#E3DCDC" uuid="1e36e248-a1e2-4cf8-9c35-31a9eacd49a1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d8199208-97d2-439e-bb1d-39a21a97c162"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Val_CDF]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<textField>
+				<reportElement x="30" y="-1" width="330" height="20" uuid="ad21b789-803d-4918-86ea-cdb738026278">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72e0d013-9350-4b00-8d08-6a9b16a3ab4b"/>
+				</reportElement>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{DESIGNATION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="-1" width="30" height="20" uuid="8dde1508-6f41-408f-83fa-f8d3694b8a8c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="360" y="-1" width="53" height="20" uuid="dfbba1ce-a4f4-4dc2-a5ac-8e95bf70ff1c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="53972bdf-def2-462c-927b-7432e9e04bf1"/>
+				</reportElement>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[($F{QTR}==null)? 0:$F{QTR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="413" y="-1" width="48" height="20" uuid="44dcc770-8427-4a17-bf09-84277a060232">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="750fc72d-6fc6-41d6-98a3-62c3be9ff3bc"/>
+				</reportElement>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[($F{PUR}==null)? 0:$F{PUR}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="461" y="-1" width="52" height="20" uuid="00ccbfc2-09e7-415a-b517-1d2d80b4689c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="fb76d704-7ae1-4795-a2b5-39de9622b832"/>
+				</reportElement>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{qte_E}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="513" y="-1" width="67" height="20" uuid="077f27fe-4156-4378-a0f7-c95572e31e3b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="012fbb49-1b25-4b5a-97bb-49a4c0927c7c"/>
+				</reportElement>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{moyen_pu}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="580" y="-1" width="80" height="20" uuid="3c09843b-eff0-4c28-81b6-b90a460927e5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="55e11847-ab7a-49ae-8821-9784b61af5f7"/>
+				</reportElement>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valori_E}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="660" y="-1" width="71" height="20" uuid="627b4bec-5faf-4db4-a1f7-d8b85962fe2c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c1c091f1-5f3d-4724-bbeb-9715b48c412f"/>
+				</reportElement>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{taux}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="731" y="-1" width="70" height="20" uuid="2fe1f8a9-e731-4494-9496-96055bc85e43"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{valcdf}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="27">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="1" width="580" height="22" backcolor="#E3DCDC" uuid="f40d5261-4b44-4b03-b5aa-baebbafad4df">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="72e0d013-9350-4b00-8d08-6a9b16a3ab4b"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement mode="Opaque" x="580" y="1" width="80" height="22" backcolor="#E3DCDC" uuid="086b347e-bd0c-4a2d-b384-d82a9dfd4e2a"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{tot5}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="660" y="1" width="71" height="22" backcolor="#E3DCDC" uuid="81a95670-9982-4b47-ba96-8fce952707ee">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d8199208-97d2-439e-bb1d-39a21a97c162"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement mode="Opaque" x="731" y="1" width="70" height="22" backcolor="#E3DCDC" uuid="6626c435-e4f5-4685-9b51-7683f0cea431"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.75"/>
+					<topPen lineWidth="0.75"/>
+					<leftPen lineWidth="0.75"/>
+					<bottomPen lineWidth="0.75"/>
+					<rightPen lineWidth="0.75"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{tot6}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="119" splitType="Stretch"/>
+	</summary>
+</jasperReport>

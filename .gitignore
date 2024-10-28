@@ -1,0 +1,17 @@
+# Fichiers et dossiers spécifiques à Python
+__pycache__/
+*.py[cod]
+
+# Clés et mots de passe sensibles
+*.env
+*.secret
+
+# Paramètres de base de données
+db.sqlite3
+
+# Fichiers de migration de Django
+migrations/
+
+# Fichiers temporaires de l'éditeur
+.vscode/
+.idea/

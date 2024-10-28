@@ -1,0 +1,292 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+         
+            <h3>
+        Rapport Bon de Commande
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+     
+            <li class="breadcrumb-item active">Rapport</li>
+            <li class="breadcrumb-item active">Bon de Commande</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 <div id="my-box"> </div>
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+
+                  <div class="col-sm-12">
+								<label>N° bon</label>
+                                <select name="bon" required id="bon" class="form-control select2" >
+                                <option value="" ></option>
+									{% for i in bon  %}
+										<option value="{{i.commande}}" >{{ i.observation}} / {{ i.datejour }} / {{ i.tiers.nompostnom }}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+{#                  <div class="col-sm-3">#}
+{#								<label>Date Livraison</label>#}
+{#								<input type="text" id="dateliv" name="dateliv" disabled class="form-control">#}
+{#					</div>#}
+{# <div class="col-sm-3">#}
+{#								<label>Mode</label>#}
+{#								<input type="text" id="mode" name="mode" disabled class="form-control">#}
+{#					</div>#}
+					
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+
+                <div class="form-group row">
+{#                    <div class="col-sm-2">#}
+{#								<label>Taux</label>#}
+{#								<input type="text" required name="taux" value="{{ taux.taux }}" required id="taux" class="form-control">#}
+{#					</div>#}
+					<div class="col-sm-3 offset-5" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Afficher/Imprimer</button>
+                    </div>
+
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Qté Stock</th>
+									<th>Qté Cmd</th>
+                                    <th>Unit.</th>
+									<th>PAU</th>
+<!--									<th>Fournisseur</th>-->
+									<th>Total</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Qté Stock</th>
+									<th>Qté Cmd</th>
+                                    <th>Unit.</th>
+                                    <th>PAU</th>
+<!--									<th>Fournisseur</th>-->
+									<th>Total</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+             
+             $('#example1').DataTable();
+
+
+             $('#bon').change(function (e) {
+
+            		affiche();
+            		$.ajax({
+                        url: '{% url 'gestionstock:getdetailboncommande' %}',
+                        type: 'POST',
+                         data:{
+                            "csrfmiddlewaretoken":'{{ csrf_token }}',
+                             "id":$('#bon').val()
+                         },
+                        async: false,
+                        success: function (data) {
+
+                            if(data.mode=="2"){
+                                $('#mode').val("Crédit");
+                            }else if(data.mode=="1"){
+                                $('#mode').val("Comptant");
+                            }
+
+                            $('#dateliv').val(data.dateliv);
+
+                        },error:function (data) {
+                                            $('#mode').val("");
+                            $('#dateliv').val("");
+                            }
+                        });
+
+            	});
+             $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+
+
+
+     $('#my-box').html('');
+                           $('#my-box').show();
+    var cmp=0;
+
+    $.ajax({
+     url: '{% url 'gestionstock:rapboncommande' %}',
+    type: 'POST',
+     data:$(this).serialize(),
+    beforeSend: function(){
+        $('#my-box').html('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div></div>');
+        $('.progress-bar').animate({width: "30%"}, 100);
+
+        setTimeout(function(argument) {
+          $('.progress-bar').animate({width: "55%"}, 100);
+        }, 10000);
+
+    },
+
+       xhr: function(){
+       var xhr = new window.XMLHttpRequest();
+       //Upload progress
+       xhr.upload.addEventListener("progress", function(evt){
+       if (evt.lengthComputable) {
+         //var percentComplete = evt.loaded / evt.total;
+          var percent = Math.round((evt.loaded / evt.total) * 100);
+         //  if (percent == 100)
+         //     {
+         //        console.log("complet");
+
+         //     }
+         // //Do something with upload progress
+         // console.log(percent);
+         }
+       }, false);
+     //Download progress
+       xhr.addEventListener("progress", function(evt){
+         if (evt.lengthComputable) {
+           //var percent = Math.round((evt.loaded / evt.total) * 100);
+          // var percentComplete = parseInt( (evt.loaded / evt.total * 100), 10);
+          //     console.log(percentComplete);
+         //Do something with upload progress
+         //console.log(percent);
+         }
+       }, false);
+       return xhr;
+     },
+    success: function(d){
+       if(d=="true"){
+         $('.progress-bar').animate({width: "100%"}, 100);
+            setTimeout(function(){
+                $('.progress-bar').css({width: "100%"});
+                setTimeout(function(){
+                    $('#my-box').hide();
+                }, 100);
+            }, 500);
+
+              window.open('{{ MEDIA_URL }}boncommande.pdf');
+
+
+         }
+
+    },
+    error: function(request, status, err) {
+        alert((status == "timeout") ? "Timeout" : "error: " + request + status + err);
+    }
+});
+
+
+
+                        });
+
+              });
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getboncommande' %}?impression="+$('#bon').val(),
+    "columns":[
+
+    {"data":'id'},
+    {"data":'article__designation'},
+
+    {"data":'qteunitaire'},
+    {"data":'quantite'},
+        {"data":'emballage__emballage'},
+    {"data":'prix_unitaire'},
+            // {"data":'commande__tiers__nompostnom'},
+    {"data":'somme'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    } 
+
+
+
+ </script>
+
+ {% endblock %}

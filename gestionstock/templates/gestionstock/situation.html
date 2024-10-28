@@ -1,0 +1,139 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Situation
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Rapport</li>
+            <li class="breadcrumb-item active">Situation Stock CMP</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				<div class="box-header with-border">
+				  <h3 class="box-title">Situation Stock Coût Moyen Pondéré</h3>
+				</div>
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+				  	<div class="col-sm-3">
+								<label>Location</label>
+								<select name="location" id="location" class="form-control select2" >
+									{% for i in location  %}
+										<option value={{i.location}} >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+								 
+					</div>
+					
+                    
+					
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+					<div class="col-sm-4">
+								<label>Date Début</label>
+								<input type="date" id="dtd" value="{% now 'Y-m-d' %}" name="dtd" class="form-control">
+					</div>
+                   <div class="col-sm-4">
+								<label>Date Fin</label>
+								<input type="date" id="dtf" value="{% now 'Y-m-d' %}" name="dtf" class="form-control">
+					</div>
+ 
+					<div class="col-sm-4" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Imprimer</button>
+					</div>
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					 
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+
+
+
+
+
+
+
+
+
+
+
+
+              });
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"",
+    "columns":[
+
+    {"data":'id'},
+    {"data":'article__designation'},
+
+    {"data":'qtecmd'},
+            {"data":'fournisseur__noms'},
+    {"data":'boncommande__datebon'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+ </script>
+
+ {% endblock %}

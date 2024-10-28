@@ -1,0 +1,522 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+         
+            <h3>
+        Validation facture {% if perms.pointvente.facturation %}&nbsp; <button class="btn btn-success" id="btnvalidation">Facturation</button>{% endif %}
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+            <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li class="breadcrumb-item" aria-current="page">Point de vente</li>
+            <li class="breadcrumb-item active">Validation</li>
+       
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+    <button style="display:none;" id="btnmodalregularisation" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-regularisation">
+
+     </button>
+
+    <button style="display:none;" id="btnmodalhebergement" type="button" class="btn btn-rounded btn-info" data-toggle="modal" data-target="#modal-hebergement">
+
+     </button>
+     <!-- Modal -->
+     <div class="modal modal fade" id="modal-regularisation" tabindex="-1">
+         <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="titre">Choisir entre le caissier ou le serveur</h5>
+                     <button type="button" class="close" data-dismiss="modal">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+
+                     <div class="row">
+                         <div class="col-md-12">
+                             <label>Nom</label>
+                             <p><select class="form-control" id="nom" style="color: black;background-color: white" >
+
+                             </select></p>
+                         </div>
+                     </div>
+                     <input type="hidden" name="idmvt" value="" id="idmvt" class="form-control">
+                     <input type="hidden" name="iddt" value="" id="iddt" class="form-control">
+                     <p><button type="button" onclick="regula()" class="btn btn-outline btn-info mb-5">Valider</button>
+                     <button type="button"  class="btn btn-danger btn-info mb-5" data-dismiss="modal">Fermer</button></p>
+                 </div>
+
+             </div>
+         </div>
+     </div>
+
+     <div class="modal modal fade" id="modal-hebergement" tabindex="-1">
+         <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="titre">Liste des clients</h5>
+                     <button type="button" class="close" data-dismiss="modal">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+
+                     <div class="row">
+                       <div class="col-md-12">
+                             <label>Nom</label>
+                             <p><select class="form-control" id="nom1" style="color: black;background-color: white" >
+                                <option value="Mark">Ch 45 - Mark Pongo </option>
+                                <option value="Ali">Ch 6 - Ali Manda</option>
+                                <option value="Helene">Ch 8 - Helene Nono</option>
+                             </select></p>
+                         </div>
+                     </div>
+                     <input type="hidden" name="idmvt1" value="" id="idmvt1" class="form-control">
+                     <input type="hidden" name="iddt1" value="" id="iddt1" class="form-control">
+                     <p><button type="button" onclick="hebergement_()" class="btn btn-outline btn-info mb-5">Ajouter</button>
+                     <button type="button" class="btn btn-danger btn-info mb-5" data-dismiss="modal">Fermer</button></p>
+                 </div>
+
+             </div>
+         </div>
+     </div>
+     <!-- /.modal -->
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Date</th>
+									<th>Utilisateur</th>
+									<th>Obs.</th>
+									<th>Total</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							 <tbody>
+                              {% for mvt in mvts %}
+                              <tr>
+                                  <td>{{ mvt.document }}</td>
+                                  <td>{{ mvt.datemvt }}</td>
+                                  <td>{{ mvt.utilisateur }}</td>
+                                  <td>{{ mvt.imputation }}</td>
+                                  <td>{{ mvt.somme }}</td>
+                                  <td><button onclick="cash('{{ mvt.document }}','{{ mvt.datemvt }}')"  type="button" class="btn btn-primary"><span id="btnimp1{{ mvt.document }}{{ mvt.datemvt }}" role="status"></span> Cash</button>
+<button type="button" onclick="hebergement2('{{ mvt.document }}','{{ mvt.datemvt }}')" class="btn btn-secondary"><span id="btnimp2{{ mvt.document }}{{ mvt.datemvt }}" role="status"></span> Hebergement</button>
+<button type="button" onclick="offre('{{ mvt.document }}','{{ mvt.datemvt }}')" class="btn btn-success"><span id="btnimp3{{ mvt.document }}{{ mvt.datemvt }}" role="status"></span> Offre Maison</button>
+                                     {% if request.user.is_superuser %}<button type="button" onclick="regularisation('{{ mvt.document }}','{{ mvt.datemvt }}','{{ mvt.user }}','{{ mvt.serveur }}')" class="btn btn-danger"><span id="btnimp4{{ mvt.document }}{{ mvt.datemvt }}" role="status"></span> Regul.</button>{% endif %}
+                                  </td>
+                              </tr>
+                              {% endfor %}
+
+
+                              </tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Date</th>
+									<th>Utilisateur</th>
+									<th>Obs</th>
+									<th>Total</th>
+									<th>Action</th>
+
+								</tr>
+							</tfoot>
+
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+
+            $(document).ready(function() {
+
+             
+             $('#example1').DataTable({
+                 "order": [[ 0, "desc" ], [ 1, "desc" ]]
+             });
+
+{% if perms.pointvente.facturation %}
+                        $('#btnvalidation').click(function (e) {
+                            window.location.href='{% url 'pointvente:commande' %}'
+                        });{% endif %}
+
+
+
+              });
+
+            function cash(mvt,dt) {
+                 Swal.fire({
+                              title: 'Confirmer',
+                              text: "Voulez-vous vraiment Valider cette facture !",
+                              icon: 'warning',
+                              showCancelButton: true,
+                             color: '#3085d6',
+                              confirmButtonColor: '#3085d6',
+                              cancelButtonColor: '#d33',
+                              confirmButtonText: 'Oui'
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                   $('#btnimp1'+mvt+dt).attr('class','spinner-border spinner-border-sm mr-2');
+                                     $.ajax({
+                                    url: '{% url 'pointvente:validation' %}',
+                                    type: 'POST',
+                                    data:{
+                                        "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                        "document":mvt,
+                                        "dt":dt,
+
+                                    },
+                                    async: true,
+                                    success: function (data) {
+                                    $('#btnimp1'+mvt+dt).attr('class','');
+                                        if(data.id=="0"){
+
+                                            $.toast({
+                                                heading: 'Point de vente',
+                                                text: data.msg,
+                                                position: 'top-right',
+                                                loaderBg: '#ff6849',
+                                                icon: 'error',
+                                                hideAfter: 3500
+
+                                            });
+                                        }else{
+                                            window.location.href='{% url "pointvente:validation" %}';
+
+
+                                        }
+
+                                    },
+                                    error: function(request, status, err) {
+                                         $('#btnimp1'+mvt+dt).attr('class','');
+
+                                        }
+                                });
+
+                              }
+                            })
+            }
+            function regula() {
+                 $('#btnmodalregularisation').click()
+                var mvt=$('#idmvt').val()
+                var dt=$('#iddt').val()
+                 Swal.fire({
+                              title: 'Confirmer',
+                              text: "Voulez-vous vraiment Valider cette opération !",
+                              icon: 'warning',
+                              showCancelButton: true,
+                              color: '#0a0909',
+                              confirmButtonColor: '#3085d6',
+                              cancelButtonColor: '#d33',
+                              confirmButtonText: 'Oui'
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                   $('#btnimp4'+mvt+dt).attr('class','spinner-border spinner-border-sm mr-2');
+                                     $.ajax({
+                                    url: '{% url 'pointvente:validation' %}',
+                                    type: 'POST',
+                                    data:{
+                                        "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                        "regula": 1,
+                                        "document": $('#idmvt').val(),
+                                        "nom": $('#nom').val(),
+                                        "dt":$('#iddt').val()
+
+                                    },
+                                    async: true,
+                                    success: function (data) {
+                                    $('#btnimp4'+mvt+dt).attr('class','');
+                                        if(data.id=="0"){
+
+                                            $.toast({
+                                                heading: 'Point de vente',
+                                                text: data.msg,
+                                                position: 'top-right',
+                                                loaderBg: '#ff6849',
+                                                icon: 'error',
+                                                hideAfter: 3500
+
+                                            });
+                                        }else{
+                                            window.location.href='{% url "pointvente:validation" %}';
+
+
+                                        }
+
+                                    },
+                                    error: function(request, status, err) {
+                                         $('#btnimp4'+mvt+dt).attr('class','');
+
+                                        }
+                                });
+
+                              }
+                            })
+            }
+            function hebergement_() {
+                $('#btnmodalhebergement').click()
+                var mvt=$('#idmvt1').val()
+                var dt=$('#iddt1').val()
+                 Swal.fire({
+                              title: 'Confirmer',
+                              text: "Voulez-vous vraiment Valider cette opération !",
+                              icon: 'warning',
+                              showCancelButton: true,
+                              color: '#0a0909',
+                              confirmButtonColor: '#3085d6',
+                              cancelButtonColor: '#d33',
+                              confirmButtonText: 'Oui'
+                            }).then((result) => {
+                                  if (result.isConfirmed) {
+                                       $('#btnimp2'+mvt+dt).attr('class','spinner-border spinner-border-sm mr-2');
+                                    $.ajax({
+                                    url: '{% url 'pointvente:validation' %}',
+                                    type: 'POST',
+                                    data:{
+                                        "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                        "document":mvt,
+                                        "client":$('#nom1 option:selected').text(),
+                                        "dt":dt,
+
+                                    },
+                                    async: false,
+                                    success: function (data) {
+  $('#btnimp2'+mvt+dt).attr('class','');
+                                        if(data.id=="0"){
+
+                                            $.toast({
+                                                heading: 'Point de vente',
+                                                text: data.msg,
+                                                position: 'top-right',
+                                                loaderBg: '#ff6849',
+                                                icon: 'error',
+                                                hideAfter: 3500
+
+                                            });
+                                        }else{
+                                            window.location.href='{% url "pointvente:validation" %}';
+
+
+                                        }
+
+                                    },
+                                    error: function(request, status, err) {
+                                         $('#btnimp2'+mvt+dt).attr('class','');
+
+                                        }
+                                });
+                                  }
+                                })
+
+            }
+            function offre(mvt,dt) {
+
+                 Swal.fire({
+                                  text: '',
+                                   color: '#716add',
+                                  html:'<input style="color: black" type="text" value="" id="commentaire" class="swal2-input" placeholder="Commentaire">',
+                                  inputAttributes: {
+                                    autocapitalize: 'off'
+                                  },
+                                  showCancelButton: true,
+                                  confirmButtonText: 'Ok',
+                                  showLoaderOnConfirm: true,
+                                  preConfirm: () => {
+                                    const commentaire = Swal.getPopup().querySelector('#commentaire').value
+                                    if (!commentaire) {
+                                      Swal.showValidationMessage('Verifier vos champs')
+                                    }
+                                    return {commentaire: commentaire }
+                                  },
+                                  allowOutsideClick: () => !Swal.isLoading()
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                       $('#btnimp3'+mvt+dt).attr('class','spinner-border spinner-border-sm mr-2');
+                                    $.ajax({
+                                    url: '{% url 'pointvente:validation' %}',
+                                    type: 'POST',
+                                    data:{
+                                        "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                        "document":mvt,
+                                        "offre":result.value.commentaire,
+                                        "dt":dt,
+
+                                    },
+                                    async: false,
+                                    success: function (data) {
+  $('#btnimp3'+mvt+dt).attr('class','');
+                                        if(data.id=="0"){
+
+                                            $.toast({
+                                                heading: 'Point de vente',
+                                                text: data.msg,
+                                                position: 'top-right',
+                                                loaderBg: '#ff6849',
+                                                icon: 'error',
+                                                hideAfter: 3500
+
+                                            });
+                                        }else{
+                                            window.location.href='{% url "pointvente:validation" %}';
+
+
+                                        }
+
+                                    },
+                                    error: function(request, status, err) {
+                                         $('#btnimp3'+mvt+dt).attr('class','');
+
+                                        }
+                                });
+                                  }
+                                })
+
+            }
+            function hebergement2(mvt,dt) {
+
+                 Swal.fire({
+                                  text: '',
+                                   color: '#716add',
+                                  html:'<input style="color: black" type="text" value="" id="commentaire" class="swal2-input" placeholder="Numero Chambre">',
+                                  inputAttributes: {
+                                    autocapitalize: 'off'
+                                  },
+                                  showCancelButton: true,
+                                  confirmButtonText: 'Ok',
+                                  showLoaderOnConfirm: true,
+                                  preConfirm: () => {
+                                    const commentaire = Swal.getPopup().querySelector('#commentaire').value
+                                    if (!commentaire) {
+                                      Swal.showValidationMessage('Verifier vos champs')
+                                    }
+                                    return {commentaire: commentaire }
+                                  },
+                                  allowOutsideClick: () => !Swal.isLoading()
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                       $('#btnimp2'+mvt+dt).attr('class','spinner-border spinner-border-sm mr-2');
+                                    $.ajax({
+                                    url: '{% url 'pointvente:validation' %}',
+                                    type: 'POST',
+                                    data:{
+                                        "csrfmiddlewaretoken":'{{ csrf_token }}',
+                                        "document":mvt,
+                                        "client":result.value.commentaire,
+                                        "dt":dt,
+
+                                    },
+                                    async: false,
+                                    success: function (data) {
+                                    $('#btnimp2'+mvt+dt).attr('class','');
+                                        if(data.id=="0"){
+
+                                            $.toast({
+                                                heading: 'Point de vente',
+                                                text: data.msg,
+                                                position: 'top-right',
+                                                loaderBg: '#ff6849',
+                                                icon: 'error',
+                                                hideAfter: 3500
+
+                                            });
+                                        }else{
+                                            window.location.href='{% url "pointvente:validation" %}';
+                                        }
+
+                                    },
+                                    error: function(request, status, err) {
+                                         $('#btnimp2'+mvt+dt).attr('class','');
+
+                                        }
+                                });
+                                  }
+                                })
+
+            }
+
+            function regularisation(mvt,dt,caissier,serveur) {
+
+                 $('#iddt').val(dt)
+                 $('#idmvt').val(mvt)
+                 $('#nom').empty()
+                 $('#nom').append($('<option>',{
+                                              value:caissier,
+                                              text: "Caissier "+caissier
+                                          }));
+                  $('#nom').append($('<option>',{
+                                              value:serveur,
+                                              text:"Serveur "+serveur
+                                          }));
+                 $('#btnmodalregularisation').click()
+
+            }
+            function hebergement(mvt,dt) {
+
+                 $('#iddt1').val(dt)
+                 $('#idmvt1').val(mvt)
+                 $('#btnmodalhebergement').click()
+
+            }
+
+
+
+ </script>
+
+ {% endblock %}

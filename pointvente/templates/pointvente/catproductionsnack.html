@@ -1,0 +1,233 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+         
+            <h3>
+        Création Recette
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+            <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li class="breadcrumb-item" aria-current="page">Point de vente</li>
+            <li class="breadcrumb-item active">Création Recette</li>
+       
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                  <div class="col-sm-12">
+								<label>Catégorie Recètte</label>
+                      <input type="text" id="designation"  required name="designation" class="form-control" >
+                      <input type="hidden" id="idrecette"  name="idrecette" class="form-control" >
+
+
+					</div>
+
+					
+				  </div>
+
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+					<div class="col-sm-4" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Valider</button>
+					</div>
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Désignation Recette</th>
+
+
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Désignation Recette</th>
+
+
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+             
+             $('#example1').DataTable();
+
+
+              $('#example1 tbody').on('dblclick','tr',function(){                      
+                   
+
+                         $('#designation').val(this.cells[1].textContent);
+                         $('#idrecette').val(this.cells[0].textContent);
+
+
+
+
+    
+               });
+
+
+
+
+
+
+
+ affiche();
+              $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+						 $.ajax({
+                        url: '{% url 'pointvente:catprosnack' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                   $('#designation').val('');
+                                   $('#idrecette').val('');
+
+
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+
+
+
+
+
+
+
+
+              });
+
+                    function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'pointvente:getrecettecatsnack' %}",
+    "columns":[
+
+    {"data":'famille'},
+    {"data":'designation'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+
+ </script>
+
+ {% endblock %}

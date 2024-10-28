@@ -1,0 +1,531 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Bon de Commande Interne
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+     
+            <li class="breadcrumb-item active">Bon de commande</li>
+            <li class="breadcrumb-item active">Interne</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+					<div class="col-sm-3">
+								<label>Date</label>
+								<input type="date" id="datebon" required value="{% now 'Y-m-d' %}" name="datebon" class="form-control">
+					</div>
+                  <div class="col-sm-3">
+								<label>N° bon</label>
+								<input type="text"  id="numbont" name="numbont" disabled class="form-control" value="{{ numbon }}">
+								<input type="hidden" id="numbon" name="numbon" value="{{ numbon }}" class="form-control">
+					</div>
+                  <div class="col-sm-3">
+								<label>Location</label>
+								<select name="location" required id="location" class="form-control select2" >
+									{% for i in location  %}
+										<option value="{{i.location}}" >{{ i.designation}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+
+					<div class="col-sm-3">
+								<label>Fournisseur</label>&nbsp;<a href="#" id="addfournisseur"> <span style="Color:red">(Ajouter)</span></a>
+								<select name="fournisseur" required id="fournisseur" class="form-control select2" >
+									{% for i in fournisseur  %}
+										<option value="{{i.tiers}}" >{{ i.nompostnom}}</option>
+									{% endfor %}
+									 
+								</select>
+					</div>
+					
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+					<div class="col-sm-3">
+								<label>Produit</label>
+								<select name="produit" required id="produit" class="form-control select2">
+								 {% for i in produit  %}
+										<option value="{{i.article}}" >{{ i.designation}}</option>
+									{% endfor %}
+								</select>
+					</div>
+<div class="col-sm-2">
+								<label>Emb.</label>
+								<select name="emballage" id="emballage" class="form-control select2" >
+
+								</select>
+					</div>
+					<div class="col-sm-2">
+								<label>Qté cmd.</label>
+								<input type="text" required name="qte" id="qte" class="form-control">
+					</div>
+                    <div class="col-sm-3">
+								<label>Devise</label>
+								<select name="devise"  required id="devise" class="form-control select2" >
+                                    <option value="USD">USD</option>
+                                    <option value="CDF">CDF</option>
+
+
+								</select>
+					</div>
+					<div class="col-sm-2">
+								<label>Prix Achat U.</label>
+								<input type="text" required name="prix" id="prix" class="form-control">
+					</div>
+
+
+					</div>
+                <div class="form-group row">
+{#                    <div class="col-sm-2">#}
+{#								<label>Taux</label>#}
+{#								<input type="text" required name="taux" value="{{ taux.taux }}" required id="taux" class="form-control">#}
+{#					</div>#}
+					<div class="col-sm-6 offset-4" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Ajouter Produit</button>
+                               <button id="anncmd" type="button" class="btn btn-outline btn-warning mb-5" onclick="annulercmd()">Annuler cmd</button>
+                                <button id="newcmd" type="button" class="btn btn-outline btn-success mb-5" onclick="newcmdd()">Nouvelle cmd</button>
+					</div>
+
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Qté Cmd</th>
+									<th>PAU</th>
+									<th>Fournisseur</th>
+									<th>Date</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Qté Cmd</th>
+                                    <th>PAU</th>
+									<th>Fournisseur</th>
+									<th>Date</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() { 
+
+            	$('#addfournisseur').click(function (e) { 
+
+            		 $('#btnmodal').click();
+            		  window.setTimeout(function () {
+                                $('#nom').select();
+
+                            },1000);
+            		 
+            	});
+            	
+             $('.select2').select2();
+             
+             $('#example1').DataTable();
+              $('#example1 tbody').on('dblclick','tr',function(){
+                    deletearticle(this.cells[1].textContent);
+    
+                    });
+              charger(0);
+				$('#produit').change(function (e) { 
+					charger(0);
+				 $('#qte').val('');
+				 $('#prix').val('');
+				 $('#qte').select();
+
+				});
+				$('#emballage').change(function (e) {
+
+
+				    $.ajax({
+                    url:  "{% url 'gestionstock:getprixemballage' %}",
+                    data: {
+                        "produit":$('#produit').val(),
+                        "emballage":$('#emballage').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                              $('#prix').val(data.prix);
+                              $('#qte').select();
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+
+
+				});
+                $('#ajoutfournisseur').click(function (e) {
+
+                     if ($('#nom').val()==""){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: "Vérifier le nom fournisseur",
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                         return false;
+                     }
+
+               $.ajax({
+                    url:  "{% url 'gestionstock:ajoutfournisseur' %}",
+                    data: {
+                        "nom":$('#nom').val(),
+                        "raison":$('#raison').val(),
+                        "idnat":$('#idnat').val(),
+                        "adresse":$('#adresse').val(),
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                  $('#btnmodal').click();
+                                   if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                    $('#fournisseur').append($('<option>',{
+                                              value:data.idfou,
+                                              text:data.nom
+                                          }));
+                                   $('#fournisseur').val(data.idfou);
+                                   $('#fournisseur').change();
+                                   $('#nom').val('');
+                                   $('#raison').val('');
+                                   $('#idnat').val('');
+                                   $('#adresse').val('');
+                                 
+                            }
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+
+           });
+
+               $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+                         $.ajax({
+                        url: '{% url 'gestionstock:boncommande' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+
+
+
+
+
+
+
+
+              });
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getboncommande' %}?bon="+$('#numbon').val(),
+    "columns":[
+
+    {"data":'id'},
+    {"data":'article__designation'},
+
+    {"data":'quantite'},
+    {"data":'prix_unitaire'},
+            {"data":'commande__tiers__nompostnom'},
+    {"data":'commande__datejour'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    } 
+
+
+     function charger(ctrl) {
+              
+                if (ctrl==0){
+                     $('#emballage').children().remove();
+                } 
+
+                $.ajax({
+                    url:  "{% url 'gestionstock:getqteproduitfacture' %}",
+                    data: {
+                        "produit":$('#produit').val(),
+                        "ctrl":ctrl,
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                
+                     $.each(data.emb,function(key,value){
+
+                                         $('#emballage').append($('<option>',{
+                                              value:1,
+                                              text:value.emballagee_id
+                                          }));
+
+                                         $('#emballage').append($('<option>',{
+                                              value:2,
+                                              text:value.emballageu_id
+                                          }));
+
+                                         $('#emballage').val(1);
+                                         $('#emballage').change();
+
+                             });
+                                                
+
+
+                     },
+                         error: function (data) {
+                                                     
+                         }
+                    });
+            }
+ function newcmdd() {location.reload();
+ }
+           function annulercmd()
+    {
+
+    $.ajax({
+                        url: '{% url 'gestionstock:annulercommande' %}',
+                        type: 'POST',
+                         data:{
+                         	'numbon':$('#numbon').val(),
+                         	'csrfmiddlewaretoken': '{{ csrf_token }}'
+                         },
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+                            	$('#numbon').val(data.bon);
+                            	$('#numbont').val(data.bon);
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+    }
+
+          function deletearticle(id)
+    {
+
+    $.ajax({
+                        url: '{% url 'gestionstock:deletearticle' %}',
+                        type: 'POST',
+                         data:{
+                         	'article':id,
+                         	'numbon':$('#numbon').val(),
+                         	'csrfmiddlewaretoken': '{{ csrf_token }}'
+                         },
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+                            	 
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+    }
+
+ </script>
+
+ {% endblock %}

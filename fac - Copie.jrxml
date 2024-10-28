@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fac" pageWidth="204" pageHeight="841" columnWidth="194" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="5" isFloatColumnFooter="true" uuid="abb4809c-d518-4823-bcc2-f55d7cef9535">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="adapterdavid"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="bon" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT "FLOCATION"."DESIGNATION" as location,
+	"FMVTS"."DOCUMENT",
+	"FMVTS"."DESIGNATION",
+	"FMVTS"."EMBALLAGE_ID",
+	"FMVTS"."QTE_SORTIE",
+	"FMVTS"."PRIX_VENTE",
+	dernierecloture,
+	FLOCATION.periode,
+	adresse,
+	"FMVTS"."DESTINATION" as caissier,
+	"FMVTS"."DESCRIPTION" as client
+FROM "FMVTS"
+	INNER JOIN "FLOCATION" ON 
+	 "FMVTS"."LOCATION_ID" = "FLOCATION"."LOCATION" 
+	 AND "FMVTS"."LOCATION_ID" = "FLOCATION"."LOCATION" Where document= $P{bon}]]>
+	</queryString>
+	<field name="location" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="location"/>
+		<property name="com.jaspersoft.studio.field.label" value="location"/>
+	</field>
+	<field name="DOCUMENT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DOCUMENT"/>
+		<property name="com.jaspersoft.studio.field.label" value="DOCUMENT"/>
+	</field>
+	<field name="DESIGNATION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DESIGNATION"/>
+		<property name="com.jaspersoft.studio.field.label" value="DESIGNATION"/>
+	</field>
+	<field name="EMBALLAGE_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="EMBALLAGE_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="EMBALLAGE_ID"/>
+	</field>
+	<field name="QTE_SORTIE" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="QTE_SORTIE"/>
+		<property name="com.jaspersoft.studio.field.label" value="QTE_SORTIE"/>
+	</field>
+	<field name="PRIX_VENTE" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="PRIX_VENTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRIX_VENTE"/>
+	</field>
+	<field name="dernierecloture" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="dernierecloture"/>
+		<property name="com.jaspersoft.studio.field.label" value="dernierecloture"/>
+	</field>
+	<field name="periode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="periode"/>
+		<property name="com.jaspersoft.studio.field.label" value="periode"/>
+	</field>
+	<field name="adresse" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="adresse"/>
+		<property name="com.jaspersoft.studio.field.label" value="adresse"/>
+	</field>
+	<field name="caissier" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="caissier"/>
+		<property name="com.jaspersoft.studio.field.label" value="caissier"/>
+	</field>
+	<field name="client" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="client"/>
+		<property name="com.jaspersoft.studio.field.label" value="client"/>
+	</field>
+	<variable name="tot" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{PRIX_VENTE}*$F{QTE_SORTIE}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="81" splitType="Stretch">
+			<textField>
+				<reportElement x="10" y="25" width="172" height="10" uuid="2a8cbb74-09d4-43e3-be8d-92772f6fb7be"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{adresse}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="19" width="172" height="9" uuid="5ca623f8-b474-4dc5-8b43-c8b99d850270"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{periode}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="42" width="79" height="8" uuid="70013c0a-b808-436d-ae59-0716a68a706f"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="5" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Date : ]]></text>
+			</staticText>
+			<textField pattern="MMM d, yyyy">
+				<reportElement x="30" y="42" width="59" height="8" uuid="1ad0bb93-b445-497d-af43-8fe33e9b179a"/>
+				<textElement>
+					<font fontName="Candara" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement x="137" y="42" width="45" height="8" uuid="3f659f16-bfe5-4e6f-93ed-750e8e76e109"/>
+				<textElement>
+					<font fontName="Candara" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="70" width="172" height="1" uuid="9ae6e8a6-ba99-4b48-beb5-3e0fd4e13e86"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<rectangle radius="7">
+				<reportElement x="16" y="0" width="160" height="18" uuid="3988df10-848b-4859-8c6b-849d323fc0fb"/>
+			</rectangle>
+			<textField>
+				<reportElement x="20" y="5" width="150" height="9" uuid="510d9b46-3319-4c77-af20-1fb0e0187a4f"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{location}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="32" width="172" height="10" uuid="39a28e94-d2ab-4295-8b2b-f353e7bd83eb"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dernierecloture}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="50" width="79" height="8" uuid="c0bdb9e9-7eb7-438e-8b35-1fe88f975565"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="5" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Fact. N° : "+$F{DOCUMENT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="58" width="110" height="8" uuid="2767ab4a-ea8d-4389-894e-4c62895c133f"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="5" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Client : "+$F{client}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="120" y="42" width="62" height="8" uuid="567d40d6-34d5-4c09-8140-6618942e4ea7"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="5" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Heure : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="120" y="58" width="62" height="8" uuid="9ec81091-ee7a-4e0e-a57c-0d0650ebfbca"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="5" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Cash]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="79" width="172" height="1" uuid="68edcb7c-819b-4fda-abb0-30f059956d7d"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="10" y="71" width="70" height="8" uuid="51d3f386-ac21-46a4-aa4d-858d42d5ab72"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Produit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="71" width="20" height="8" uuid="d4235d27-74cc-425e-a135-9815e1835cd5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Qte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="71" width="37" height="8" uuid="9d04ea7d-9547-4774-8e34-fba75a33f553"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Prix]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="137" y="71" width="45" height="8" uuid="0214c841-a48e-400e-9634-168f9f25269e"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="10">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="10" y="0" width="70" height="10" uuid="aaa47821-10cb-454a-b9a7-93c8e40aab62"/>
+				<textElement>
+					<font fontName="Candara" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESIGNATION}.toUpperCase()+" "+$F{EMBALLAGE_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="20" height="10" uuid="31759564-cb3a-4a12-948e-5273be496277"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{QTE_SORTIE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="100" y="0" width="37" height="10" uuid="b9563113-11e9-40b6-81d3-ea8b9244f625"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Candara" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRIX_VENTE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="137" y="0" width="45" height="10" uuid="cf16f386-eee5-4fa7-a062-d6181ff06074"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Candara" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRIX_VENTE}*$F{QTE_SORTIE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="25">
+			<staticText>
+				<reportElement x="10" y="0" width="60" height="10" uuid="c6ff7584-8b71-4334-93d2-99a8c8cc2001"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Candara" size="5" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[T.Fac : FC]]></text>
+			</staticText>
+			<line>
+				<reportElement x="9" y="0" width="172" height="1" uuid="d08a32ad-123b-4f95-99b4-93e03e7af22f"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="9" y="9" width="172" height="1" uuid="c62d3b3a-c5c7-4fa8-96ba-6f73bbe88da9"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField pattern="#,##0.00">
+				<reportElement x="136" y="1" width="45" height="8" uuid="93182bd1-4e5e-4c93-b5a0-51c83570eab7"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Candara" size="5" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{tot}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="10" y="14" width="126" height="10" uuid="8f84c390-6b49-40b4-933f-4cc9abbb3b33"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="5" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Facture Etablie par "+$F{caissier}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

@@ -1,0 +1,215 @@
+{% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+    <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+{% endblock %}
+{% block title %}
+
+
+
+    <h3>
+        Changer location Produit
+    </h3>
+    <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Produit</li>
+        <li class="breadcrumb-item active">Produit Changer location</li>
+    </ol>
+
+{% endblock %}
+
+{% block content %}
+
+
+
+    <div class="col-12">
+
+
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Produit Changer location</h3>
+            </div>
+            <div class="box-body">
+                <div id="my-box"> </div>
+                <form action="#" id="fprm2" method="post" >
+                    {% csrf_token %}
+                    <!-- Color Picker -->
+                    <div class="form-group row">
+                        <div class="col-sm-3">
+                            <label>Location provenance</label>
+                            <select name="locationn" id="locationn" class="form-control select2" >
+                                {% for i in location  %}
+                                    <option value={{i.location}} >{{ i.designation}}
+                                    </option>
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Produit</label>
+                            <select name="produit" id="produit" class="form-control select2" >
+
+
+                            </select>
+
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Location destination</label>
+                            <select name="location" id="location" class="form-control select2" >
+
+
+                            </select>
+
+                        </div>
+                        <div class="col-sm-3" style="margin-top:22px">
+                            <button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Changer</button>
+                        </div>
+
+
+
+
+                    </div>
+
+
+
+
+                </form>
+                <!-- /.form group -->
+
+                <!-- time Picker -->
+
+
+                <!-- /.box-body -->
+            </div>
+        </div>
+
+    </div>
+
+
+
+{% endblock %}
+
+{% block script %}
+
+    <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+    <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+      <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+
+    <script>
+        $(document).ready(function() { 
+
+
+            $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+                         $.ajax({
+                        url: "{% url 'gestionstock:produitchange' %}",
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                  charger();
+
+
+
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+            $('#locationn').on('change',function(){
+
+                charger();
+
+
+            });
+
+            $('.select2').select2();
+            charger();
+
+             function charger() {
+
+                 $('#location').children().remove();
+                 $('#locationn option').each(function(){
+                  if($('#locationn').val()!=this.value ){
+                      $('#location').append($('<option>',{
+                            value:this.value,
+                            text:this.text
+                            }));
+                  }
+
+                });
+                $('#produit').children().remove();
+                $.ajax({
+                    url:  "{% url 'gestionstock:getproduitchangelocation' %}",
+                    data: {
+                        "location":$('#locationn').val()},
+                    type: 'GET',
+                    success: function (data) {
+
+
+                        $.each(data.data,function(key,value){
+
+                          $('#produit').append($('<option>',{
+                            value:value.article,
+                            text:value.designation
+                            }));
+
+
+                             });
+
+
+
+                     },
+                         error: function (data) {
+
+                         }
+                    });
+            }
+
+
+
+
+        });
+
+
+
+
+    </script>
+
+{% endblock %}

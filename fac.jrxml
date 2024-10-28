@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fac" pageWidth="204" pageHeight="841" columnWidth="194" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="5" isFloatColumnFooter="true" uuid="abb4809c-d518-4823-bcc2-f55d7cef9535">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="adapterstockLeon"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.data.sql.tables">
+		<![CDATA[IkZMT0NBVElPTiIgQVMgLDU2LDM5LDJiMWUwYmNkLTdmMGItNDUzYS1hMWNmLWUwZDFiODE0NmQy
+MDtnZXN0aW9uc3RvY2tfZXRhdGJlc29pbiBBUyAsNTc5LDMwLDEyYzI3ZDAxLTUwOTktNDY4OC05
+NTQ3LTgxN2RiYzU3NjFhYjsiRkFSVElDTEUiIEFTICwzNTUsMTk3LGQyMTAwYWZkLWJmODQtNGM0
+Mi04MWUyLTMzZjBiYjA0OTJmNztwYXJhbWV0cmFnZV9jdXN0b211c2VyIEFTICw4MDksMTgyLDYy
+N2I4NzBhLTE4MmQtNGNlYy04MzQ0LWJmMTU1YTBmNzRkNTs=]]>
+	</property>
+	<import value="javax.imageio.ImageIO"/>
+	<import value="org.apache.commons.codec.binary.Base64"/>
+	<parameter name="bon" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT gestionstock_etatbesoin.emb1_id,
+	gestionstock_etatbesoin.qte,
+	gestionstock_etatbesoin.qteliv,
+	gestionstock_etatbesoin.dateop,
+	gestionstock_etatbesoin.code,
+	parametrage_customuser.username,
+	(select d.designation from FLOCATION as d where d.location=gestionstock_etatbesoin.location_id) as locationd,
+	"FLOCATION"."DESIGNATION" as locationf,
+	"FARTICLE"."DESIGNATION"
+FROM gestionstock_etatbesoin
+	INNER JOIN "FLOCATION" ON  gestionstock_etatbesoin.locationfour_id = "FLOCATION"."LOCATION" 
+	INNER JOIN "FARTICLE" ON  gestionstock_etatbesoin.article_id = "FARTICLE"."ARTICLE" 
+	INNER JOIN parametrage_customuser ON  gestionstock_etatbesoin.user_id = parametrage_customuser.id where code= $P{bon}]]>
+	</queryString>
+	<field name="emb1_id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="emb1_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="emb1_id"/>
+	</field>
+	<field name="qte" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="qte"/>
+		<property name="com.jaspersoft.studio.field.label" value="qte"/>
+	</field>
+	<field name="qteliv" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="qteliv"/>
+		<property name="com.jaspersoft.studio.field.label" value="qteliv"/>
+	</field>
+	<field name="dateop" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="dateop"/>
+		<property name="com.jaspersoft.studio.field.label" value="dateop"/>
+	</field>
+	<field name="code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="code"/>
+		<property name="com.jaspersoft.studio.field.label" value="code"/>
+	</field>
+	<field name="username" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="username"/>
+		<property name="com.jaspersoft.studio.field.label" value="username"/>
+	</field>
+	<field name="locationd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="locationd"/>
+		<property name="com.jaspersoft.studio.field.label" value="locationd"/>
+	</field>
+	<field name="locationf" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="locationf"/>
+		<property name="com.jaspersoft.studio.field.label" value="locationf"/>
+	</field>
+	<field name="DESIGNATION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DESIGNATION"/>
+		<property name="com.jaspersoft.studio.field.label" value="DESIGNATION"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="99" splitType="Stretch">
+			<staticText>
+				<reportElement x="47" y="0" width="100" height="20" uuid="05b4dbcb-cc9f-4acf-a82b-af14126fc423"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sté MILTEX Sarlu]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="28" width="172" height="20" uuid="b9b80c1a-76d4-498c-bdbc-760a8de296ca"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Av. du Commerce N°71 C/Gombe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="9" width="172" height="20" uuid="3b997789-b448-41d4-ba73-42a8da150542"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CD/KIN/RCCM 14-B-2299]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="18" width="172" height="20" uuid="20f63e1c-0c1b-421b-a4d3-c1e2b2cdc40a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Candara" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ID NAT. N39710B]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="10" y="41" width="120" height="20" uuid="7eadb3e2-1af3-45f0-8ec2-1e0498fbcd39"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Candara" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["BON DE LIVRAISON N°: "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="61" width="64" height="20" uuid="70013c0a-b808-436d-ae59-0716a68a706f"/>
+				<textElement textAlignment="Right">
+					<font fontName="Candara" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Date: ]]></text>
+			</staticText>
+			<textField pattern="MMM d, yyyy">
+				<reportElement x="77" y="75" width="64" height="20" uuid="1ad0bb93-b445-497d-af43-8fe33e9b179a"/>
+				<textElement>
+					<font fontName="Candara"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="43" width="172" height="1" uuid="88e5f0a0-0dc0-4bf9-85c4-840579f24520"/>
+			</line>
+			<textField>
+				<reportElement x="120" y="41" width="51" height="20" uuid="f33e7b7c-98a7-4f28-b9e6-0e453612b8cd"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Candara" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{bon}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement x="137" y="75" width="28" height="20" uuid="3f659f16-bfe5-4e6f-93ed-750e8e76e109"/>
+				<textElement>
+					<font fontName="Candara"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="9" y="94" width="172" height="1" uuid="9ae6e8a6-ba99-4b48-beb5-3e0fd4e13e86"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="30" y="77" width="44" height="17" uuid="6cf14140-3716-44dc-a05d-e4c8f3f8c5e2"/>
+				<textElement textAlignment="Right">
+					<font fontName="Candara" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Date Imp. : ]]></text>
+			</staticText>
+			<textField pattern="M/d/yyyy">
+				<reportElement x="77" y="61" width="54" height="20" uuid="0880efac-e92b-42ee-b686-4d862994fcbf"/>
+				<textElement>
+					<font fontName="Candara"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dateop}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="21" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="0" width="194" height="10" uuid="b872b5f5-8aa4-4bd5-8075-ad55775760e8"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="7" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["*LOCATION F.: "+$F{locationf}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="10" width="194" height="10" uuid="0a08b32b-ec7d-42f1-971a-1defafefde6d"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="7" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["*LOCATION D.: "+$F{locationd}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<frame>
+				<reportElement x="-2" y="4" width="196" height="16" uuid="9689af60-4d84-45ed-8596-b37bf0b87ab8">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				</reportElement>
+				<textField>
+					<reportElement x="0" y="0" width="196" height="16" uuid="a8d9ad9f-4283-4f9f-839f-d782b82d14eb"/>
+					<box leftPadding="2"/>
+					<textElement textAlignment="Left">
+						<font fontName="Candara" size="7" isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["*Nom Bénéficiaire : "+$F{username}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement x="0" y="20" width="77" height="10" uuid="9a71e10d-7f5b-4928-a16e-e0242dc59650"/>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="7" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Produits]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="106" y="20" width="44" height="10" uuid="3e4b4b09-ab8a-431d-94be-385f71e0cefb"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Candara" size="7" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Qte.D]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="20" width="44" height="10" uuid="57ef4201-0bf2-42b3-9ef5-38941cc68e71"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Candara" size="7" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Qte.L]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="77" y="20" width="29" height="10" uuid="ead40bdd-f408-4a91-9078-dfbf43099a15"/>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="7" isBold="false" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Emb]]></text>
+			</staticText>
+			<line>
+				<reportElement x="8" y="30" width="172" height="1" uuid="7a6dc960-8828-43a7-83dd-e564de4115ee"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="8" y="20" width="172" height="1" uuid="c096d5d5-faa3-49b4-88b2-e5a057c43b8d"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="0" y="0" width="77" height="20" uuid="a84c9aed-98bc-4d91-bcc9-c09a96453388">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="71efa1dc-e222-44fa-9ee7-5e9b7b0086e6"/>
+				</reportElement>
+				<box leftPadding="5"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DESIGNATION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="77" y="0" width="29" height="20" uuid="194e38df-ace6-4ff2-ac7c-423667e157d2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4711f5fc-e676-4580-85fb-49340a6f7d4e"/>
+				</reportElement>
+				<box leftPadding="5"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emb1_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="106" y="0" width="44" height="20" uuid="766f8efc-b54a-4cca-8021-d662a42df93a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3ae3a6aa-d94a-427a-bfe4-f5d5794508f5"/>
+				</reportElement>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qte}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="0" width="44" height="20" uuid="599f3976-cdb2-4df7-a503-f25d8cac5b47">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3ae3a6aa-d94a-427a-bfe4-f5d5794508f5"/>
+				</reportElement>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{qteliv}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="33">
+			<staticText>
+				<reportElement x="0" y="3" width="70" height="10" uuid="c6ff7584-8b71-4334-93d2-99a8c8cc2001"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="7" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Sign. Respo.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="89" y="4" width="105" height="10" uuid="3b3d5e8f-36e8-44be-af75-2ab0881a2227"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left">
+					<font fontName="Candara" size="7" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Sign. Bénéficiaire]]></text>
+			</staticText>
+			<line>
+				<reportElement x="10" y="0" width="172" height="1" uuid="f2b194d4-0af5-4585-a89e-0b7ebc2f3c26"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+</jasperReport>

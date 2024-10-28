@@ -1,0 +1,336 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+     <div class="row" id="msx" style="display: none">
+            <div class="col-lg-12">
+           <div role="alert" id="stl">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Message : </strong> <label id="lbl"></label>
+            </div>
+            </div>
+        </div>
+         
+            <h3>
+        Facturation Recettes
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Recettes</li>
+            <li class="breadcrumb-item active">Entrer Stock Recettes</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                      <div class="col-sm-3">
+                <label>Date Opération</label>
+                <input type="date"  id="dateop" name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+                      <div class="col-sm-2">
+                          <label>Marge</label>
+                          <input type="text" placeholder="marge en % "  id="marge" name="marge" required class="form-control"  >
+
+                      </div>
+				  	  <div class="col-sm-3">
+								<label>N° Recette</label>
+                        <select name="recette" id="recette" class="form-control select2" >
+                        
+									{% for i in recette  %}
+										<option value="{{i.id}}" >{{ i.libelle}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                      <div class="col-sm-1">
+                          <label>P.U</label>
+                          <input type="text" disabled  id="tot" name="tot" class="form-control"  >
+
+                      </div>
+                      <div class="col-sm-2">
+                      <label>Qte</label>
+                      <input type="text"  id="qte" name="qte" required class="form-control"  >
+
+                        </div>
+                      <div class="col-sm-1">
+                          <label>Tot.</label>
+                          <input type="text" disabled  id="tot" name="tot" class="form-control"  >
+
+                      </div>
+
+
+
+				  </div>
+
+          <div class="form-group row">
+              <div class="col-sm-4" style="margin-top:22px">
+                  <button  type="submit" class="btn btn-outline btn-info mb-5">Valider</button>
+
+              </div>
+{#              <div class="col-sm-3">#}
+{#                <label>Devise</label>#}
+{#                <select name="devise" id="devise" class="form-control select2" >#}
+{##}
+{##}
+{#										<option value="USD" >USD</option>#}
+{#										<option value="CDF" >CDF</option>#}
+{##}
+{##}
+{#								</select>#}
+{##}
+{#          </div>#}
+{#              <div class="col-sm-3">#}
+{#								<label>Mode</label>#}
+{#								<select name="mode" required id="mode" class="form-control select2" >#}
+{#									<option value="1" >Comptant</option>#}
+{#									<option value="2" >Crédit</option>#}
+{#								</select>#}
+{#					</div>#}
+{#            <div class="col-sm-3">#}
+{#                <label>Observation</label>#}
+{#                 <textarea id="commentaire" name="commentaire" class="form-control form-control-lg form-control-success"></textarea>#}
+{#              #}
+{#                #}
+{#          </div>#}
+          
+            
+
+          </div>
+
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-6">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead style="background:gray">
+                                <tr>
+
+
+                                    <th>Produit</th>
+                                    <th>Unit.</th>
+                                    <th>Qte</th>
+                                    <th>P.U</th>
+                                    <th style="display: none"></th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                </tbody>
+
+                            </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					  <div class="col-sm-6">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+                            <table id="example2" class="table table-bordered table-striped">
+                                <thead style="background:gray">
+                                <tr>
+
+
+                                    <th>Recette/Client</th>
+                                    <th>Qte</th>
+                                    <th>PU</th>
+                                    <th>Marge</th>
+                                    <th>PV</th>
+                                    <th>Total</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                </tbody>
+
+                            </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+							 
+
+			  <!-- /.box -->
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+
+             $('.select2').select2();
+ affiche();
+ affiche2();
+                $('#recette').change(function (e) {
+
+                    affiche();
+
+                });
+
+
+                 $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+  if(parseFloat($('#qte').val())==0){
+
+                            return false;
+                        }
+   if($('#qte').val()==""){
+
+                            return false;
+                        }
+
+                         $.ajax({
+                        url: '{% url 'gestionstock:sortistockrecettes' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+
+ 
+                                   $('#qte').val('');
+                                    affiche2();
+                      
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+             $('#example1').DataTable();
+             $('#example2').DataTable();
+
+              });
+
+
+            function affiche()
+            {
+                if($('#recette').children('option').length==0){
+                    return false;
+                }
+                $('#tot').val('');
+                try{
+                    var oTABLE=$('#example1').DataTable({
+                        "bProcessing":true,
+                        "sAjaxSource":"{% url 'gestionstock:getrecettesdetail' %}?recette="+$('#recette').val(),
+                        "columns":[
+
+                            {"data":'produit__designation'},
+                            {"data":'emballage__emballage'},
+                            {"data":'qte'},
+                            {"data":'produit__pa'}
+                            , {"data":'total',"autoWidth":true,"visible":false,"render":function (data){
+                                    $('#tot').val(data);
+                                    return data;
+                                }}
+                        ],
+
+                        "bDestroy":true
+                    });
+                }catch(e){}
+            }
+
+            function affiche2()
+            {
+
+                try{
+                    var oTABLE=$('#example2').DataTable({
+                        "bProcessing":true,
+                        "sAjaxSource":"{% url 'gestionstock:getrecettesdetailstocksorti' %}",
+                        "columns":[
+
+                            {"data":'_name'},
+                            {"data":'_sum'}
+                        ],
+
+                        "bDestroy":true
+                    });
+                }catch(e){}
+            }
+ </script>
+
+ {% endblock %}

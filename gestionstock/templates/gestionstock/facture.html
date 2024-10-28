@@ -1,0 +1,472 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+         
+            <h3>
+        Facturation
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+        <li class="breadcrumb-item" aria-current="page">Facturation</li>
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+                <form action="#" id="fprm2" method="post" >
+				<div class="box-header with-border">
+
+                  <div class="row">
+                  <div class="col-sm-3">
+                <label>Date Opération</label>
+                <input type="date"  id="dateop" required name="dateop" value="{% now 'Y-m-d' %}" class="form-control" >
+                  </div>
+                     <div class="col-sm-2">
+                <label>N° Facture</label>
+                <input type="text"  id="numfactt" name="numfactt" disabled class="form-control" value="{{ numfactt }}">
+                <input type="hidden" id="numfact" name="numfact" value="{{ numfactt }}" class="form-control">
+          </div>
+
+
+
+                 <div class="col-sm-2">
+								<label>Devise</label>
+								<select name="devise" id="devise" class="form-control select2" >
+
+                                    <option value="USD">USD</option>
+                                    <option value="CDF">CDF</option>
+
+
+								</select>
+					</div>
+                      <div class="col-sm-2">
+								<label>Taux</label>
+								<input type="text" name="taux" value="{{ taux.taux }}" required id="taux" class="form-control">
+					</div>
+                       <div class="col-sm-3">
+								<label>Remise</label>
+								<input type="text" name="taux" value="{{ taux.taux }}" required id="taux" class="form-control">
+					</div>
+          </div>
+				</div>
+              <div class="box-header with-border">
+                  <div class="row">
+
+                  <div class="col-sm-7">
+                                <label>Client</label>
+								<select name="tiers" required id="tiers" class="form-control select2" >
+									{% for i in tiers  %}
+										<option value={{i.tiers}} >{{ i.nompostnom}}</option>
+									{% endfor %}
+
+								</select>
+					</div>
+                   <div class="col-sm-5">
+								<label>Mode Paiement</label>
+								<select name="mode" id="mode" class="form-control select2" >
+                                    <option value="">Cash</option>
+                                    <option value="">Crédit</option>
+
+
+								</select>
+					</div>
+					</div>
+              </div>
+				<div class="box-body">
+
+                                {% csrf_token %}				  <div class="form-group row">
+
+
+                    <div class="col-sm-3">
+								<label>Produit</label>
+								<select name="produit"  required id="produit" class="form-control select2">
+                                    <option value="" ></option>
+								 {% for i in produit  %}
+										<option value={{i.article}} >{{ i.designation}}</option>
+									{% endfor %}
+								</select>
+					</div>
+                  <div class="col-sm-2">
+								<label>Emb.</label>
+								<select name="emballage" id="emballage" class="form-control select2" >
+
+								</select>
+					</div>
+                <div class="col-sm-2">
+								<label>Quantité Dispo</label>
+								<input type="text" name="qtes" disabled id="qtes" class="form-control">
+								<input type="hidden" name="qtess"  id="qtess" class="form-control">
+
+					</div>
+
+                  <div class="col-sm-1">
+								<label>Qté</label>
+								<input type="text" name="qte" required id="qte" class="form-control">
+					</div>
+                 <div class="col-sm-2">
+								<label>Prix Vente</label>
+								<input type="text" name="prix" value="0" id="prix" class="form-control btn btn-outline btn-warning">
+								<input type="hidden" name="prixx" value="0" id="prixx" class="form-control btn btn-outline btn-warning">
+					</div>
+                 <div class="col-sm-2">
+								<label>Total</label>
+								<input type="text" name="totalpro" disabled value="0" id="totalpro" class="form-control btn btn-outline btn-warning">
+					</div>
+
+
+
+
+				  </div>
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+
+                <div class="form-group row">
+
+
+                  <div class="col-sm-10" style="margin-top:25px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Ajouter</button>
+                                <button id="ajoutarticle" type="button" class="btn btn-outline btn-warning mb-5">Valider</button>
+                                <button id="newajoutarticle" type="button" class="btn btn-outline btn-primary mb-5">Nouveau</button>
+					</div>
+                     <div class="col-sm-2">
+								<label>Total Brut</label>
+								<input type="text" name="total" value="0" disabled id="total" class="form-control btn btn-outline btn-secondary">
+					</div>
+
+
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+									<th>Emb</th>
+									<th>Qte</th>
+									<th>P.U HT</th>
+                                    <th>P.T HT</th>
+                                    <th>P.T TTC</th>
+								</tr>
+							</thead>
+							<tbody>
+
+
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Produit</th>
+                                    <th>Emb</th>
+									<th>Qte</th>
+									<th>P.U HT</th>
+                                    <th>P.T HT</th>
+                                    <th>P.T TTC</th>
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+
+
+ {% endblock %}
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+              $('#produit').change(function (e) {
+                    charger(0);
+                });
+              $('#emballage').change(function (e) {
+                    charger(1);
+                    $('#qte').val('');
+                            $('#totalpro').val('');
+                });
+
+                {#$('#newajoutarticle').click(function (e) {#}
+                {#    location.reload();#}
+                {#});#}
+                $('#prix').change(function (e) {
+
+                    try {
+
+                    if($('#prix').val()==""){
+                           $('#prix').val($('#prixx').val());
+                           $('#qtes').val($('#qtess').val());
+                           $('#totalpro').val('');
+                           $('#qte').val('');
+
+                            return false;
+                        }
+                         if($('#qte').val()==""){
+                           $('#qtes').val($('#qtess').val());
+                           $('#totalpro').val('');
+                            return false;
+                        }
+                        if(parseFloat($('#qtes').val().replace(',','.'))<=0){
+                            $('#qte').val('');
+                            $('#totalpro').val('');
+                            return false;
+                        }
+                        if(parseFloat($('#qte').val().replace(',','.'))>parseFloat($('#qtes').val().replace(',','.'))){
+                            $('#qte').val('');
+                            $('#totalpro').val('');
+                             $('#qtes').val($('#qtess').val());
+                            return false;
+                        }
+                       $('#qtes').val(parseFloat($('#qtess').val().replace(',','.'))-parseFloat($('#qte').val()));
+
+                       $('#totalpro').val(parseFloat($('#prix').val().replace(',','.'))*parseFloat($('#qte').val()));
+
+                    }catch (e) {
+$('#qtes').val($('#qtess').val());
+ $('#prix').val($('#prixx').val());
+ $('#qte').val('');
+                            $('#totalpro').val('');
+                    }
+
+            });
+               $('#qte').change(function (e) {
+                    try {
+                         if($('#qte').val()==""){
+                           $('#qtes').val($('#qtess').val());
+                           $('#totalpro').val('');
+                            return false;
+                        }
+                        if(parseFloat($('#qtes').val().replace(',','.'))<=0){
+                            $('#qte').val('');
+                            $('#totalpro').val('');
+                            return false;
+                        }
+                        if(parseFloat($('#qte').val().replace(',','.'))>parseFloat($('#qtes').val().replace(',','.'))){
+                            $('#qte').val('');
+                            $('#totalpro').val('');
+                             $('#qtes').val($('#qtess').val());
+                            return false;
+                        }
+                       $('#qtes').val(parseFloat($('#qtess').val().replace(',','.'))-parseFloat($('#qte').val()));
+
+                       $('#totalpro').val(parseFloat($('#prix').val().replace(',','.'))*parseFloat($('#qte').val()));
+
+                    }catch (e) {
+$('#qtes').val($('#qtess').val());
+ $('#qte').val('');
+                            $('#totalpro').val('');
+                    }
+                });
+
+             
+             $('#example1').DataTable();
+
+
+              $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+
+ if(parseFloat($('#qtes').val().replace(',','.'))<0){
+
+                            return false;
+                        }
+  if(parseFloat($('#qte').val().replace(',','.'))==0){
+
+                            return false;
+                        }
+   if($('#qte').val()==""){
+
+                            return false;
+                        }
+                         $.ajax({
+                        url: '{% url 'gestionstock:facture' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+
+
+                                   $('#qtess').val($('#qtes').val());
+                                   $('#qte').val('');
+                                   $('#totalpro').val('');
+                                   $('#prix').val('');
+                                   $('#prixx').val('');
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+
+
+
+
+
+
+
+
+              });
+
+            function charger(ctrl) {
+                if ($('#produit').val()==''){
+                     $('#qtes').val("");
+                     $('#qtess').val("");
+                     $('#prixx').val("");
+                     $('#prix').val("");
+                   return false;
+                }
+
+                var emb="";
+                if (ctrl==0){
+                     $('#emballage').children().remove();
+                }else{
+
+                    emb=$('#emballage').val();
+                }
+
+                $.ajax({
+                    url:  "{% url 'gestionstock:getqteproduitfacture' %}",
+                    data: {
+                        "produit":$('#produit').val(),
+                        "ctrl":ctrl,
+                        "emb":emb,
+                         'csrfmiddlewaretoken': '{{ csrf_token }}'
+                              },
+                    type: 'POST',
+                    success: function (data) {
+
+                                 $('#qtes').val(data.tot);
+                                 $('#qtess').val(data.tot);
+                                 $('#prix').val(data.prix);
+                                 $('#prixx').val(data.prix);
+                                  if (ctrl==0){
+                     $.each(data.emb,function(key,value){
+
+                                         $('#emballage').append($('<option>',{
+                                              value:1,
+                                              text:value.emballagee_id
+                                          }));
+
+                                         $('#emballage').append($('<option>',{
+                                              value:2,
+                                              text:value.emballageu_id
+                                          }));
+
+                                         $('#emballage').val(1);
+                                         $('#qte').select();
+
+                             });
+                                                 }
+
+
+
+                     },
+                         error: function (data) {
+                                                     $('#qtes').val("");
+                         }
+                    });
+            }
+
+            function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'gestionstock:getfacture3' %}?numfact="+$('#numfact').val()+"&dateop="+$('#dateop').val(),
+    "columns":[
+
+    {"data":'mvt'},
+    {"data":'article__designation'},
+
+    {"data":'emballage__emballage'},
+    {"data":'qte_sortie'},
+            {"data":'prix_vente'},
+            {"data":'prix_vente'},
+    {"data":'prix_vente'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+ </script>
+
+ {% endblock %}

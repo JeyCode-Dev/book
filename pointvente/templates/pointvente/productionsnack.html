@@ -1,0 +1,368 @@
+ {% extends 'main.html' %}
+{% load static %}
+
+
+{% block style %}
+            <link href="{% static 'assets/vendor_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'assets/vendor_components/datatable/datatables.min.css' %}" rel="stylesheet">
+
+        {% endblock %}
+ {% block title %}
+
+
+
+         
+            <h3>
+        Produit
+        </h3>
+        <ol class="breadcrumb" style="background: transparent">
+{#            <li class="breadcrumb-item"><a href="sentiment2://"><i class="fa fa-dashboard"></i> Accueil</a></li>#}
+{#            <li class="breadcrumb-item"><a href="#" onclick="getImage()"><i class="fa fa-dashboard"></i> Accueil</a></li>#}
+            <li class="breadcrumb-item"><a href="#"><i class="fa fa-dashboard"></i> Accueil</a></li>
+            <li class="breadcrumb-item" aria-current="page">Point de vente</li>
+            <li class="breadcrumb-item active">Produit</li>
+{#            <img id='Img1' src='http://127.0.0.1:9090/Signature.png' crossorigin='anonymous'>#}
+{#            <img id='Img1' src='http://127.0.0.1:9090/Signature.png'>#}
+
+        </ol>
+
+          {% endblock %}
+
+{% block content %}
+
+
+
+	<div class="col-12">
+
+								
+			  <div class="box">
+				 
+				<div class="box-body">
+                <form action="#" id="fprm2" method="post" >
+                                {% csrf_token %}
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+                  <div class="col-sm-4">
+								<label>Produit</label>
+                        <select style="background-color:black;" name="produit" id="produit" class="form-control  select2">
+                                    <option value="" ></option>
+                                    {% for i in produit  %}
+                                    <option value={{i.article}} >{{ i.designation}}</option>
+                                    {% endfor %}
+                            </select>
+					</div>
+                  <div class="col-sm-2">
+                          <label>Emb 1</label>
+                          <select style="background-color:black;" name="emb" id="emb" class="form-control  select2">
+                                    <option value="" ></option>
+                                    {% for i in emb  %}
+                                    <option value={{i.emballage}} >{{ i.emballage}}</option>
+                                    {% endfor %}
+                            </select>
+
+
+                      </div>
+                      <div class="col-sm-2">
+                          <label>Prix 1</label>
+                          <input type="number" id="prix" value="0"  required name="prix" class="form-control" >
+
+
+                      </div>
+                  <div class="col-sm-2">
+                          <label>Qte 1</label>
+                          <input type="number" id="qte" value="0"  required name="qte" class="form-control" >
+
+
+                      </div>
+                   <div class="col-sm-2">
+                          <label>Emb 2</label>
+                          <select style="background-color:black;" name="emb2" id="emb2" class="form-control  select2">
+                                    <option value="" ></option>
+                                    {% for i in emb  %}
+                                    <option value={{i.emballage}} >{{ i.emballage}}</option>
+                                    {% endfor %}
+                            </select>
+
+
+                      </div>
+                      <div class="col-sm-2">
+                          <label>Prix 2</label>
+                          <input type="number" id="prix2" value="0"  required name="prix2" class="form-control" >
+
+
+                      </div>
+                  <div class="col-sm-2">
+                          <label>Qte 2</label>
+                          <input type="number" id="qte2" value="0"  required name="qte2" class="form-control" >
+
+
+                      </div>
+                  <div class="col-sm-2">
+                          <label>Emb 3</label>
+                          <select style="background-color:black;" name="emb3" id="emb3" class="form-control  select2">
+                                    <option value="" ></option>
+                                    {% for i in emb  %}
+                                    <option value={{i.emballage}} >{{ i.emballage}}</option>
+                                    {% endfor %}
+                            </select>
+
+
+                      </div>
+                      <div class="col-sm-2">
+                          <label>Prix 3</label>
+                          <input type="number" id="prix3" value="0"  required name="prix3" class="form-control" >
+
+
+                      </div>
+                  <div class="col-sm-2">
+                          <label>Qte 3</label>
+                          <input type="number" id="qte3" value="0"  required name="qte3" class="form-control" >
+
+
+                      </div>
+
+				  </div>
+
+				  <!-- /.form group -->
+
+				  <!-- Color Picker -->
+				  <div class="form-group row">
+
+					<div class="col-sm-4" style="margin-top:22px">
+								<button id="ajoutarticle" type="submit" class="btn btn-outline btn-info mb-5">Valider</button>
+					</div>
+					
+					<!-- /.input group -->
+				  </div>
+                 </form>
+				  <!-- /.form group -->
+
+				  <!-- time Picker -->
+				  
+					<div class="form-group row">
+					  <div class="col-sm-12">
+
+					    <div class="box">
+					 
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div class="table-responsive">
+						  <table id="example1" class="table table-bordered table-striped">
+							<thead style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Désignation</th>
+									<th>Emb 1</th>
+									<th>Prix 1</th>
+									<th>Qte 1</th>
+									<th>Emb 2</th>
+									<th>Prix 2</th>
+									<th>Qte 2</th>
+									<th>Emb 3</th>
+									<th>Prix 3</th>
+									<th>Qte 3</th>
+
+								</tr>
+							</thead>
+							<tbody>
+
+								
+							</tbody>
+							<tfoot style="background:gray">
+								<tr>
+									<th>#</th>
+									<th>Désignation</th>
+									<th>Emb 1</th>
+									<th>Prix 1</th>
+									<th>Qte 1</th>
+									<th>Emb 2</th>
+									<th>Prix 2</th>
+									<th>Qte 2</th>
+									<th>Emb 3</th>
+									<th>Prix 3</th>
+									<th>Qte 3</th>
+
+								</tr>
+							</tfoot>
+						  </table>
+						</div>
+					</div>
+					<!-- /.box-body -->
+				  </div>
+					</div>
+					<!-- /.form group -->
+			 
+				</div>
+				<!-- /.box-body -->
+			  </div>
+			  </div>
+
+			</div>
+
+ {% endblock %}
+
+
+ {% block script %}
+
+            <script src="{% static 'assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/select2/dist/js/select2.full.js' %}"></script>
+            <script src="{% static 'assets/vendor_components/datatable/datatables.min.js' %}"></script>
+
+            	 <script>
+
+            $(document).ready(function() {
+            	
+             $('.select2').select2();
+             
+             $('#example1').DataTable();
+
+
+              $('#example1 tbody').on('dblclick','tr',function(){                      
+                   
+
+                         $('#produit').val(this.cells[0].textContent);
+                         $('#prix').val(this.cells[3].textContent);
+                         $('#emb').val(this.cells[2].textContent);
+                         $('#emb2').val(this.cells[5].textContent);
+                         $('#emb3').val(this.cells[8].textContent);
+                         $('#prix2').val(this.cells[6].textContent);
+                         $('#prix3').val(this.cells[9].textContent);
+                         $('#qte3').val(this.cells[10].textContent);
+                         $('#qte').val(this.cells[4].textContent);
+                         $('#qte2').val(this.cells[7].textContent);
+                         $('#produit').change();
+                         $('#emb').change();
+                         $('#emb2').change();
+                         $('#emb3').change();
+
+
+
+    
+               });
+
+
+
+
+
+
+
+ affiche();
+              $('#fprm2').submit(function (e) {
+                         e.preventDefault();
+						 $.ajax({
+                        url: '{% url 'pointvente:prosnack' %}',
+                        type: 'POST',
+                         data:$(this).serialize(),
+                        async: false,
+                        success: function (data) {
+                             $('#msx').show();
+                            if(data.id=="0"){
+
+                                 $.toast({
+                                    heading: 'Gestion de stock',
+                                    text: data.msg,
+                                    position: 'top-right',
+                                    loaderBg: '#ff6849',
+                                    icon: 'error',
+                                    hideAfter: 3500
+
+                                });
+                            }else{
+
+
+                                  $.toast({
+                                        heading: 'Gestion de stock',
+                                        text:data.msg,
+                                        position: 'top-right',
+                                        loaderBg: '#ff6849',
+                                        icon: 'success',
+                                        hideAfter: 3500,
+                                        stack: 6
+                                    });
+                                   $('#designation').val('');
+
+                                   $('#prix').val('0');
+                                   $('#prix2').val('0');
+                                   $('#prix3').val('0');
+                                    $('#qte').val('0');
+                                   $('#qte2').val('0');
+                                   $('#qte3').val('0');
+
+                                affiche();
+                            }
+
+                        },error:function (data) {
+
+                            }
+                        });
+
+
+
+                        });
+
+
+
+
+
+
+{# $.ajax({#}
+{#                        //url: 'http://127.0.0.1:8001/Signature.png',#}
+{#                        url: 'http://127.0.0.1:8001',#}
+{#                        type: 'get',#}
+{#                        async: false,#}
+{#                        headers: {#}
+{#                        'Access-Control-Allow-Origin': '*',#}
+{#                        'Access-Control-Allow-Headers':'accept,origin,content-type,accept-encoding'#}
+{#                        },#}
+                        {#crossDomain: true,#}
+                        {#dataType: 'jsonp',#}
+{#                        success: function (data) {#}
+{#                             alert(data)#}
+{##}
+{#                        },error:function (data) {#}
+{#//alert(data)#}
+{#                            }#}
+{#                        });#}
+
+
+//getImage();
+              });
+
+                    function affiche()
+    {
+
+    try{
+    var oTABLE=$('#example1').DataTable({
+    "bProcessing":true,
+    "sAjaxSource":"{% url 'pointvente:getrecettesnack' %}",
+    "columns":[
+
+    {"data":'article_id'},
+    {"data":'article__designation'},
+    {"data":'embpu'},
+    {"data":'pu'},
+    {"data":'qte'},
+    {"data":'embpu2'},
+    {"data":'pu2'},
+    {"data":'qte2'},
+    {"data":'embpu3'},
+    {"data":'pu3'},
+    {"data":'qte3'}
+
+    ],
+
+    "bDestroy":true
+    });
+    //alert(data);
+    }catch(e){}
+    }
+
+
+
+
+
+
+ </script>
+
+ {% endblock %}

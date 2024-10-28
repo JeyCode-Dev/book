@@ -1,0 +1,475 @@
+{% load static %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" lang="en-gb">
+
+<head>
+<script>var SITE_URL = '';</script>
+
+<link rel="stylesheet" href="{% static 'pointvente/styles/mainstyle.css' %}" type="text/css" media="screen">
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Commande</title>
+<meta name="description" content="jQuery 3D carousel maker - Design your jquery slider without coding and see it on your page! Amazing effects!" />
+
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<link rel="shortcut icon" href="" />
+
+<script type="text/javascript" src="{% static 'pointvente/images/demo/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'pointvente/styles/a.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/responsivevoice.js' %}"></script>
+
+</head>
+
+
+<body style="">
+
+
+<div class="row">
+
+<div>
+        <!-- Start WOWSlider.com BODY section -->
+
+<link rel="stylesheet" type="text/css" href="{% static 'pointvente/sliders/demo-49/engine1/style.css' %}" />
+<style type="text/css">
+  /********************************
+* Basics
+*********************************/
+* {
+    box-sizing: border-box;
+}
+
+body,
+button,
+input,
+select,
+optgroup,
+textarea {
+    color: #3d4852;
+    font-family: 'Muli', sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: 2rem;
+    margin: 2rem auto 1rem;
+    line-height: 1;
+}
+
+h2 {
+    font-size: 1.25rem;
+    margin-top: 0;
+}
+
+a {
+    color: inherit;
+    transition: 0.25s all ease-in-out;
+}
+
+a:visited {
+    color: #3d4852;
+}
+
+a:hover,
+a:focus,
+a:active {
+    background-color: #3d4852;
+    color: white;
+}
+
+a:focus {
+    outline: thin solid #3d4852;
+}
+
+a:hover,
+a:active {
+    outline: 0;
+}
+
+a.button {
+    align-items: center;
+    background-color: #3d4852;
+    border: 1px solid #3d4852;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    padding: 0.25rem 0.75rem;
+    text-decoration: none;
+    transition: all 0.25s ease-in-out;
+}
+
+a.button:hover,
+a.button:focus {
+    background-color: #58636F;
+    box-shadow: 0 0 2px 2px #bac6d3;
+}
+
+a.button:focus {
+    outline: 1px solid #3d4852;
+}
+
+a.button:visited {
+    color: #fff;
+}
+
+ul {
+    margin: 0 0 1.5rem;
+    padding: 0;
+}
+
+li {
+    display: inline-block;
+}
+
+svg {
+    fill: currentColor;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+imgg {
+    height: auto;
+    margin-bottom: .5rem;
+    max-width: calc(100% + 2rem);
+    position: relative;
+    left: -1rem;
+    right: -1rem;
+}
+
+p {
+    margin: 0 0 .5rem;
+}
+
+main {
+    padding: 1rem 2rem;
+    margin: auto;
+}
+
+header {
+    padding: 1rem 2rem;
+    text-align: center;
+}
+
+.card {
+    border: 1px solid #bac6d3;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+
+/********************************
+* Carousel styles
+scroll-snap-type: x mandatory;
+*********************************/
+.carousel-items {
+    display: flex;
+    overflow-x: scroll;
+    padding: 1rem 0;
+
+}
+
+.carousel-item {
+    flex: 1 0 250px;
+    margin-left: 1rem;
+    scroll-snap-align: start;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    height: 6px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3d4852;
+    border-radius: 3px;
+}
+
+
+/********************************
+* Breakpoints
+*********************************/
+@media screen and (min-width: 576px) {
+    .carousel-item {
+        flex-basis: 300px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+
+    body,
+    button,
+    input,
+    select,
+    optgroup,
+    textarea {
+        font-size: 1.125rem;
+    }
+
+    h1 {
+        font-size: 2.75rem;
+    }
+
+    .carousel-item {
+        flex-basis: 325px;
+    }
+}
+
+@media screen and (min-width: 1280px) {
+    h1 {
+        font-size: 4rem;
+    }
+
+    .carousel-item {
+        flex-basis: 450px;
+    }
+}
+
+@media screen and (min-width: 1600px) {
+
+    body,
+    button,
+    input,
+    select,
+    optgroup,
+    textarea {
+        font-size: 1.25rem;
+    }
+}
+
+.boxx {
+  float: right;
+  width: 33.33%;
+  margin-top: -20px;
+}
+
+.bar {
+  position: absolute;
+
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  padding: 25px 0;
+
+  color: #2a0845;
+
+  font-family: Gelasio;
+  font-size: 18px;
+}
+
+.bar_content {
+  display: block; /* Important to give the content a width */
+
+  width: 100%;
+  transform: translateX(100%); /* Animation start out of the screen */
+
+  /* Add the animation */
+  animation: move 30s linear infinite /* infinite make reapeat the animation indefinitely */;
+}
+
+/* Create the animation */
+@keyframes move {
+  to { transform: translateX(-100%); }
+}
+
+</style>
+ <div class="boxx" style="">
+     <h1 align="center" ><span style="color: #9B703F;">Take Away</span> <br>Fast Food <br><span style="color: #0f62f0;">Restaurant</span> <br><span style="color: #4CAF50;">Leon Hotel</span></h1>
+
+  </div>
+
+<div id="wowslider-container1" style="margin-left: 145px;">
+<div class="ws_images box" style="">
+        <ul>
+            {% for recette in recettes %}
+              <li><img width="830px" height="360px" src="{% if recette.image %} {{ recette.image.url }} {% else %}/media/images/recettes/logovide.png{% endif %}" alt="{{ recette.pu }}" title="{{ recette.pu }}" id="wows1_0" />{{ recette.libelle }}</li>
+            {% endfor %}
+
+      </ul>
+</div>
+
+
+<div class="ws_thumbs">
+      <div>
+          {% for recette in recettes %}
+           <a href="#" title="{{ recette.libelle }}"><img width="120px" height="52px" src="{% if recette.image %}{{ recette.image.url }}{% else %}/media/images/recettes/logovide.png{% endif %}" alt="{{ recette.pu}}" />{{ recette.libelle}}</a>
+          {% endfor %}
+    </div>
+</div>
+
+
+</div>
+<script type="text/javascript" src="{% static 'pointvente/images/demo/wowslider.js' %}"></script>
+<script type="text/javascript" src="{% static 'pointvente/sliders/demo-49/engine1/script.js' %}"></script>
+        <!-- End WOWSlider.com BODY section -->
+ <br/>
+
+
+<div style="display: none;" id="effbuttons" class="control-buttons"></div>
+
+
+
+  <div class="clear"></div>
+
+
+
+
+<section class="carousel">
+            <ul class="carousel-items" id="divrecette">
+
+
+            </ul>
+        </section>
+        <section class="">
+         <div class="bar">
+   <span class="bar_content" style="font-weight:bold;font-size:45px">
+     CHER CLIENT ,VOTRE COMMANDE EST EN PREPARATION.VEUILLEZ PATIENTER.
+   </span>
+ </div>
+ </section>
+      <script type="text/javascript">
+var interval;
+var allEfectss = "turn|shift|cube_over|louvers|lines|carousel|dribbles|parallax|brick|collage|basic|basic_linear|blast|blinds|blur|book|bubbles|carousel_basic|cube|domino|fade|flip|fly|glass_parallax|kenburns|page|photo|rotate|seven|slices|squares|stack|stack_vertical|tv".split("|");
+            $(document).ready(function() {
+
+                getfull();
+                interval = setInterval(function() {
+                      getone();
+                      //getonedelete();
+                    }, 15000);
+                var myVareffe =setInterval(function(){ effer(); }, 20000);
+                var tp =setInterval(function(){
+                    try {
+                        var text = "Snack Léon Hôtel Vous souhaite le bienvenu,Veuillez patienter s'il vous plait votre commande est en preparation.Merci";
+                    responsiveVoice.speak(text,"French Female");
+                    }catch (e) {
+
+                    }
+
+                }, 180000);
+              });
+
+
+ function effer() {
+
+   try{
+       var item=allEfectss[Math.floor(Math.random()*allEfectss.length)];
+       $('[data-effect="'+item+'"]').click();
+   }catch(e){
+
+   }
+
+ }
+
+  function myStopFunction() {
+  clearInterval(myVar);
+}
+
+
+ function getfull() {
+
+
+
+                        $.ajax({
+                            url: '{% url 'pointvente:getclienttake' %}',
+                            type: 'GET',
+                            async: true,
+                            success: function (data) {
+
+                                   $('#divrecette').append(data.data);
+
+
+
+                            }
+                        });
+
+
+
+
+                }
+ function getone() {
+
+                    var last = $("#divrecette > li:first-child").attr("data-commande");
+                    var commande = $("#divrecette > li:first-child").attr("data-document");
+                    var tot=$("#divrecette > li").length;
+
+                        $.ajax({
+                            url: '{% url 'pointvente:getclienttakeone' %}',
+                            type: 'GET',
+                            data:{
+                              'id':last,
+                              'commande':commande
+                            },
+                            async: true,
+                            success: function (data) {
+                                    if(data.data!=""){
+                                        $('#divrecette').prepend(data.data);
+                                        //son//
+                                        try {
+                                            //var text = "Commande numéro "+data.cmd+" veuillez patienter s'il vous plait";
+                                            //var text = "Snack Léon Hôtel Vous souhaite le bienvenu,Veuillez patienter s'il vous plait votre commande est en preparation.Merci";
+                                            //responsiveVoice.speak(text,"French Female");
+                                        }catch (e) {
+                                            
+                                        }
+
+                                        //son//
+
+                                           if(tot>=7){
+                                               $("#divrecette > li:last-child").remove();
+                                           }
+                                    }
+
+
+
+
+                            }
+                        });
+
+
+
+
+                }
+ function getonedelete() {
+
+                        $.ajax({
+                            url: '{% url 'pointvente:getclienttakedetele' %}',
+                            type: 'GET',
+                            async: true,
+                            success: function (data) {
+                                     $.each(data.data,function(key,value){
+                                         if($('li[data-document='+value.document+']').length){
+                                              document.getElementsByClassName("myAudioElement")[0].play();
+                                              element = $('li[data-document='+value.document+']').remove();
+                                         }
+
+
+                                         });
+                                   //$('#divrecette').append(data.data);
+                                   //var element =
+
+
+
+                            }
+                        });
+
+
+
+
+                }
+
+
+
+ </script>
+</body>
+
+</html>
